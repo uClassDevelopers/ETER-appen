@@ -16,6 +16,7 @@
   },
   "cordovaPlugins": [
     "org.apache.cordova.dialogs",
-    "com.msopentech.websql"
+    "com.msopentech.websql",
+    "org.apache.cordova.inappbrowser"
   ]
 }
