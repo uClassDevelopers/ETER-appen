@@ -1,0 +1,61 @@
+<!--
+/*
+ * Copyright (C) 2015 uClass Developers Daniel Holm & Adam Jacobs Feldstein
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<ion-view view-title="">
+  <ion-content>
+	<div id="single-wrapper" class="single-wrapper">        
+        <div id="single-data"></div>
+        <script id="single-template" type="text/x-handlebars-template">
+            <div id="post_{{post.id}}" class="list card">
+
+              <div class="item item-avatar">
+                <img src="http://ionicframework.com/img/docs/mcfly.jpg">
+                <h2>{{post.title}}</h2>
+                <p>{{post.date}}</p>
+              </div>
+
+              <div class="item item-body">
+                <p>
+                    {{{post.content}}}
+                </p>
+                <div id="anks"></div>
+                <p>
+                  <a href="#" class="subdued">1 Like</a>
+                  <a href="#" class="subdued">5 Comments</a>
+                </p>
+              </div>
+
+              <div class="item tabs tabs-secondary tabs-icon-left">
+                <a class="tab-item" href="#">
+                  <i class="icon ion-thumbsup"></i>
+                  Like
+                </a>
+                <a class="tab-item" href="#" onclick="window.plugins.socialsharing.share('Kolla in denna guiden: {{post.title}}, på ETER-siten', 'ETER GUIDE: {{post.title}}', null, 'http://eter.rudbeck.info/')">
+                  <i class="icon ion-share"></i>
+                  Share
+                </a>
+                </div>
+            </div>
+        </script>
+	</div>
+  </ion-content>
+</ion-view>

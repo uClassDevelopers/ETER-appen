@@ -1,0 +1,70 @@
+<!--
+/*
+ * Copyright (C) 2015 uClass Developers Daniel Holm & Adam Jacobs Feldstein
+ *
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+-->
+<ion-view view-title="<img class='animated bounce' height='40' src='img/ETER-logga.png'/>" ng-controller="EterCtrl">
+  <ion-content>
+    <div class="card">
+      <div class="item item-text-wrap">
+          <h2 style="font-weight: bold;">ETER-Appen</h2>
+          <p><a href="#" onclick="window.open('http://uclass.se', '_system', 'location=yes');"><img style="height: 85px; float: right;" src="img/logo_uclass.png" alt="uClass"/></a>ETER-appen är skapad utav uClass Developers Daniel Holm och Adam Feldstein Jacobs för Rudbeck Gymnasium i Sollentuna. <a style="text-decoration: underline; color: #000;" href="#" onclick="window.open('http://uclass.se', '_system', 'location=yes');">Läs mera om uClass.</a>
+          </p>
+          <br/>
+          <div id="om-eter">
+            <h2 style="font-weight: bold;">{{omEter.title}}</h2>
+              <p data-ng-bind-html="omEter.content"></p>
+          </div>
+          <br/>
+          <div id="ikt-coacher">
+            <h2 style="font-weight: bold;">{{iktCoach.title}}</h2>
+              <p data-ng-bind-html="iktCoach.content"></p>
+          </div>
+      </div>
+    </div>
+        <form name="supportForm" id="supportForm" class="card">
+            <div class="list item item-text-wrap" style="margin: 10px;">
+                <h2 style="font-weight: bold;">Kontakta ETER-Support</h2>
+                <span class="input-label">Ditt namn</span>
+                <input name="g425-namn" aria-required="true" id="g425-namn" type="text" placeholder="Namn">
+                <span class="input-label">Din skolmail</span>
+                <input type="text" name="g425-epost" id="g425-epost" placeholder="abc123@edu.sollentuna.se">
+                <div>
+                    <label for="contact-form-comment-g425-synpunkter" class="grunion-field-label textarea">Synpunkter<span>(måste anges)</span></label>
+                    <textarea style="width: 100%;" name="g425-synpunkter" id="contact-form-comment-g425-synpunkter" rows="10" required="" aria-required="true"></textarea>
+                </div>
+                <div class="input-label">
+                  Vad gäller din synpunkt?
+                </div>
+                <select name="g425-vadgllerdinsynpunkt" id="g425-vadgllerdinsynpunkt">
+                    <option>Synpunkt på ETER appen</option>
+                    <option>Behov av ny guide</option>
+                    <option>Annat förslag</option>
+                </select>
+                <input class="button button-block button-positive" id="btn-submit-support" class="submit" type="submit" value="Skicka meddelande"/>
+            </div>
+            
+            <input type="hidden" name="_wpnonce" value="3f06f99e8d">    
+            <input type="hidden" name="_wp_http_referer" value="/support/">
+            <input type="hidden" name="contact-form-id" value="425">
+            <input type="hidden" name="action" value="grunion-contact-form">   
+        </form>
+  </ion-content>
+</ion-view>

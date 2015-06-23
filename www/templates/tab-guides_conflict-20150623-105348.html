@@ -1,0 +1,34 @@
+<ion-view view-title="Guider" ng-controller="GuidesCtrl">
+        
+    <ion-nav-buttons side="left">
+        <button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
+    </ion-nav-buttons>
+    
+
+  <ion-content>
+    <nav id="menu">
+        <ion-list>
+            <ion-item><a href="">Senaste</a></ion-item>
+            <ion-item><a href="">Mest visade</a></ion-item>
+            <ion-item><a href="">Kategorier</a></ion-item>
+            <ion-item><a href="">Taggar</a></ion-item>
+            <ion-item><a href="">Alla olästa</a></ion-item>
+            <ion-item><a href="">För lärare</a></ion-item>
+            <ion-item><a href="">Historik</a></ion-item>
+        </ion-list>
+    </nav>
+    <main id="panel"> 
+        <div id="start-data"></div>
+        <ion-list>
+            <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
+            <ion-item ng-repeat="g in guides" id="post_{{g.id}}" class="post item item-thumbnail-left ng-binding" ng-click="goToGuide({{g.id}})">
+                <img src="img/cover.jpg">
+                <a data-transition="slide" ><h3>{{g.title}}</h3></a>
+                <p style="float: right;">läst</p>
+                <p>Skriven: {{g.date}}</p>
+                <p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p>
+            </ion-item>
+        </ion-list>   
+    </main>
+  </ion-content>
+</ion-view>
