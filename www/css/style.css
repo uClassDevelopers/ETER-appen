@@ -44,6 +44,9 @@
   background-position:center;
   background-image: url('../img/eter-icon.png');
 }
+.greyBorder {
+    border: 1px solid #e4e4e4;
+}
 .bold {
     font-weight: bold;
     color:#666666;

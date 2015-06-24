@@ -23,8 +23,7 @@
 <ion-view  ng-controller="StartCtrl" view-title="<img class='animated bounce' height='40' src='img/ETER-logga.png'/>">
   <ion-content class="padding">
       <div id="start-data"></div>
-      <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
-      <ion-slide-box class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
+      <ion-slide-box delegate-handle="image-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
         <ion-slide ng-repeat="obj in sliderData">
             <div class="box blue"><a href="{{obj.image_url}}"><img src="{{obj.image_url}}"/></a></div>
         </ion-slide>
@@ -51,22 +50,9 @@
                 </a>
             </div> 
         </div>
-        <div id="row-two-boxes">     
-            <!--<div id="rows2" ng-controller="StartCtrl">
-            <h2 id="latest-header">Senaste guider</h2>    
-            <span ng-repeat="post in posts">
-                <div id="{{post.title}}" class="box2 span4">
-                    <a  href="#/tab/start/{{post.id}}">		
-                        <p class="box-widget-title">{{post.title}}</p>
-                        <p></p>
-                    </a>
-                </div> 
-              </span>
-          </div>-->
-        </div>
           
           <!-- CONSOLE START -->
-            <div class="bajs" style="display: none;">
+            <div class="bajs" style="display:;">
             <style>
         #status {
             padding: 5px;
