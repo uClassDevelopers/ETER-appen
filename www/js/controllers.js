@@ -20,6 +20,19 @@
  */
 
 // functions
+function fixCordovaOutboundLinks() {
+    $('a').each(function() { 
+        var url = ($(this).attr('href')); 
+        if (url.indexOf('http') == 0) {
+            $(this).css('text-decoration', 'none');
+            $(this).attr('href', '#' );
+            $(this).click(function() {
+                var ref = window.open(url, '_blank', 'location=yes');             
+            });       
+        }
+    });
+}
+
 function get_dyn_data(row, url) { // params: api url and topData or bottomData
     $http.get(url).
         success(function(data) {
@@ -49,14 +62,16 @@ function get_dyn_data(row, url) { // params: api url and topData or bottomData
 // modules
 angular.module('eter.controllers', [])
 
-.controller('StartCtrl', function($scope, $http) {
+.controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+    $scope.slideHasChanged = function() {
+        $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
+    }
     $scope.$on("$ionicView.beforeEnter", function() {
          app.start();
     });
     $scope.goToGuide = function(id) {
         location.href="#/tab/start/"+id;
     }
-    $('#start-data').html('<p style="text-align: center;"><img src="img/ajax-loader.gif"> loading...</p>');
     $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&startpage=1').
         success(function(data) {
             $('#start-data').html("");
@@ -82,17 +97,7 @@ angular.module('eter.controllers', [])
             
             // Dynamic data setup
             
-        $('a').each(function() { 
-            var url = ($(this).attr('href')); 
-            if (url.indexOf('http') == 0) {
-                $(this).css('text-decoration', 'none');
-                $(this).attr('href', '#' );
-                $(this).click(function() {
-                    var ref = window.open(url, '_blank', 'location=yes');             
-                });       
-            }
-        });
-        
+            fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -103,11 +108,13 @@ angular.module('eter.controllers', [])
 .controller('StartDetailCtrl', function($scope) {
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
+        fixCordovaOutboundLinks();
     });
 })
 
 
 .controller('GuidesCtrl', function($scope, $http, $ionicSideMenuDelegate) {
+    $scope.loading = true;
     $scope.$on("$ionicView.beforeEnter", function() {
      var slideout = new Slideout({
         'panel': document.getElementById('panel'),
@@ -127,6 +134,8 @@ angular.module('eter.controllers', [])
             $scope.goToGuide = function(id) {
                 location.href="#/tab/guides/"+id;
             }
+            $scope.loading = false;
+            fixCordovaOutboundLinks();
     }).
     error(function(data) {
         $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -149,10 +158,16 @@ angular.module('eter.controllers', [])
 })
 
 
-.controller('CoursesCtrl', function($scope, $http) {
+.controller('CoursesCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+    $scope.loading = true;
+    $scope.slideHasChanged = function() {
+        $ionicSlideBoxDelegate.$getByHandle('course-viewer').update();
+    }
     $scope.$on("$ionicView.enter", function() {
 
     });
+    
+    // Get all courses
     $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-all-courses=1&parent=43').
     success(function(data) {
         var courses = [];
@@ -167,20 +182,37 @@ angular.module('eter.controllers', [])
         $scope.goToGuide = function(id) {
             location.href="#/tab/courses/"+id;
         }
-        $(".course").click(function() {
+        $(".course").unbind('click').click(function() {
             var id = $(this).attr('id').substring(1);
-            $("c" + id).slideToggle();
+            $("#e" + id).slideToggle();
         });
+        $scope.loading = false;
+        //fixCordovaOutboundLinks();
     }).
     error(function(data) {
         $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
         console.log(data);
     });
+    
+    /* Get recommended courses for the slider
+    */
+    $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&courses-slider=1').
+    success(function(data) {
+        //alert(JSON.stringify(data.courses_slider, null, 4));
+        $scope.courses_slider = data.courses_slider;
+        fixCordovaOutboundLinks();
+    }).
+    error(function(data) {
+        $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in de rekommenderade kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
+        console.log(data);
+    });
+    
 })
 
 .controller('CoursesDetailCtrl', function($scope) {
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
+        fixCordovaOutboundLinks();
     });
 })
 
@@ -209,7 +241,7 @@ angular.module('eter.controllers', [])
                         );
                     }
                     showAlert();
-
+                    fixCordovaOutboundLinks();
                 },
                 error: function(){
                     function alertDismissed() {
@@ -236,6 +268,7 @@ angular.module('eter.controllers', [])
     $http.get('http://eter.rudbeck.info/om-ikt-coacher/?json=1&apikey=ErtYnDsKATCzmuf6').
         success(function(data) {
             $scope.iktCoach = data.page;
+            fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -245,6 +278,7 @@ angular.module('eter.controllers', [])
     $http.get('http://eter.rudbeck.info/om-eter/?json=1&apikey=ErtYnDsKATCzmuf6').
         success(function(data) {
             $scope.omEter = data.page;
+            fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
