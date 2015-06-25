@@ -36,27 +36,17 @@ function fixCordovaOutboundLinks() {
 function get_dyn_data(row, url) { // params: api url and topData or bottomData
     $http.get(url).
         success(function(data) {
-
+            if(url == "http://eter.rudbeck.info/?json=get_recent_posts&apikey=ErtYnDsKATCzmuf6&count=3") { // the latest guides 
+            
+            } else if(url == "http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-all-courses=1&parent=43") { // the latest courses
+            
+            }
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
             console.log(data);
         });
-    
-    /*if(firstPageContent.topData[0].is_dyn == "1") {
-        alert("top row is dynamic");
-        // dynamic options
-        if(firstPageContent.topData[0].dyn_content == "") { // three latest guides
-            
-        } else if(firstPageContent.topData[0].dyn_content == "") { // three latest courses
-
-        }
-    }
-
-    if(firstPageContent.bottomData[0].is_dyn == "1") {
-        alert("bottom row is dynamic");
-    }*/
 }
 
 // modules
@@ -90,12 +80,25 @@ angular.module('eter.controllers', [])
                     firstPageContent.sliderData.push(data.startpage[index]); 
                }
             });
+            //alert(JSON.stringify(firstPageContent, null, 4));
+            // Add dynamic data if is_dyn = 1 for top row
+            if(firstPageContent.topData[0].is_dyn == "1" || firstPageContent.topData[1].is_dyn == "1" || firstPageContent.topData[2].is_dyn == "1") {
+                //alert("top row is dynamic");
+                //get_dyn_data(, topData);
+
+            }
+        
+            // Add dynamic data if is_dyn = 1 for bottom row
+            if(firstPageContent.bottomData[0].is_dyn == "1" || firstPageContent.bottomData[1].is_dyn == "1" || firstPageContent.bottomData[2].is_dyn == "1") {
+                //alert("bottom row is dynamic");
+                //get_dyn_data(, bottomData);
+            }
+        
             //alert(JSON.stringify(firstPageContent, null, 4)); // Alert api json
             $scope.topData = firstPageContent.topData;
             $scope.bottomData = firstPageContent.bottomData;
             $scope.sliderData = firstPageContent.sliderData;
             
-            // Dynamic data setup
             
             fixCordovaOutboundLinks();
         }).
@@ -151,10 +154,23 @@ angular.module('eter.controllers', [])
     });
 })
 
-.controller('GuidesDetailCtrl', function($scope) {
+.controller('GuidesDetailCtrl', function($scope, $http) {
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
     });
+    /*$scope.vote = function(pid) {
+        alert("like! vote fired off");
+        alert("pid: " + pid);
+        $http.post('http://eter.rudbeck.info/wp-admin/admin-ajax.php', { action:'wti_like_post_process_vote', task:'like', postid: pid, nonce: 'e707a027a7'}).
+        success(function(data) {
+            
+        }).
+        error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+        console.log(data);
+        });
+    }*/
 })
 
 
@@ -184,7 +200,10 @@ angular.module('eter.controllers', [])
         }
         $(".course").unbind('click').click(function() {
             var id = $(this).attr('id').substring(1);
-            $("#e" + id).slideToggle();
+            var eid = "#e" + id;
+            $(eid).slideToggle();
+            /*var otherElementIds = ".dropdown1:not(" + eid + ")";
+            $(otherElementIds).slideUp();*/
         });
         $scope.loading = false;
         //fixCordovaOutboundLinks();

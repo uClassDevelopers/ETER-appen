@@ -39,7 +39,8 @@
                     <p class="box-widget-title mini">{{obj.content}}</p>
                 </a>
             </div>
-
+        </div>
+        <div id="row-two-boxes">
             <div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData">
                 <a href="{{obj.on_link}}">	
                     <p class="box-widget-title bold">{{obj.title}}</p>
@@ -49,10 +50,11 @@
                     <p class="box-widget-title mini">{{obj.content}}</p>
                 </a>
             </div> 
+        </div>   
         </div>
           
           <!-- CONSOLE START -->
-            <div class="bajs" style="display:;">
+            <div class="bajs" style="display:none;">
             <style>
         #status {
             padding: 5px;
@@ -75,25 +77,6 @@
             line-height: 32px;
         }          
         </style>
-            <button id="renderDb">Render Db</button>
-            <button id="btnOpenDb">Open Database</button>
-            <button id="btnCreateTable">Create/Open Table</button>
-            <input style="border:2px solid #000000;" type='text' id="lblTodoText" value="postid"/>
-            <button onclick="app.addRead(document.getElementById('lblTodoText').value)" id="btnAddItem">Add item</button>
-            <button id="btnDeleteAll">Delete all items</button>
-            <button id="btnTestEvents">Test rollback and events</button>            
-            <button id="btnTestJSONBlob">Test JSON blob</button>
-            <button id="btnTestRollbacksAfterFailures">Test rollbacks after failures</button>
-            <button id="bthTestLongTransactions">Test long transactions</button>
-            <button id="btnTestPrelightPostflight">Test preflight/postflight</button>
-            <button id="btnTestNestedTransaction">Test nested</button>
-            <button id="btnOpenDbMul">Open Database multiple times</button>
-            <ul>
-                <li><div id="post_1"><a href="javascript:void(0);" onclick="app.addRead(1)">Lägg till id 1</a></div></li>
-                <li><div id="post_2"><a href="javascript:void(0);" onclick="app.addRead(2)">Lägg till id 2</a></div></li>
-                <li><div id="post_3"><a href="javascript:void(0);" onclick="app.addRead(3)">Lägg till id 3</a></div></li>
-                <li><div id="post_4"><a href="javascript:void(0);" onclick="app.addRead(4)">Lägg till id 4</a></div></li>
-                <li><div id="post_20"><a href="javascript:void(0);" onclick="app.addRead(20)">Lägg till id 20</a></div></li>
             </ul>
             <p id="lblTxInfo"></p>
             <p id="lblInfo"></p>
