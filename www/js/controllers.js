@@ -33,22 +33,6 @@ function fixCordovaOutboundLinks() {
     });
 }
 
-function get_dyn_data(row, url) { // params: api url and topData or bottomData
-    $http.get(url).
-        success(function(data) {
-            if(url == "http://eter.rudbeck.info/?json=get_recent_posts&apikey=ErtYnDsKATCzmuf6&count=3") { // the latest guides 
-            
-            } else if(url == "http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-all-courses=1&parent=43") { // the latest courses
-            
-            }
-        }).
-        error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-        });
-}
-
 // modules
 angular.module('eter.controllers', [])
 
@@ -62,6 +46,32 @@ angular.module('eter.controllers', [])
     $scope.goToGuide = function(id) {
         location.href="#/tab/start/"+id;
     }
+    
+    // gets dynamic data for the bottom or top row on the start page
+    /*$scope.get_dyn_data = function(url, row) { // params: api url and topData/bottomData
+        alert('get_dyn_data runs for ' + row);
+        $http.get(url).
+            success(function(data) {
+                alert("http success!");
+                if(row == 'topData') {
+                    firstPageContent.topData.length = 0;
+                } else if(row == 'bottomData') {
+                    firstPageContent.bottomData.length = 0;
+                }
+                if(url == "http://eter.rudbeck.info/?json=get_recent_posts&apikey=ErtYnDsKATCzmuf6&count=3") { // the latest guides 
+                    //alert('latest guides');
+                } else if(url == "http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-all-courses=1&parent=43") { // the latest courses
+                    //alert('latest courses');
+                }
+            }).
+            error(function(data) {
+                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
+                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                console.log(data);
+            });
+    }*/
+    
+    // GET TAB-START API
     $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&startpage=1').
         success(function(data) {
             $('#start-data').html("");
@@ -70,31 +80,78 @@ angular.module('eter.controllers', [])
                "topData":[],
                "bottomData":[]
             };
-
-           $.each(data.startpage, function(index, obj) {
-               if(obj.id <= 3) {
-                   firstPageContent.topData.push(data.startpage[index]);
-               } else if(obj.id > 3 && obj.id < 7) {
-                   firstPageContent.bottomData.push(data.startpage[index]); 
-               } else if(obj.id >= 7) {
+            
+            $.each(data.startpage, function(index, obj) {
+                // Add to slider
+                if(obj.id >= 7) {
                     firstPageContent.sliderData.push(data.startpage[index]); 
-               }
+                }
+                // add to top row if not dynamic
+                if(obj.id <= 3) {
+                    if(obj.is_dyn != "1") {
+                        firstPageContent.topData.push(data.startpage[index]);
+                    }
+                }
+                // add to bottom row if not dynamic
+                if(obj.id > 3 && obj.id < 7) {
+                    if(obj.is_dyn != "1") {
+                        firstPageContent.bottomData.push(data.startpage[index]); 
+                    }
+                }
             });
-            //alert(JSON.stringify(firstPageContent, null, 4));
+        
             // Add dynamic data if is_dyn = 1 for top row
-            if(firstPageContent.topData[0].is_dyn == "1" || firstPageContent.topData[1].is_dyn == "1" || firstPageContent.topData[2].is_dyn == "1") {
-                //alert("top row is dynamic");
-                //get_dyn_data(, topData);
+            if(data.startpage[0].is_dyn == "1") {
+                $http.get(data.startpage[0].dyn_link).
+                success(function(data) {
+                    if(data.hasOwnProperty('posts')) { // the latest guides 
+                        $.each(data.posts, function(index, post) {
+                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste guider", on_link: '#guides/' + post.id });
+                        });
+                    } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
+                        $.each(data.list_all_courses, function(index, course) {
+                            if(index < 3) {
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste kurser', on_link: '' });
+                            }
+                        });
+                    }
+                }).
+                error(function(data) {
+                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
+                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                    console.log(data);
+                });
 
             }
         
             // Add dynamic data if is_dyn = 1 for bottom row
-            if(firstPageContent.bottomData[0].is_dyn == "1" || firstPageContent.bottomData[1].is_dyn == "1" || firstPageContent.bottomData[2].is_dyn == "1") {
-                //alert("bottom row is dynamic");
-                //get_dyn_data(, bottomData);
+            if(data.startpage[3].is_dyn == "1") {
+                $http.get(data.startpage[3].dyn_link).
+                success(function(data) {
+                    if(data.hasOwnProperty('posts')) { // the latest guides 
+                        $.each(data.posts, function(index, post) {
+                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "En Guide", on_link: '#guides/' + post.id });
+                        });
+                    } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
+                        
+                        $.each(data.list_all_courses.reverse() , function(index, course) {
+                            if(index < 3) {
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste kurser', on_link: '' });
+                            }
+                        });
+                    }
+                }).
+                error(function(data) {
+                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
+                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                    console.log(data);
+                });
             }
         
-            //alert(JSON.stringify(firstPageContent, null, 4)); // Alert api json
+                
+            //alert(JSON.stringify(firstPageContent, null, 4));
+        
+        
             $scope.topData = firstPageContent.topData;
             $scope.bottomData = firstPageContent.bottomData;
             $scope.sliderData = firstPageContent.sliderData;
