@@ -24,13 +24,12 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/circle.css">
   <ion-content>
-      <br />
       <ion-slide-box delegate-handle="course-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
           <ion-slide ng-repeat="rc in courses_slider">
             <div class="card" style="height: 90%;">     
               <div class="item item-text-wrap">
-                  <h1>{{ rc.title }}</h1>
-                    <img style="max-width: 150px; max-height: 150px; width: 100%; float: left;" src="{{ rc.image_url }}" alt=".."/>
+                  <h2>{{ rc.course }} - {{ rc.title }}</h2>
+                    <img style="max-width: 150px; max-height: 150px; width: 100%; float: left; margin-right: 5px;" src="{{ rc.image_url }}" alt=".."/>
                 {{ rc.description }}
               </div>
             </div>
@@ -38,7 +37,7 @@
       </ion-slide-box>
       <br />
       <div id="start-data"></div>
-      <h3 style="margin-left:12px;">Alla kurser</h3>
+      <h1 style="margin-left:12px;">Alla kurser</h1>
       <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
       <div class="list card">
           <div class="courseContainer" ng-repeat="c in courses">

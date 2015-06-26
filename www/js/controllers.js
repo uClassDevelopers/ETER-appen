@@ -173,8 +173,7 @@ angular.module('eter.controllers', [])
 })
 
 
-.controller('GuidesCtrl', function($scope, $http, $ionicSideMenuDelegate) {
-    $scope.loading = true;
+.controller('GuidesCtrl', function($scope, $http) {
     $scope.$on("$ionicView.beforeEnter", function() {
      var slideout = new Slideout({
         'panel': document.getElementById('panel'),
@@ -188,25 +187,73 @@ angular.module('eter.controllers', [])
       });
         // push to side
     });
-    $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6').
-    success(function(data) {
-            $scope.guides = data.posts;
-            $scope.goToGuide = function(id) {
-                location.href="#/tab/guides/"+id;
+    
+    $scope.posts;
+    $scope.latest = function() {
+        $scope.loading = true;
+        var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
+        response.success(function(data) {
+                $scope.posts = data.posts;
+                $scope.goToGuide = function(id) {
+                    location.href="#/tab/guides/"+id;
+                }
+                $scope.loading = false;
+                fixCordovaOutboundLinks();
+        }).
+        error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+        
+    };
+    $scope.listCate = function() {
+        var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
+        response.success(function(data) {
+                $scope.cateLoader = data.list_taxonomy;
+      
+                $scope.loading = false;
+                fixCordovaOutboundLinks();
+        }).
+        error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+        
+    };
+    $scope.loadposts = function(category) {
+        // $http.defaults.useXDomain = true;
+        $scope.loading = true;
+        
+        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
+        
+        response.success(function(data, status, headers, config) {  
+            if (data.category.post_count == 0) {
+                $('#start-data').html('<h2 style="text-align: center;">404 <br> Inga guider i denna kategori</h2>');
+                $scope.posts = 0;
+            } else {
+                $('#start-data').html('');
+                $scope.posts = data.posts;
             }
             $scope.loading = false;
-            fixCordovaOutboundLinks();
-    }).
-    error(function(data) {
-        $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-        $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-        console.log(data);
-    });
-    $scope.toggleLeft = function() {
-        $ionicSideMenuDelegate.toggleLeft()
-    }
-
+        });
+        
+        response.error(function(data, status, headers, config) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+    };
+    
     $scope.$on("$ionicView.enter", function() {
+        $( "#tgl-categories" ).unbind().click(function() {
+          $( ".cate" ).toggle();
+        });
+        $( "#tgl-tags" ).unbind().click(function() {
+          $( ".tags" ).toggle();
+        });
+        $scope.latest();
         //app.guides();
     });
 })

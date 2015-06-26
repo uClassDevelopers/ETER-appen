@@ -19,6 +19,18 @@
  * under the License.
  */
 /* ETER-Appen, main stylesheet */
+#uclass {
+    position: fixed;
+    bottom: 8px;
+    right: 8px;
+    z-index: 9999;
+    height: 25px;
+}
+h2 {
+    font-size: 22px !important; 
+    font-weight: 500 !important; 
+    margin-bottom: 5px !important;
+}
 .home {
   background-repeat: no-repeat;
   background-position:center;
@@ -186,7 +198,16 @@ ion-slide div img {
 .slideout-open .slideout-menu {
     display: block;
 }
-
+#menu {
+    margin-top: 40px;
+    z-index: 999;
+}
+.cate  {
+    display: none;
+}
+.child-list {
+    background-color: #F0F8FF;
+}
 /* guider-details.html */
 
 /* tab-eter */

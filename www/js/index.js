@@ -712,7 +712,7 @@ single: function() {
                     return false;  
                 });   
                 if ($('.youtube-player').length) {
-                    $("#anks").html('<button id="ankan">Spela upp videon</button>');
+                    $(".lc").prepend('<button class="button button-light" id="ankan"><i class="icon ion-ios-play-outline"></i> Spela upp videon</button><br/>');
                 }           
                 $( "#ankan" ).click(function() {
                     var url= $(".youtube-player").attr("src");
