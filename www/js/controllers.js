@@ -188,12 +188,36 @@ angular.module('eter.controllers', [])
         // push to side
     });
     
-    $scope.posts;
+    $scope.posts = [];
     $scope.latest = function() {
         $scope.loading = true;
         var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
         response.success(function(data) {
                 $scope.posts = data.posts;
+				/*app.db.transaction(function (tx) {
+                    tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+                        var row;
+                        var rowlength = rs.rows.length;
+						$scope.posts = [];
+                        if(rowlength > 0) {
+							$.each(data.posts, function(index, post) { // loop through posts
+								for (var i = 0; i < rowlength; i++) { // loop through read db
+									row = rs.rows.item(i);
+									if(parseInt(row.postid) == parseInt(post.id)) {
+										return true;
+									} else {
+										if(i == (rowlength-1)) {
+											$scope.posts.push(data.posts[index]);
+										}
+									}
+								}
+							});
+							//alert(JSON.stringify($scope.posts, null, 4));
+                        } else {
+                            $scope.posts = data.posts;
+                        }
+                    }, app.onError);
+                });*/
                 $scope.goToGuide = function(id) {
                     location.href="#/tab/guides/"+id;
                 }

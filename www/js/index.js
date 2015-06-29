@@ -140,49 +140,43 @@ var app = {
         });
     },
 
-    checkIfRead: function (pid) {
-        alert("checkIfRead fired off!" + " pid: " + pid);
-        var bool = true;
+    checkIfReadAndAdd: function (pid) {
         app.db.transaction(function (tx) {
             tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
-                alert("bool-before:" + bool);
                 var row;
-
-                for (var i = 0; i < rs.rows.length; i++) {
-                    row = rs.rows.item(i);
-                    if(parseInt(row.postid) == 3) {
-                        bool = false;
-                        break;
+                var rowlength = rs.rows.length;
+                if(rowlength > 0) {
+                    for (var i = 0; i < rowlength; i++) {
+                        row = rs.rows.item(i);
+                        if(parseInt(row.postid) == parseInt(pid)) {
+                            //alert("break");
+                            break;
+                        }
+                        if(i == (rowlength-1)) {
+                            if(parseInt(row.postid) == parseInt(pid)) {
+                                //alert("break on last index");
+                                break;
+                            } else {
+                                if(pid != "start") {
+                                    app.db.transaction(function (tx) {
+                                        var ts = new Date().toUTCString();
+                                        tx.executeSql("INSERT INTO readposts(postid, added_on) VALUES (?,?)", [pid, ts], app.onSuccess, app.onError);
+                                        //alert("added!");
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if(pid != "start") {
+                        app.db.transaction(function (tx) {
+                            var ts = new Date().toUTCString();
+                            tx.executeSql("INSERT INTO readposts(postid, added_on) VALUES (?,?)", [pid, ts], app.onSuccess, app.onError);
+                            //alert("added!");
+                        });
                     }
                 }
-                alert("bool-after:" + bool);
-                if(bool == true) {
-                    app.addRead(postid);
-                }
             }, app.onError);
-        });
-    },
-    
-    returnInTransaction: function(returnItem) {
-        alert("returning object...");
-        return returnItem;
-    },
-    
-    addRead: function (postid) { // with postid parameter
-        if(postid != "start") {
-            app.db.transaction(function (tx) {
-                //alert("addRead fired off, postid=" + postid);
-                var ts = new Date().toUTCString();
-                tx.executeSql("INSERT INTO readposts(postid, added_on) VALUES (?,?)", [postid, ts], app.onSuccess, app.onError);
-            });
-        }
-    },
-    
-    addRead2: function (postid) { // with postid parameter
-        app.db.transaction(function (tx) {
-            alert("addRead fired off, postid=" + postid);
-            var ts = new Date().toUTCString();
-            tx.executeSql("INSERT INTO readposts(postid, added_on) VALUES (?,?)", [postid, ts], app.onSuccess, app.onError);
         });
     },
 
@@ -532,11 +526,6 @@ var app = {
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
 		
-        document.getElementById('btnAddItem').addEventListener('click', function () {
-            var text = document.getElementById('lblTodoText').value;
-            app.addRead(text);
-        });
-		
         document.getElementById('renderDb').addEventListener('click', this.onSuccess);
 		document.getElementById('btnOpenDb').addEventListener('click', this.openDatabase);
         document.getElementById('btnCreateTable').addEventListener('click', this.createTable);
@@ -730,7 +719,7 @@ single: function() {
                 });
                dfd.resolve(data);
                // Add to read
-               app.addRead(postid);
+               app.checkIfReadAndAdd(postid);
                 
            },
            error: function(data){
