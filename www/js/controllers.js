@@ -256,7 +256,7 @@ angular.module('eter.controllers', [])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
         
-        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
+        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&apikey=ErtYnDsKATCzmuf6');
         
         response.success(function(data, status, headers, config) {  
             if (data.category.post_count == 0) {
