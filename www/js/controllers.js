@@ -194,6 +194,9 @@ angular.module('eter.controllers', [])
         var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
         response.success(function(data) {
                 $scope.posts = data.posts;
+                //http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999
+            
+            
 				/*app.db.transaction(function (tx) {
                     tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
                         var row;
@@ -256,7 +259,7 @@ angular.module('eter.controllers', [])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
         
-        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
+        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&apikey=ErtYnDsKATCzmuf6');
         
         response.success(function(data, status, headers, config) {  
             if (data.category.post_count == 0) {
