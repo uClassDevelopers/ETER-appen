@@ -24,10 +24,25 @@
 <ion-view view-title="Guider" ng-controller="GuidesCtrl">        
     <ion-nav-buttons side="left">
         <button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
-    </ion-nav-buttons>
+    </ion-nav-buttons>   
   
     <nav id="menu" scroll="false">
         <ion-list style="z-index: -2;">
+            <!--<div class="bar bar-header item-input-inset">
+              <label class="item-input-wrapper">
+                <i class="icon ion-ios-search placeholder-icon"></i>
+                <input type="search" placeholder="Skriv in sökord">
+              </label>
+              <input id="#btn-search" type="submit" class="button button-clear" value="SÖK">
+            </div>-->
+            <form ng-submit="search()">
+                <div class="item item-input-inset">
+                    <label class="item-input-wrapper" id="search-input">
+                        <i class="icon ion-search placeholder-icon"></i>
+                        <input type="text" placeholder="SÖK" ng-model="searchKey">
+                    </label>
+                </div>
+            </form>
             <ion-item ng-click="latest()">Senaste</ion-item>
             <ion-item  ng-click="loadposts('apptips')">Apptips</ion-item>
             <ion-item id="tgl-categories" ng-click="listCate()">Kategorier</ion-item>

@@ -252,18 +252,37 @@ angular.module('eter.controllers', [])
         });
     };
     
+    $scope.searchKey = "";
+    $scope.search = function () {
+        // $http.defaults.useXDomain = true;
+        $scope.loading = true;
+        
+        var response = $http.get('http://eter.rudbeck.info/api/get_search_results/?search='+ $scope.searchKey +'&apikey=ErtYnDsKATCzmuf6');
+        
+        response.success(function(data, status, headers, config) {  
+            $('#start-data').html('');
+            $scope.posts = data.posts;
+            
+            $scope.loading = false;
+        });
+        
+        response.error(function(data, status, headers, config) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+    };
+    
     $scope.$on("$ionicView.enter", function() {
-        $( "#tgl-categories" ).unbind().click(function() {
-          $( ".cate" ).toggle();
-        });
-        $( "#tgl-tags" ).unbind().click(function() {
-          $( ".tags" ).toggle();
-        });
-        $scope.latest();
-        //app.guides();
+            $( "#tgl-categories" ).unbind().click(function() {
+                $( ".cate" ).toggle();
+            });
+            $( "#tgl-tags" ).unbind().click(function() {
+              $( ".tags" ).toggle();
+            });
+            $scope.latest();
     });
 })
-
 .controller('GuidesDetailCtrl', function($scope, $http) {
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
