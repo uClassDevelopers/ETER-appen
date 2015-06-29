@@ -234,10 +234,16 @@ angular.module('eter.controllers', [])
     $scope.listCate = function() {
         var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
         response.success(function(data) {
-                $scope.cateLoader = data.list_taxonomy;
-      
-                $scope.loading = false;
-                fixCordovaOutboundLinks();
+            var taxonomyArr = [];    
+            $.each(data.list_taxonomy, function(index, obj) { 
+                if(parseInt(obj.post_count) != 0) {
+                    taxonomyArr.push(data.list_taxonomy[index]);
+                }
+            });
+            $scope.cateLoader = taxonomyArr;
+            $scope.loading = false;
+                
+            fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -254,7 +260,7 @@ angular.module('eter.controllers', [])
         
         response.success(function(data, status, headers, config) {  
             if (data.category.post_count == 0) {
-                $('#start-data').html('<h2 style="text-align: center;">404 <br> Inga guider i denna kategori</h2>');
+                $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
                 $scope.posts = 0;
             } else {
                 $('#start-data').html('');
@@ -270,18 +276,37 @@ angular.module('eter.controllers', [])
         });
     };
     
+    $scope.searchKey = "";
+    $scope.search = function () {
+        // $http.defaults.useXDomain = true;
+        $scope.loading = true;
+        
+        var response = $http.get('http://eter.rudbeck.info/api/get_search_results/?search='+ $scope.searchKey +'&apikey=ErtYnDsKATCzmuf6');
+        
+        response.success(function(data, status, headers, config) {  
+            $('#start-data').html('');
+            $scope.posts = data.posts;
+            
+            $scope.loading = false;
+        });
+        
+        response.error(function(data, status, headers, config) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+    };
+    
     $scope.$on("$ionicView.enter", function() {
-        $( "#tgl-categories" ).unbind().click(function() {
-          $( ".cate" ).toggle();
-        });
-        $( "#tgl-tags" ).unbind().click(function() {
-          $( ".tags" ).toggle();
-        });
-        $scope.latest();
-        //app.guides();
+            $( "#tgl-categories" ).unbind().click(function() {
+                $( ".cate" ).toggle();
+            });
+            $( "#tgl-tags" ).unbind().click(function() {
+              $( ".tags" ).toggle();
+            });
+            $scope.latest();
     });
 })
-
 .controller('GuidesDetailCtrl', function($scope, $http) {
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
