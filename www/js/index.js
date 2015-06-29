@@ -691,7 +691,7 @@ single: function() {
                 $('#single-data').html(blogData);
 
                 $('#single-data').trigger('create');
-
+               
                 $(".youtube-player").css('display', 'none');
                 $('iframe').contents().find('a').click(function(event) {
                     event.preventDefault();
@@ -728,33 +728,6 @@ single: function() {
                console.log(data);
             }
         });
-        
-        // like ajax post
-        function vote(pid) {
-            alert("like! vote fired off");
-            alert("pid: " + pid);
-            $.ajax({
-                type: 'POST',
-                data: { action:'wti_like_post_process_vote', task:'like', postid: pid, nonce: 'e707a027a7'},
-                url: 'http://eter.rudbeck.info/wp-admin/admin-ajax.php',
-                success: function(data){            
-                    alert("msg: " + data.msg + ", like: " + data.like);
-                    fixCordovaOutboundLinks();
-                },
-                error: function(){
-                    function showAlert() {
-                        navigator.notification.alert(
-                            'Något fel inträffade, prova igen.',  // message
-                            alertDismissed,         // callback
-                            'ETER',            // title
-                            'OK'                  // buttonName
-                        );
-                    }
-                    showAlert();
-                }
-            });
-            return false;
-        }
         
         return dfd.promise();      
     }

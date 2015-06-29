@@ -23,9 +23,7 @@
 <ion-view view-title="" ng-controller="GuidesDetailCtrl">
   <ion-content>
 	<div id="single-wrapper" class="single-wrapper">        
-        <div id="single-data"></div>
-        <script id="single-template" type="text/x-handlebars-template">
-            <div id="post_{{post.id}}" class="list card">
+            <div id="post_" class="list card">
 
               <div class="item item-avatar">
                 <img src="http://ionicframework.com/img/docs/mcfly.jpg">
@@ -34,14 +32,12 @@
               </div>
 
               <div class="item item-body">
-                <p>
-                    {{{post.content}}}
-                </p>
+                <div data-ng-bind-html="post.content"></div>
                 <div id="anks"></div>
               </div>
 
               <div class="item tabs tabs-secondary tabs-icon-left">
-                <a class="tab-item" href="#" onclick="vote({{ post.id }})">
+                <a class="tab-item" ng-click="like(post.id)">
                   <i class="icon ion-thumbsup"></i>
                   Gilla
                 </a>
@@ -50,9 +46,8 @@
                   <i class="icon ion-share"></i>
                   Dela
                 </a>
-                </div>
             </div>
-        </script>
+        </div>
 	</div>
   </ion-content>
 </ion-view>
