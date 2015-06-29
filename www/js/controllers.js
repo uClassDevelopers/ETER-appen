@@ -210,10 +210,16 @@ angular.module('eter.controllers', [])
     $scope.listCate = function() {
         var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
         response.success(function(data) {
-                $scope.cateLoader = data.list_taxonomy;
-      
-                $scope.loading = false;
-                fixCordovaOutboundLinks();
+            var taxonomyArr = [];    
+            $.each(data.list_taxonomy, function(index, obj) { 
+                if(parseInt(obj.post_count) != 0) {
+                    taxonomyArr.push(data.list_taxonomy[index]);
+                }
+            });
+            $scope.cateLoader = taxonomyArr;
+            $scope.loading = false;
+                
+            fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');

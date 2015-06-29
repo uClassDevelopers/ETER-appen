@@ -176,17 +176,14 @@ ion-slide div img {
     top: 0;
     bottom: 0;
     right: 0;
-    z-index: 0;
+    z-index: -2;
     width: 256px;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
     display: none;
     border-right: 1px solid #DDD;
 }
 
 .slideout-panel {
     position:relative;
-    z-index: 1;
 }
 
 .slideout-open,
@@ -200,7 +197,7 @@ ion-slide div img {
 }
 #menu {
     margin-top: 40px;
-    z-index: 999;
+    background-color: #fff;
 }
 .cate  {
     display: none;

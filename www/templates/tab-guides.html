@@ -25,8 +25,8 @@
     <ion-nav-buttons side="left">
         <button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
     </ion-nav-buttons>
-    
-    <nav id="menu">
+  
+    <nav id="menu" scroll="false">
         <ion-list style="z-index: -2;">
             <ion-item ng-click="latest()">Senaste</ion-item>
             <ion-item  ng-click="loadposts('apptips')">Apptips</ion-item>
@@ -39,19 +39,19 @@
             <ion-item>Historik</ion-item>
         </ion-list>
     </nav>
-  <ion-content>
+    <ion-content>
     <main id="panel"> 
         <div id="start-data"></div>
-        <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
-        <ion-list>
+        <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>     
+        <ion-list id="abc">
             <ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item item-thumbnail-left ng-binding" ng-click="goToGuide({{g.id}})">
                 <img src="img/cover.jpg">
                 <a data-transition="slide" ><h3>{{g.title}}</h3></a>
                 <p style="float: right;">läst</p>
                 <p>Skriven: {{g.date}}</p>
                 <p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p>
-            </ion-item>
-        </ion-list>   
+            </ion-item>    
+        </ion-list>
     </main>
   </ion-content>
 </ion-view>
