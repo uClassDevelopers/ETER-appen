@@ -188,44 +188,18 @@ angular.module('eter.controllers', [])
         // push to side
     });
     
+	$scope.goToGuide = function(id) {
+		location.href="#/tab/guides/"+id;
+	}
     $scope.posts = [];
+
     $scope.latest = function() {
         $scope.loading = true;
         var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
         response.success(function(data) {
-                $scope.posts = data.posts;
-                //http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999
-            
-            
-				/*app.db.transaction(function (tx) {
-                    tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
-                        var row;
-                        var rowlength = rs.rows.length;
-						$scope.posts = [];
-                        if(rowlength > 0) {
-							$.each(data.posts, function(index, post) { // loop through posts
-								for (var i = 0; i < rowlength; i++) { // loop through read db
-									row = rs.rows.item(i);
-									if(parseInt(row.postid) == parseInt(post.id)) {
-										return true;
-									} else {
-										if(i == (rowlength-1)) {
-											$scope.posts.push(data.posts[index]);
-										}
-									}
-								}
-							});
-							//alert(JSON.stringify($scope.posts, null, 4));
-                        } else {
-                            $scope.posts = data.posts;
-                        }
-                    }, app.onError);
-                });*/
-                $scope.goToGuide = function(id) {
-                    location.href="#/tab/guides/"+id;
-                }
-                $scope.loading = false;
-                fixCordovaOutboundLinks();
+			$scope.posts = data.posts;
+			$scope.loading = false;
+			fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -234,6 +208,107 @@ angular.module('eter.controllers', [])
         });
         
     };
+	
+	var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option)
+	$scope.loadRead = function() {
+		$scope.loading = true;
+		var read = [];
+        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
+        response.success(function(data) {
+			app.db.transaction(function (tx) {
+				tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+					var row;
+					var rowlength = rs.rows.length;
+					if(rowlength > 0) {
+						$.each(data.posts, function(index, post) { // loop through posts
+							for (var i = 0; i < rowlength; i++) { // loop through read db
+								row = rs.rows.item(i);
+
+								if(parseInt(row.postid) == parseInt(post.id)) {
+									read.push(data.posts[index]);
+									break;
+								}
+							}
+						});
+						//alert(JSON.stringify(read, null, 4));
+						$scope.posts = read;
+					}
+					
+					l_index++;
+					if(l_index < 2) { // make sure function runs twice and not get overwritten by other posts
+						$scope.loadRead();
+					} else {
+						$scope.restoreLoadIndex();
+					}
+					
+					$scope.loading = false;
+					fixCordovaOutboundLinks();
+				}, app.onError);
+			});
+        }).
+        error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+	};
+	var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option)
+	$scope.loadNotRead = function() {
+		$scope.loading = true;
+		var notRead = [];
+        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
+        response.success(function(data) {
+				app.db.transaction(function (tx) {
+                    tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+                        var row;
+                        var rowlength = rs.rows.length;
+                        if(rowlength > 0) {
+							$.each(data.posts, function(index, post) { // loop through posts
+								for (var i = 0; i < rowlength; i++) { // loop through read db
+									row = rs.rows.item(i);
+									
+									if(parseInt(row.postid) == parseInt(post.id)) {
+										return true;
+									} else {
+										if(i == (rowlength-1)) {
+											notRead.push(data.posts[index]);
+										}
+									}
+								}
+							});
+							//alert(JSON.stringify($scope.posts, null, 4));
+							$scope.posts = notRead;
+                        } else {
+                            $scope.posts = data.posts;
+                        }
+						
+						l_index2++;
+						if(l_index2 < 2) { // make sure function runs twice and not get overwritten by other posts
+							$scope.loadNotRead();
+						} else {
+							$scope.restoreLoadIndex2();
+						}
+						
+						$scope.loading = false;
+                		fixCordovaOutboundLinks();
+                    }, app.onError);
+                });
+        }).
+        error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+        });
+	};
+	
+	// restore the loading indexes to be able to run the functions twice again
+	$scope.restoreLoadIndex = function() {
+		l_index = 0;
+	}
+	$scope.restoreLoadIndex2 = function() {
+		l_index2 = 0;
+	}
+	
     $scope.listCate = function() {
         var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
         response.success(function(data) {
