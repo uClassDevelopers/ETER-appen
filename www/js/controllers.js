@@ -312,6 +312,7 @@ angular.module('eter.controllers', [])
 })
 .controller('GuidesDetailCtrl', ['$scope','$http', '$stateParams', function($scope, $http, $stateParams) { 
    $scope.loadpost = function() {
+        $scope.loading = true;
         console.log("$stateParams",$stateParams);
         
         var response = $http.get('http://eter.rudbeck.info/?p=' + $stateParams.pid + '&json=1&apikey=ErtYnDsKATCzmuf6');
@@ -319,9 +320,18 @@ angular.module('eter.controllers', [])
         response.success(function(data, status, headers, config) {  
             console.log(data);
             $('#start-data').html('');
-            
             $scope.post = data.post;
+            $http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
+                $('.action-like').html("");
+                $('#num_likes_'+$stateParams.pid).html(" ("+ data.num_votes+")");
+                $("#like-icn_"+pid).css("color", "#387EF5"); 
+            })
+            response.error(function(data, status, headers, config) {
+            alert('Något gick fel');
+            console.log(data);
+        });
             $scope.loading = false;
+            fixCordovaOutboundLinks();
         });
         
         response.error(function(data, status, headers, config) {
@@ -332,67 +342,20 @@ angular.module('eter.controllers', [])
     };
     $scope.like = function (pid) {
         id = parseInt(pid);
-        alert('run ' + id);
-            var data = $.param({
-                json: JSON.stringify({
-                    action:'wti_like_post_process_vote', task:'like', postid: id, nonce: 'e707a027a7' 
-                })
-            });
-            $http.post("http://eter.rudbeck.info/wp-admin/admin-ajax.php", data).success(function(data, status) {
-                alert('Liked');
+            $http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+                $('.action-like').html("");
+                $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+                $("#like-icn_"+pid).css("color", "#387EF5"); 
             })
             response.error(function(data, status, headers, config) {
-            alert('AAA');
+            alert('Något gick fel när du skulle gilla');
             console.log(data);
         });
     };
     $scope.$on("$ionicView.beforeEnter", function() {
-         // like ajax post
-        /*function vote(pid) {
-            console.log('ee');
-            alert("like! vote fired off");
-            alert("pid: " + pid);
-            $.ajax({
-                type: 'POST',
-                data: { action:'wti_like_post_process_vote', task:'like', postid: pid, nonce: 'e707a027a7'},
-                url: 'http://eter.rudbeck.info/wp-admin/admin-ajax.php',
-                success: function(data){            
-                    alert("msg: " + data.msg + ", like: " + data.like);
-                    fixCordovaOutboundLinks();
-                },
-                error: function(){
-                    function showAlert() {
-                        navigator.notification.alert(
-                            'Något fel inträffade, prova igen.',  // message
-                            alertDismissed,         // callback
-                            'ETER',            // title
-                            'OK'                  // buttonName
-                        );
-                    }
-                    showAlert();
-                }
-            });
-            return false;
-        }*/
-        //app.single();
         $scope.loadpost();
         console.log("$stateParams",$stateParams);
-
-        
     });
-    /*$scope.vote = function(pid) {
-        alert("like! vote fired off");
-        alert("pid: " + pid);
-        $http.post('http://eter.rudbeck.info/wp-admin/admin-ajax.php', { action:'wti_like_post_process_vote', task:'like', postid: pid, nonce: 'e707a027a7'}).
-        success(function(data) {
-            
-        }).
-        error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-        console.log(data);
-        });
-    }*/
 }])
 
 
