@@ -60,8 +60,7 @@
         <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>     
         <ion-list id="abc">
 			<!--<h2 class="noPosts" ng-show="!posts.length">Inga guider finns</h2>-->
-            <ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item item-thumbnail-left ng-binding" ng-click="goToGuide({{g.id}})">
-                <img src="img/cover.jpg">
+            <ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}})">
                 <a data-transition="slide" ><h3>{{g.title}}</h3></a>
                 <p style="float: right;">{{ g.read }}</p>
                 <p>Skriven: {{g.date}}</p>

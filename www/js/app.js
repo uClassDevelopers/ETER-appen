@@ -85,7 +85,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
       }
     })
     .state('tab.guides-detail', {
-      url: '/guides/:guideId',
+      url: '/guides/:pid',
       views: {
         'tab-guides': {
           templateUrl: 'templates/guides-detail.html',
