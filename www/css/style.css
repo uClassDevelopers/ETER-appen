@@ -161,6 +161,10 @@ ion-slide div img {
 }
 /* tab guider */
 
+.noPosts {
+	text-align:center;
+	margin-top: 20px;
+}
 .alignleft {
     float: left;
     margin: 5px 20px 20px 0px;

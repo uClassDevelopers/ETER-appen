@@ -29,31 +29,30 @@
         </ion-slide>
       </ion-slide-box>
       <div id="start">
-        <div id="top-boxes">
-            <div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData">
-                <a href="{{obj.on_link}}">	
-                    <p class="box-widget-title bold">{{obj.title}}</p>
-                    <p class="box-image-container">
-                        <img class="box-image" src="{{obj.image_url}}">
-                    </p>
-                    <p class="box-widget-title mini">{{obj.content}}</p>
-                </a>
-            </div>
-        </div>
-        <div id="row-two-boxes">
-            <div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData">
-                <a href="{{obj.on_link}}">	
-                    <p class="box-widget-title bold">{{obj.title}}</p>
-                    <p class="box-image-container">
-                        <img class="box-image" src="{{obj.image_url}}">
-                    </p>
-                    <p class="box-widget-title mini">{{obj.content}}</p>
-                </a>
-            </div> 
-        </div>   
-        </div>
-          
-          <!-- CONSOLE START -->
+			<div id="top-boxes">
+				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData">
+					<a href="{{obj.on_link}}">	
+						<p class="box-widget-title bold">{{obj.title}}</p>
+						<p class="box-image-container">
+							<img class="box-image" src="{{obj.image_url}}">
+						</p>
+						<p class="box-widget-title mini">{{obj.content}}</p>
+					</a>
+				</div>
+			</div>
+			<div id="row-two-boxes">
+				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData">
+					<a href="{{obj.on_link}}">	
+						<p class="box-widget-title bold">{{obj.title}}</p>
+						<p class="box-image-container">
+							<img class="box-image" src="{{obj.image_url}}">
+						</p>
+						<p class="box-widget-title mini">{{obj.content}}</p>
+					</a>
+				</div> 
+			</div>   
+       </div>
+	    <!-- CONSOLE START -->
             <div class="bajs" style="display:;">
             <style>
         #status {
@@ -86,6 +85,5 @@
 	    <section id="status" class="ok">ready</section>
         </div>
             <!-- CONSOLE END -->
-      </div>
   </ion-content>
 </ion-view>
