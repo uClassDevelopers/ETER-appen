@@ -30,8 +30,8 @@
       </ion-slide-box>
       <div id="start">
 			<div id="top-boxes">
-				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData">
-					<a href="{{obj.on_link}}">	
+				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData" ng-click="goToGuideTopRow({{obj.postid}})">
+					<a href="#" ng-click="goToLinkTopRow(obj.on_link)">	
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
 							<img class="box-image" src="{{obj.image_url}}">
@@ -41,8 +41,8 @@
 				</div>
 			</div>
 			<div id="row-two-boxes">
-				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData">
-					<a href="{{obj.on_link}}">	
+				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData" ng-click="goToGuideBottomRow({{obj.postid}})">
+					<a href="#" ng-click="goToLinkBottomRow(obj.on_link)">	
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
 							<img class="box-image" src="{{obj.image_url}}">
