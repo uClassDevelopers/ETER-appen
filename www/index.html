@@ -13,6 +13,7 @@
     -->
 
     <!-- ionic/angularjs js -->
+    <script src="js/jquery-1.11.3.min.js"></script>
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
@@ -24,9 +25,9 @@
     <script src="js/services.js"></script>
     <script src="js/handlebars-v3.0.3.js"></script>
     <script src="js/jquery.circle-diagram.js"></script>
-    <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/index.js"></script>
     <script src="js/angular-sanitize.js"></script>
+    <script src="js/slideout.min.js"></script>
       
     <script type="text/javascript">
     $(document).ready( function() { 
@@ -99,65 +100,6 @@
                 return context; // moment plugin not available. return data as is.
             };
         }); 
-    </script>
-
-    <script src="js/slideout.min.js"></script>
-    <script>
-    var slideout = new Slideout({
-        'panel': document.getElementById('panel'),
-        'menu': document.getElementById('menu'),
-        'padding': 256,
-        'tolerance': 70
-    });
-    document.querySelector('.toggle-button').addEventListener('click', function() {
-        slideout.toggle();
-    });
-    </script>
-    <script>
-    $('#supportForm').submit(function(){
-        alert('Pushed save');
-        var postData = $(this).serialize();
-        $.ajax({
-            type: 'POST',
-            data: postData,
-            url: 'http://eter.rudbeck.info/support/#contact-form-425',
-            success: function(data){            
-                function alertDismissed() {
-                // reload
-                    location.reload();
-                }
-                // Show a custom alertDismissed
-                function showAlert() {
-                    navigator.notification.alert(
-                        'Tack för dina synpunkter!',  // message
-                        alertDismissed,         // callback
-                        'ETER Support',            // title
-                        'OK'                  // buttonName
-                    );
-                }
-                showAlert();
-
-            },
-            error: function(){
-                function alertDismissed() {
-                // do something
-                    location.reload();
-                }
-                // Show a custom alertDismissed
-                //
-                function showAlert() {
-                    navigator.notification.alert(
-                        'Något fel inträffade, prova igen.',  // message
-                        alertDismissed,         // callback
-                        'ETER Support',            // title
-                        'OK'                  // buttonName
-                    );
-                }
-                showAlert();
-            }
-        });
-        return false;
-    });
     </script>
     <!-- Get the jQuery functions -->
     <script>app.initialize();</script> 

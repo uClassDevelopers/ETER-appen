@@ -390,14 +390,51 @@ angular.module('eter.controllers', [])
         $scope.loading = true;
         console.log("$stateParams",$stateParams);
         
+       //First request that fetch posts
         var response = $http.get('http://eter.rudbeck.info/?p=' + $stateParams.pid + '&json=1&apikey=ErtYnDsKATCzmuf6');
         
         response.success(function(data, status, headers, config) {  
             console.log(data);
             $('#start-data').html('');
+            
+            //The scope for the post
             $scope.post = data.post;
+            //second request that fetches number of likes
             $http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
-                $('.action-like').html("");
+            
+           var allElements = document.getElementsByTagName('a');
+           for (var i = 0, n = allElements.length; i < n; i++) {
+               var url = allElements[i].getAttribute('href');
+               //console.log('el '+allElements[i].getAttribute('href'));
+               if(url != null) {
+                   if(url.startsWith("http")) {
+                       
+                      console.log("el " + url);
+                      allElements[i].innerHTML= ".....";
+                      allElements[i].removeAttribute("href");
+                       
+                      allElements[i].onclick = function() {
+                        var ref = window.open(url, '_blank', 'location=yes');
+                      };
+                   }
+               }
+           }
+                /*var url = angular.element(document.querySelectorAll("[href]"));
+                console.log('url '+url);
+                alert(url);
+                
+                $('a').each(function() { 
+                    alert('run');
+                    var url = ($('a').attr('href')); 
+                    alert(url);
+                    if (url.indexOf('http') == 0) {
+                        $(this).css('text-decoration', 'none');
+                        $(this).attr('href', '#' );
+                        $(this).click(function() {
+                            var ref = window.open(url, '_blank', 'location=yes');             
+                        });       
+                    }
+                });*/
                 $('#num_likes_'+$stateParams.pid).html(" ("+ data.num_votes+")");
                 $("#like-icn_"+pid).css("color", "#387EF5"); 
             })
@@ -406,9 +443,8 @@ angular.module('eter.controllers', [])
             console.log(data);
         });
             $scope.loading = false;
-            fixCordovaOutboundLinks();
+            
         });
-        
         response.error(function(data, status, headers, config) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
