@@ -44,32 +44,10 @@ angular.module('eter.controllers', [])
          app.start();
     });
     $scope.goToGuide = function(id) {
-        location.href="#/tab/start/"+id;
+		if(typeof id == "number") {
+			location.href="#/tab/guides/"+id;
+		}
     }
-    
-    // gets dynamic data for the bottom or top row on the start page
-    /*$scope.get_dyn_data = function(url, row) { // params: api url and topData/bottomData
-        alert('get_dyn_data runs for ' + row);
-        $http.get(url).
-            success(function(data) {
-                alert("http success!");
-                if(row == 'topData') {
-                    firstPageContent.topData.length = 0;
-                } else if(row == 'bottomData') {
-                    firstPageContent.bottomData.length = 0;
-                }
-                if(url == "http://eter.rudbeck.info/?json=get_recent_posts&apikey=ErtYnDsKATCzmuf6&count=3") { // the latest guides 
-                    //alert('latest guides');
-                } else if(url == "http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-all-courses=1&parent=43") { // the latest courses
-                    //alert('latest courses');
-                }
-            }).
-            error(function(data) {
-                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
-                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                console.log(data);
-            });
-    }*/
     
     // GET TAB-START API
     $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&startpage=1').
@@ -434,6 +412,26 @@ angular.module('eter.controllers', [])
 }])
 .controller('CoursesCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
     $scope.loading = true;
+	
+	$scope.courseDropdown = function(id, e) {
+		//e.currentTarget.innerHTML = id;
+		var eid = "#e" + id; // id of dropdown element
+		var ccid = "#cc" + id; // id of course container
+		var cid = "#c" + id; // if of clicked element
+		$(eid).slideToggle();
+		var otherDropdowns = ".dropdown1:not(" + eid + ")";
+        $(otherDropdowns).slideUp();
+		// toggle highlighting
+		$(ccid).toggleClass('courseHighlight');
+		$(".courseContainer").not(ccid).removeClass('courseHighlight');
+		/*$(cid).toggleClass('courseHighlight');
+		$(".course").not(cid).removeClass('courseHighlight');
+		$(eid).toggleClass('courseHighlight');
+		$(".dropdown1").not(eid).removeClass('courseHighlight');
+		$(eid).children("div").toggleClass('courseHighlight');
+		$(".dropdown1").children("div").not(eid).children("div").removeClass('courseHighlight');*/
+	}
+	
     $scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('course-viewer').update();
     }
@@ -456,13 +454,6 @@ angular.module('eter.controllers', [])
         $scope.goToGuide = function(id) {
             location.href="#/tab/courses/"+id;
         }
-        $(".course").unbind('click').click(function() {
-            var id = $(this).attr('id').substring(1);
-            var eid = "#e" + id;
-            $(eid).slideToggle();
-            /*var otherElementIds = ".dropdown1:not(" + eid + ")";
-            $(otherElementIds).slideUp();*/
-        });
         $scope.loading = false;
         //fixCordovaOutboundLinks();
     }).
