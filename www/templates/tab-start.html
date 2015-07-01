@@ -30,8 +30,8 @@
       </ion-slide-box>
       <div id="start">
 			<div id="top-boxes">
-				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData" ng-click="goToGuide(obj.postid)">
-					<a href="#">	
+				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData">
+					<a href="{{obj.on_link}}">	
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
 							<img class="box-image" src="{{obj.image_url}}">
@@ -41,8 +41,8 @@
 				</div>
 			</div>
 			<div id="row-two-boxes">
-				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData" ng-click="goToGuide(obj.postid)">
-					<a href="#">	
+				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData">
+					<a href="{{obj.on_link}}">	
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
 							<img class="box-image" src="{{obj.image_url}}">
@@ -52,5 +52,38 @@
 				</div> 
 			</div>   
        </div>
+	    <!-- CONSOLE START -->
+            <div class="bajs" style="display:;">
+            <style>
+        #status {
+            padding: 5px;
+            color: #fff;
+            background: #ccc;
+        }
+         
+        #status.error {
+            background: #c00;
+        }
+         
+        #status.ok {
+            background: #0c0;
+        }
+
+        label {
+            float: left;
+            display: block;
+            width: 125px;
+            line-height: 32px;
+        }          
+        </style>
+            </ul>
+            <p id="lblTxInfo"></p>
+            <p id="lblInfo"></p>
+            <p id="lblDBInfo"></p>
+            <p id="lblDBError"></p>
+            <p id="console"></p>
+	    <section id="status" class="ok">ready</section>
+        </div>
+            <!-- CONSOLE END -->
   </ion-content>
 </ion-view>
