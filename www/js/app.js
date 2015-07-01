@@ -66,7 +66,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
     }
   })
   .state('tab.start-detail', {
-      url: '/start/:startId',
+      url: '/start/:pid',
       views: {
         'tab-start': {
           templateUrl: 'templates/start-detail.html',
@@ -104,7 +104,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
     }
   })
   .state('tab.courses-detail', {
-      url: '/courses/:courseId',
+      url: '/courses/:pid',
       views: {
         'tab-courses': {
           templateUrl: 'templates/courses-detail.html',

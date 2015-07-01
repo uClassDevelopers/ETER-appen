@@ -43,11 +43,6 @@ angular.module('eter.controllers', [])
     $scope.$on("$ionicView.beforeEnter", function() {
          app.start();
     });
-    $scope.goToGuide = function(id) {
-		if(typeof id == "number") {
-			location.href="#/tab/guides/"+id;
-		}
-    }
     
     // GET TAB-START API
     $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&startpage=1').
@@ -77,21 +72,42 @@ angular.module('eter.controllers', [])
                     }
                 }
             });
-        
+        	
+			// These functions will only work if static data is choosen, if dynamic is choosen then it will be an empty function
+			$scope.goToLinkTopRow = function(url) {
+				alert(url);
+				var ref = window.open(url, '_blank', 'location=yes');
+			};
+			$scope.goToLinkBottomRow = function(url) {
+				alert(url);
+				var ref = window.open(url, '_blank', 'location=yes');
+			};
+		
+			// Declaring empty functions. They will be activated if the latest guides have been choosen
+			$scope.goToGuideTopRow = function() {};
+			$scope.goToGuideBottomRow = function() {};
+		
             // Add dynamic data if is_dyn = 1 for top row
             if(data.startpage[0].is_dyn == "1") {
                 $http.get(data.startpage[0].dyn_link).
                 success(function(data) {
+					$scope.goToLinkTopRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides 
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste guider", on_link: '#guides/' + post.id });
+                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '#guides/' + post.id });
                         });
+						$scope.goToGuideTopRow = function(id) {
+							if(typeof id == "number") {
+								location.href="#/tab/guides/"+id;
+							}
+						};
                     } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
                         $.each(data.list_all_courses, function(index, course) {
                             if(index < 3) {
-                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste kurser', on_link: '' });
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste Kurser', on_link: '' });
                             }
                         });
+						$scope.goToGuideTopRow = function() {}; 
                     }
                 }).
                 error(function(data) {
@@ -106,17 +122,24 @@ angular.module('eter.controllers', [])
             if(data.startpage[3].is_dyn == "1") {
                 $http.get(data.startpage[3].dyn_link).
                 success(function(data) {
+					$scope.goToLinkBottomRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides 
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "En Guide", on_link: '#guides/' + post.id });
+                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '#guides/' + post.id });
                         });
+						$scope.goToGuideBottomRow = function(id) {
+							if(typeof id == "number") {
+								location.href="#/tab/guides/"+id;
+							}
+						};
                     } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
                         
                         $.each(data.list_all_courses.reverse() , function(index, course) {
                             if(index < 3) {
-                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste kurser', on_link: '' });
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste Kurser', on_link: '' });
                             }
                         });
+						$scope.goToGuideBottomRow = function() {};
                     }
                 }).
                 error(function(data) {
@@ -203,6 +226,7 @@ angular.module('eter.controllers', [])
 								row = rs.rows.item(i);
 
 								if(parseInt(row.postid) == parseInt(post.id)) {
+									data.posts[index].read = "Läst: " + row.added_on;
 									read.push(data.posts[index]);
 									break;
 								}

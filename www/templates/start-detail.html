@@ -20,42 +20,33 @@
  * under the License.
  */
 -->
-<ion-view view-title="">
+<ion-view view-title="" ng-controller="GuidesDetailCtrl">
   <ion-content>
 	<div id="single-wrapper" class="single-wrapper">        
-        <div id="single-data"></div>
-        <script id="single-template" type="text/x-handlebars-template">
-            <div id="post_{{post.id}}" class="list card">
+            <div id="post_" class="list card">
 
-              <div class="item item-avatar">
-                <img src="http://ionicframework.com/img/docs/mcfly.jpg">
+              <div class="item">
                 <h2>{{post.title}}</h2>
                 <p>{{post.date}}</p>
               </div>
 
               <div class="item item-body">
-                <p>
-                    {{{post.content}}}
-                </p>
+                <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
+                <div data-ng-bind-html="post.content"></div>
                 <div id="anks"></div>
-                <p>
-                  <a href="#" class="subdued">1 Like</a>
-                  <a href="#" class="subdued">5 Comments</a>
-                </p>
               </div>
 
               <div class="item tabs tabs-secondary tabs-icon-left">
-                <a class="tab-item" href="#">
-                  <i class="icon ion-thumbsup"></i>
-                  Like
+                <a class="tab-item" ng-click="like(post.id)">
+                  <i id="like-icn_{{post.id}}" class="icon ion-thumbsup"></i> Gilla <span id="num_likes_{{post.id}}"></span>
                 </a>
+                <div id="start-data"></div>
                 <a class="tab-item" href="#" onclick="window.plugins.socialsharing.share('Kolla in denna guiden: {{post.title}}, på ETER-siten', 'ETER GUIDE: {{post.title}}', null, 'http://eter.rudbeck.info/')">
                   <i class="icon ion-share"></i>
-                  Share
+                  Dela
                 </a>
-                </div>
             </div>
-        </script>
+        </div>
 	</div>
   </ion-content>
 </ion-view>
