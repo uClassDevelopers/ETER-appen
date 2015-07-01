@@ -221,9 +221,12 @@ ion-slide div img {
 .dropdown1 {
     display:none;
 }
-.dropdown1 div {
-    background-color: aliceblue
+.elementList {
+    border: 2px solid #e4e4e4;
 }
 .dropdown1:last-child {
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 } 
+.courseHighlight {
+	border: 10px solid #A4D3EE;
+}

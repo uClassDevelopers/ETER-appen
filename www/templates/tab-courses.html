@@ -40,18 +40,23 @@
       <h1 style="margin-left:12px;">Alla kurser</h1>
       <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
       <div class="list card">
-          <div class="courseContainer" ng-repeat="c in courses">
-                <a href="#" class="item item-icon-left course" id="c{{c.id}}">
+          <div class="courseContainer" ng-repeat="c in courses" id="cc{{c.id}}">
+                <div class="item item-icon-left course" id="c{{c.id}}" ng-click="courseDropdown(c.id, $event)">
                     <i class="icon"></i>
-                    <div style="float:right;" class="c100 p12 small">
-                        <span>95%</span>
-                    </div>
-                    <h3>{{ c.name }}</h3>
+                    <!--<div style="float:right;" class="c100 p12 small">
+						<span><p class="blueText">Kurs</p></span>
+                    </div>-->
+                    <h2>{{ c.name }}</h2>
                     <p>{{ c.desc }}</p>
-                </a>
+                </div>
                 <div class="list list-inset dropdown1" id="e{{c.id}}">
                     <h4>Kursmoment</h4>
-                    <div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }})">{{ el.posttitle }}</div>
+					<div class="elementList">
+						<div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }})">
+							<span class="bold">{{ ($index+1) }}. </span>
+							{{ el.posttitle }}
+						</div>
+					</div>
                 </div>
           </div>
     </div>
