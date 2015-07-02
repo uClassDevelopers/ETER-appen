@@ -72,15 +72,47 @@ angular.module('eter.controllers', [])
                     }
                 }
             });
-        	
+        
+            $scope.loadposts = function(category) {
+                // $http.defaults.useXDomain = true;
+                $scope.loading = true;
+
+                var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&apikey=ErtYnDsKATCzmuf6');
+
+                response.success(function(data, status, headers, config) {  
+                    if (data.category.post_count == 0) {
+                        $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                        $scope.posts = 0;
+                    } else {
+                        $('#start-data').html('');
+                        $scope.posts = data.posts;
+                    }
+                    $scope.loading = false;
+                });
+
+                response.error(function(data, status, headers, config) {
+                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                    console.log(data);
+                });
+            };
+        
 			// These functions will only work if static data is choosen, if dynamic is choosen then it will be an empty function
 			$scope.goToLinkTopRow = function(url) {
-				alert(url);
-				var ref = window.open(url, '_blank', 'location=yes');
+				//alert(url);
+                if(url.indexOf('http') == 0) {
+                    var ref = window.open(url, '_blank', 'location=yes');
+                } else {
+                    location.href=url;
+                }
 			};
 			$scope.goToLinkBottomRow = function(url) {
-				alert(url);
-				var ref = window.open(url, '_blank', 'location=yes');
+				//alert(url);
+				if(url.indexOf('http') == 0) {
+                    var ref = window.open(url, '_blank', 'location=yes');
+                } else {
+                    location.href=url;
+                }
 			};
 		
 			// Declaring empty functions. They will be activated if the latest guides have been choosen
@@ -94,11 +126,11 @@ angular.module('eter.controllers', [])
 					$scope.goToLinkTopRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides 
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '#guides/' + post.id });
+                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '' });
                         });
 						$scope.goToGuideTopRow = function(id) {
 							if(typeof id == "number") {
-								location.href="#/tab/guides/"+id;
+								location.href="#/tab/start/"+id;
 							}
 						};
                     } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
@@ -125,11 +157,11 @@ angular.module('eter.controllers', [])
 					$scope.goToLinkBottomRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides 
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '#guides/' + post.id });
+                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '' });
                         });
 						$scope.goToGuideBottomRow = function(id) {
 							if(typeof id == "number") {
-								location.href="#/tab/guides/"+id;
+								location.href="#/tab/start/"+id;
 							}
 						};
                     } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
@@ -166,13 +198,6 @@ angular.module('eter.controllers', [])
             console.log(data);
         });
 })
-.controller('StartDetailCtrl', function($scope) {
-    $scope.$on("$ionicView.beforeEnter", function() {
-        app.single();
-        fixCordovaOutboundLinks();
-    });
-})
-
 
 .controller('GuidesCtrl', function($scope, $http) {
     $scope.$on("$ionicView.beforeEnter", function() {
