@@ -242,7 +242,7 @@ angular.module('eter.controllers', [])
         var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
         response.success(function(data) {
 			app.db.transaction(function (tx) {
-				tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+				tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
 					var row;
 					var rowlength = rs.rows.length;
 					if(rowlength > 0) {
@@ -443,20 +443,51 @@ angular.module('eter.controllers', [])
         });
     };
     $scope.like = function (pid) {
-        id = parseInt(pid);
-            $http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-                $('.action-like').html("");
-                $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-                $("#like-icn_"+pid).css("color", "#387EF5"); 
-            })
-            response.error(function(data, status, headers, config) {
-            alert('Något gick fel när du skulle gilla');
-            console.log(data);
-        });
+			id = parseInt(pid);
+			app.checkIfLikedAndAdd(pid);
+			app.db.transaction(function (tx) {
+				tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
+					var row;
+                	var rowlength = rs.rows.length;
+					if(rowlength > 0) {
+						for (var i = 0; i < rowlength; i++) {
+                        	row = rs.rows.item(i);
+							if(id == row.postid) {
+								$('#num_likes_'+pid).html("(Redan gillat)");
+								break;
+							} else {
+								if(i == (rowlength-1)) {
+									$http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+										$('.action-like').html("");
+										$('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+										$("#like-icn_"+pid).css("color", "#387EF5"); 
+									})
+									response.error(function(data, status, headers, config) {
+										alert('Något gick fel när du skulle gilla');
+										console.log(data);
+									});
+								}
+							}
+							
+						}
+					} else {
+						$http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+							$('.action-like').html("");
+							$('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+							$("#like-icn_"+pid).css("color", "#387EF5"); 
+						})
+						response.error(function(data, status, headers, config) {
+							alert('Något gick fel när du skulle gilla');
+							console.log(data);
+						});
+					}
+				}, app.onError);
+			});
     };
     $scope.$on("$ionicView.beforeEnter", function() {
         $scope.loadpost();
         console.log("$stateParams",$stateParams);
+		app.checkIfReadAndAdd($stateParams.pid);
     });
 }])
 .controller('CoursesCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
