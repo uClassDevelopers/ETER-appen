@@ -44,7 +44,7 @@
                 </div>
             </form>
             <ion-item ng-click="latest()">Senaste</ion-item>
-            <ion-item  ng-click="loadposts('apptips')">Apptips</ion-item>
+            <!--<ion-item  ng-click="loadposts('apptips')">Apptips</ion-item>-->
             <ion-item id="tgl-categories" ng-click="listCate()">Kategorier</ion-item>
             <ion-list class="cate">
                 <ion-item class="child-list" ng-click="loadposts('{{c.slug}}')" ng-repeat="c in cateLoader">{{c.name}}</ion-item>
@@ -57,6 +57,10 @@
     <ion-content>
     <main id="panel"> 
         <div id="start-data"></div>
+		<!--<ion-refresher
+		pulling-text="Dra för att refresha..."
+		on-refresh="doRefresh()">
+	    </ion-refresher>-->
         <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>     
         <ion-list id="abc">
 			<!--<h2 class="noPosts" ng-show="!posts.length">Inga guider finns</h2>-->
