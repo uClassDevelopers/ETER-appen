@@ -53,32 +53,20 @@
 			</div>   
        </div>
 	    <!-- CONSOLE START -->
-            <div class="bajs" style="display:;">
-            <style>
-        #status {
-            padding: 5px;
-            color: #fff;
-            background: #ccc;
-        }
-         
-        #status.error {
-            background: #c00;
-        }
-         
-        #status.ok {
-            background: #0c0;
-        }
-
-        label {
-            float: left;
-            display: block;
-            width: 125px;
-            line-height: 32px;
-        }          
-        </style>
-            </ul>
+        <div class="bajs" style="display:none;">
+			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(666)">Liked postid 666</a>
+			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(111)">Liked postid 111</a>
             <p id="lblTxInfo"></p>
-            <p id="lblInfo"></p>
+			<p>Read items:</p>
+			<br />
+			<ul>
+            	<p id="lblInfo"></p>
+			</ul>
+			<p>Liked items:</p>
+			<br />
+			<ul>
+				<p id="lblInfo2"></p>
+			</ul>
             <p id="lblDBInfo"></p>
             <p id="lblDBError"></p>
             <p id="console"></p>
