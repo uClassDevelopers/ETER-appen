@@ -120,9 +120,10 @@ var app = {
     },
 
     onSuccess: function (transaction, resultSet) {
-        console.log('Operation completed successfully');
+        console.log('Created read table successfully!');
         document.getElementById("lblTxInfo").innerHTML = 'RowsAffected: ' + resultSet.rowsAffected + '; InsertId: ' + resultSet.insertId;
         app.renderReadItems(transaction);
+		app.renderLikedItems(transaction);
     },
 
     openDatabase: function () {
@@ -135,7 +136,8 @@ var app = {
 
     createTable: function () {
         app.db.transaction(function (tx) {
-            tx.executeSql("CREATE TABLE IF NOT EXISTS readposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER, added_on TEXT)", [],
+            tx.executeSql("CREATE TABLE IF NOT EXISTS readposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER, added_on TEXT)", []);
+			tx.executeSql("CREATE TABLE IF NOT EXISTS likedposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER)", [],
                 app.onSuccess, app.onError);
         });
     },
@@ -179,6 +181,44 @@ var app = {
             }, app.onError);
         });
     },
+	
+	checkIfLikedAndAdd: function (pid) {
+        app.db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
+                var row;
+                var rowlength = rs.rows.length;
+                if(rowlength > 0) {
+                    for (var i = 0; i < rowlength; i++) {
+                        row = rs.rows.item(i);
+                        if(parseInt(row.postid) == parseInt(pid)) {
+                            //alert("break");
+                            break;
+                        }
+                        if(i == (rowlength-1)) {
+                            if(parseInt(row.postid) == parseInt(pid)) {
+                                //alert("break on last index");
+                                break;
+                            } else {
+                                if(pid != "start") {
+                                    app.db.transaction(function (tx) {
+                                        tx.executeSql("INSERT INTO likedposts(postid) VALUES (?)", [pid], app.onSuccess, app.onError);
+                                        //alert("added!");
+                                    });
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if(pid != "start" && pid != "courses") {
+                        app.db.transaction(function (tx) {
+                            tx.executeSql("INSERT INTO likedposts(postid) VALUES (?)", [pid], app.onSuccess, app.onError);
+                            //alert("added!");
+                        });
+                    }
+                }
+            }, app.onError);
+        });
+    },
 
     renderReadItems: function (tx) {
         tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function (tx, rs) {
@@ -199,25 +239,38 @@ var app = {
             }
         }, app.onError);
     },
+	
+	renderLikedItems: function (tx) {
+        tx.executeSql("SELECT * FROM likedposts ORDER BY ID DESC", [], function (tx, rs) {
+            var rowOutput = "",
+                todoItems = document.getElementById("lblInfo2"),
+                row;
+
+            for (var i = 0; i < rs.rows.length; i++) {
+                row = rs.rows.item(i);
+                rowOutput += "<li style='border:1px solid #000000; margin: 2px;'> ID: " + row.ID + ", postid:" + row.postid + " <span style='color:green;'></span> [<a href='javascript:void(0);' onclick=\'app.deleteLikedById(" + row.ID + ");\'>Delete</a>]</li>";
+            }
+            if (typeof window.MSApp != 'undefined') {
+                MSApp.execUnsafeLocalFunction(function () {
+                    todoItems.innerHTML = rowOutput;
+                });
+            } else {
+                todoItems.innerHTML = rowOutput;
+            }
+        }, app.onError);
+    },
 
     deleteReadById: function (id) {
-        console.log('Delete item: ' + id);
+        console.log('Delete read item: ' + id);
         app.db.transaction(function (tx) {
             tx.executeSql("DELETE FROM readposts WHERE ID=?", [id], app.renderReadItems);
         });
     },
-    
-    deleteReadByPostId: function (postid) {
-        console.log('Delete item by postid ' + postid);
-        app.db.transaction(function (tx) {
-            tx.executeSql("DELETE FROM readposts WHERE postid=?", [postid], app.renderReadItems);
-        });
-    },
 
-    deleteAll: function () {
-        console.log('Deleting all');
+	deleteLikedById: function (id) {
+        console.log('Delete liked item: ' + id);
         app.db.transaction(function (tx) {
-            tx.executeSql("DELETE FROM readposts", [], app.renderReadItems);
+            tx.executeSql("DELETE FROM likedposts WHERE ID=?", [id], app.renderLikedItems);
         });
     },
 
@@ -237,7 +290,7 @@ var app = {
         document.getElementById('renderDb').addEventListener('click', this.onSuccess);
 		document.getElementById('btnOpenDb').addEventListener('click', this.openDatabase);
         document.getElementById('btnCreateTable').addEventListener('click', this.createTable);
-        document.getElementById('btnDeleteAll').addEventListener('click', this.deleteAll);
+        document.getElementById('btnDeleteAllRead').addEventListener('click', this.deleteAllRead);
         document.getElementById('btnTestEvents').addEventListener('click', this.testEvents);
         document.getElementById('btnTestJSONBlob').addEventListener('click', this.testJSONBlob);
         document.getElementById('btnTestRollbacksAfterFailures').addEventListener('click', this.testRollbacksAfterFailures);
