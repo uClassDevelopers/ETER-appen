@@ -70,7 +70,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
       views: {
         'tab-start': {
           templateUrl: 'templates/start-detail.html',
-          controller: 'startDetailCtrl'
+          controller: 'GuidesDetailCtrl'
         }
       }
     })
@@ -108,7 +108,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
       views: {
         'tab-courses': {
           templateUrl: 'templates/courses-detail.html',
-          controller: 'CoursesDetailCtrl'
+          controller: 'GuidesDetailCtrl'
         }
       }
     })

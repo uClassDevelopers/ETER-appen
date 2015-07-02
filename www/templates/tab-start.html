@@ -20,7 +20,7 @@
  * under the License.
  */
 -->
-<ion-view  ng-controller="StartCtrl" view-title="<img class='animated bounce' height='40' src='img/ETER-logga.png'/>">
+<ion-view  ng-controller="StartCtrl" view-title="<img class='animated bounce noguide' height='40' src='img/ETER-logga.png'/>">
   <ion-content class="padding">
       <div id="start-data"></div>
       <ion-slide-box delegate-handle="image-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
@@ -31,24 +31,24 @@
       <div id="start">
 			<div id="top-boxes">
 				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData" ng-click="goToGuideTopRow({{obj.postid}})">
-					<a href="#" ng-click="goToLinkTopRow(obj.on_link)">	
+					<div ng-click="goToLinkTopRow(obj.on_link)">	
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
-							<img class="box-image" src="{{obj.image_url}}">
+							<img style="max-height: 100px !important; max-width: 100px !important;" class="box-image" src="{{obj.image_url}}">
 						</p>
 						<p class="box-widget-title mini">{{obj.content}}</p>
-					</a>
+					</div>
 				</div>
 			</div>
 			<div id="row-two-boxes">
 				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData" ng-click="goToGuideBottomRow({{obj.postid}})">
-					<a href="#" ng-click="goToLinkBottomRow(obj.on_link)">	
+					<div ng-click="goToLinkBottomRow(obj.on_link)">	
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
-							<img class="box-image" src="{{obj.image_url}}">
+							<img style="max-height: 123px !important;" class="box-image" src="{{obj.image_url}}">
 						</p>
 						<p class="box-widget-title mini">{{obj.content}}</p>
-					</a>
+                    </div>
 				</div> 
 			</div>   
        </div>
