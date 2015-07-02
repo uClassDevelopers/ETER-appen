@@ -143,6 +143,7 @@ var app = {
     },
 
     checkIfReadAndAdd: function (pid) {
+		//alert("checkIfReadAndAdd: "+pid);
         app.db.transaction(function (tx) {
             tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
                 var row;
@@ -183,6 +184,7 @@ var app = {
     },
 	
 	checkIfLikedAndAdd: function (pid) {
+		//alert("checkIfLikedAndAdd: "+pid);
         app.db.transaction(function (tx) {
             tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
                 var row;
