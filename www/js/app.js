@@ -112,7 +112,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
         }
       }
     })
-  
+
   .state('tab.eter', {
     url: '/eter',
     views: {
