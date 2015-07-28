@@ -44,7 +44,9 @@
                 </div>
             </form>
             <ion-item ng-click="latest()">Senaste</ion-item>
-            <ion-item id="tgl-categories" ng-click="listCate()">Kategorier</ion-item>
+            <ion-item id="tgl-categories">
+				<a style="color:#000000;" ng-click="listCate()">Kategorier</a>
+			</ion-item>
             <ion-list class="cate">
                 <ion-item class="child-list" ng-click="loadposts('{{c.slug}}')" ng-repeat="c in cateLoader">{{c.name}}</ion-item>
             </ion-list>

@@ -30,47 +30,28 @@ if (typeof String.prototype.startsWith != 'function') {
 
 // replace all outbound links with a number sign, add a onklick event with the old url. The onklick event opens the old url in cordova inappbrowser.
 function fixCordovaOutboundLinks() {
-  var allElements = document.getElementsByTagName('a');
-  for (var i = 0, n = allElements.length; i < n; i++) {
-      var url = allElements[i].getAttribute('href');
-      if(url != null) {
-          if(url.startsWith("http")) {
-            //console.log("el " + url);
-            //allElements[i].innerHTML= ".....";
-            //allElements[i].removeAttribute("href");
-			 
-			function clickHandler(index) {    
-				allElements[index].onclick = function(event) {
-					event.preventDefault();
-					var a_url = allElements[index].getAttribute('href');
-				    alert('URL opens: ' + a_url);
-				    var ref = window.open(a_url, '_blank', 'location=yes');
-				};
+	var allElements = document.getElementsByTagName('a');
+	for (var i = 0, n = allElements.length; i < n; i++) {
+		var url = allElements[i].getAttribute('href');
+		if(url != null) {
+			if(url.startsWith("http")) {
+				//allElements[i].innerHTML= ".....";
+				function clickHandler(index) {    
+					allElements[index].onclick = function(event) {
+						event.preventDefault();
+						var a_url = allElements[index].getAttribute('href');
+						//alert('URL opens: ' + a_url);
+						var ref = window.open(a_url, '_blank', 'location=yes');
+					};
+				}
+				clickHandler(i);
 			}
-			clickHandler(i);
-          }
-      }
-  }
+		}
+	}
 }
 //added the beginning of a new fixCordovaYoutubePlayers function
 /*function fixCordovaYoutubePlayers() {
-  var allElements = document.getElementsByTagName('a');
-  for (var i = 0, n = allElements.length; i < n; i++) {
-      var url = allElements[i].getAttribute('href');
-      if(url != null) {
-          if(url.startsWith("http")) {
-             console.log("el " + url);
-             //allElements[i].innerHTML= ".....";
-             //allElements[i].removeAttribute("href");
-
-             allElements[i].onclick = function(event) {
-               event.preventDefault();
-               alert('URL opens: ' + url);
-               var ref = window.open(url, '_blank', 'location=yes');
-             };
-          }
-      }
-  }
+ 
 }*/
 
 // modules
@@ -79,7 +60,7 @@ angular.module('eter.controllers', [])
 .controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
     $scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
-    }
+    };
     $scope.$on("$ionicView.beforeEnter", function() {
          app.start();
     });
@@ -229,8 +210,6 @@ angular.module('eter.controllers', [])
             $scope.bottomData = firstPageContent.bottomData;
             $scope.sliderData = firstPageContent.sliderData;
             
-            
-            fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -256,16 +235,37 @@ angular.module('eter.controllers', [])
     
 	$scope.goToGuide = function(id) {
 		location.href="#/tab/guides/"+id;
-	}
+	};
     $scope.posts = [];
-
+	
+	$scope.listCate = function() {
+        var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
+        response.success(function(data) {
+			//alert("a");
+            var taxonomyArr = [];    
+            $.each(data.list_taxonomy, function(index, obj) { 
+                if(parseInt(obj.post_count) != 0) {
+                    taxonomyArr.push(data.list_taxonomy[index]);
+                }
+            });
+            $scope.cateLoader = taxonomyArr;
+            $scope.loading = false;
+        }).
+        error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+			//alert("b");
+        });
+        
+    };
+	
     $scope.latest = function() {
         $scope.loading = true;
         var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
         response.success(function(data) {
 			$scope.posts = data.posts;
 			$scope.loading = false;
-			fixCordovaOutboundLinks();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -309,7 +309,6 @@ angular.module('eter.controllers', [])
 					}
 					
 					$scope.loading = false;
-					fixCordovaOutboundLinks();
 				}, app.onError);
 			});
         }).
@@ -357,7 +356,6 @@ angular.module('eter.controllers', [])
 						}
 						
 						$scope.loading = false;
-                		fixCordovaOutboundLinks();
                     }, app.onError);
                 });
         }).
@@ -371,32 +369,11 @@ angular.module('eter.controllers', [])
 	// restore the loading indexes to be able to run the functions twice again
 	$scope.restoreLoadIndex = function() {
 		l_index = 0;
-	}
+	};
 	$scope.restoreLoadIndex2 = function() {
 		l_index2 = 0;
-	}
+	};
 	
-    $scope.listCate = function() {
-        var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
-        response.success(function(data) {
-            var taxonomyArr = [];    
-            $.each(data.list_taxonomy, function(index, obj) { 
-                if(parseInt(obj.post_count) != 0) {
-                    taxonomyArr.push(data.list_taxonomy[index]);
-                }
-            });
-            $scope.cateLoader = taxonomyArr;
-            $scope.loading = false;
-                
-            fixCordovaOutboundLinks();
-        }).
-        error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-        });
-        
-    };
     $scope.loadposts = function(category) {
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
@@ -544,12 +521,7 @@ angular.module('eter.controllers', [])
 		// toggle highlighting
 		$(ccid).toggleClass('courseHighlight');
 		$(".courseContainer").not(ccid).removeClass('courseHighlight');
-		/*$(cid).toggleClass('courseHighlight');
-		$(".course").not(cid).removeClass('courseHighlight');
-		$(eid).toggleClass('courseHighlight');
-		$(".dropdown1").not(eid).removeClass('courseHighlight');
-		$(eid).children("div").toggleClass('courseHighlight');
-		$(".dropdown1").children("div").not(eid).children("div").removeClass('courseHighlight');*/
+		
 	}
 	
     $scope.slideHasChanged = function() {
@@ -575,7 +547,6 @@ angular.module('eter.controllers', [])
             location.href="#/tab/courses/"+id;
         }
         $scope.loading = false;
-        //fixCordovaOutboundLinks();
     }).
     error(function(data) {
         $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -588,7 +559,6 @@ angular.module('eter.controllers', [])
     success(function(data) {
         //alert(JSON.stringify(data.courses_slider, null, 4));
         $scope.courses_slider = data.courses_slider;
-        fixCordovaOutboundLinks();
     }).
     error(function(data) {
         $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in de rekommenderade kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -597,12 +567,12 @@ angular.module('eter.controllers', [])
     
 })
 
-.controller('CoursesDetailCtrl', function($scope) {
+/*.controller('CoursesDetailCtrl', function($scope) {
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
         fixCordovaOutboundLinks();
     });
-})
+})*/
 
 
 .controller('EterCtrl', function($scope, $http) {
@@ -629,7 +599,6 @@ angular.module('eter.controllers', [])
                         );
                     }
                     showAlert();
-                    fixCordovaOutboundLinks();
                 },
                 error: function(){
                     function alertDismissed() {
