@@ -17,16 +17,16 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
+ * 
  * WEB SQL LICENSE:
  * Copyright (c) Microsoft Open Technologies, Inc. All Rights Reserved.
  * Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
  */
 
 function initPushwoosh() {
-
+	
 	var pushNotification = window.plugins.pushNotification;
-
+	
 	//set push notification callback before we initialize the plugin
 	document.addEventListener('push-notification', function(event) {
 								//get the notification payload
@@ -45,11 +45,11 @@ function initPushwoosh() {
                                     );
                                 }
                         showAlert();
-
+        
 								pushNotification.setApplicationIconBadgeNumber(0);
 							});
 
-
+	
     //initialize the plugin
     pushNotification.onDeviceReady({pw_appid:"4AB6E-0238F"}); //8EC51-04BD0 //4AB6E-0238F
 
@@ -61,9 +61,9 @@ function initPushwoosh() {
 									function(status) {
                                         console.warn('failed to register : ' + JSON.stringify(status));
 									});
-
+    
 	pushNotification.setApplicationIconBadgeNumber(0);
-
+    
 	pushNotification.getTags(function(tags) {
 								console.warn('tags for the device: ' + JSON.stringify(tags));
 							 },
@@ -88,7 +88,7 @@ var app = {
         this.createTable();
         this.bindEvents();
     },
-
+    
     // Web SQL Methods
     onError: function (transaction, error) {
         console.log('Error: ' + error.message);
@@ -159,7 +159,7 @@ var app = {
             }, app.onError);
         });
     },
-
+	
 	checkIfLikedAndAdd: function (pid) {
 		//alert("checkIfLikedAndAdd: "+pid);
         app.db.transaction(function (tx) {
@@ -218,7 +218,7 @@ var app = {
             }
         }, app.onError);
     },
-
+	
 	renderLikedItems: function (tx) {
         tx.executeSql("SELECT * FROM likedposts ORDER BY ID DESC", [], function (tx, rs) {
             var rowOutput = "",
@@ -258,14 +258,14 @@ var app = {
         document.getElementById("lblDBInfo").innerHTML += 'DB Operation completed successfully<br\>';
     },
 
-
+    
     // Bind Event Listeners
     //
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
         document.addEventListener('deviceready', this.onDeviceReady, false);
-
+		
         document.getElementById('renderDb').addEventListener('click', this.onSuccess);
 		document.getElementById('btnOpenDb').addEventListener('click', this.openDatabase);
         document.getElementById('btnCreateTable').addEventListener('click', this.createTable);
