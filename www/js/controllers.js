@@ -19,19 +19,52 @@
  * under the License.
  */
 
-// functions
-function fixCordovaOutboundLinks() {
-    $('a').each(function() { 
-        var url = ($(this).attr('href')); 
-        if (url.indexOf('http') == 0) {
-            $(this).css('text-decoration', 'none');
-            $(this).attr('href', '#' );
-            $(this).click(function() {
-                var ref = window.open(url, '_blank', 'location=yes');             
-            });       
-        }
-    });
+
+// Custom uClassFunctions
+// startsWith function needed for browsers with webkit
+if (typeof String.prototype.startsWith != 'function') {
+	String.prototype.startsWith = function (str) {
+		return this.slice(0, str.length) == str;
+	};
 }
+
+// replace all outbound links with a number sign, add a onklick event with the old url. The onklick event opens the old url in cordova inappbrowser.
+function fixCordovaOutboundLinks() {
+	var allElements = document.getElementsByTagName('a');
+	for (var i = 0, n = allElements.length; i < n; i++) {
+		var url = allElements[i].getAttribute('href');
+		if(url != null) {
+			if(url.startsWith("http")) {
+				//console.log("el " + url);
+				allElements[i].onclick = function(event) {
+					event.preventDefault();
+					alert('URL opens: ' + url);
+					var ref = window.open(url, '_blank', 'location=yes');
+				};
+			}
+		}
+	}
+}
+//added the beginning of a new fixCordovaYoutubePlayers function
+/*function fixCordovaYoutubePlayers() {
+	var allElements = document.getElementsByTagName('a');
+	for (var i = 0, n = allElements.length; i < n; i++) {
+		var url = allElements[i].getAttribute('href');
+		if(url != null) {
+			if(url.startsWith("http")) {
+				//console.log("el " + url);
+				//allElements[i].innerHTML= ".....";
+				//allElements[i].removeAttribute("href");
+
+				allElements[i].onclick = function(event) {
+					event.preventDefault();
+					alert('URL opens: ' + url);
+					var ref = window.open(url, '_blank', 'location=yes');
+				};
+			}
+		}
+	}
+}*/
 
 // modules
 angular.module('eter.controllers', [])

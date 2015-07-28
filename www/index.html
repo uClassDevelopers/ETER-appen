@@ -27,46 +27,6 @@
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/index.js"></script>
     <script src="js/angular-sanitize.js"></script>
-      
-    <script type="text/javascript">
-    $(document).ready( function() { 
-        $('a').each(function() { 
-            var url = ($(this).attr('href')); 
-            if (url.indexOf('http') == 0) {
-                $(this).css('text-decoration', 'none');
-                $(this).attr('href', '#' );
-                $(this).click(function() {
-                    var ref = window.open(url, '_blank', 'location=yes');             
-                });       
-            }
-        });
-        $(".youtube-player").css('display', 'none');
-        $('iframe').contents().find('a').click(function(event) {
-            event.preventDefault();
-            var url = ($(this).attr('href')); 
-            $(this).attr('href', '#' );
-            var ref = window.open(url, '_blank', 'location=yes');
-            return false;  
-        });   
-            if ($('.youtube-player').length) {
-                $("#anks").html('<button id="ankan">Spela upp videon</button>');
-            }           
-            $( "#ankan" ).click(function() {
-                var url= $(".youtube-player").attr("src");
-                function extractVideoID(url) {
-                    var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
-                    var match = url.match(regExp);
-                if ( match && match[7].length == 11 ){
-                    return match[7];
-                } else {
-                    alert("Could not extract video ID.");
-                }
-            }
-            var id = extractVideoID(url);
-            YoutubeVideoPlayer.openVideo(id);
-        });
-    });
-    </script>
   </head>
   <body ng-app="eter">
     <!--
@@ -98,7 +58,7 @@
             }else{
                 return context; // moment plugin not available. return data as is.
             };
-        }); 
+        });
     </script>
 
     <script src="js/slideout.min.js"></script>
@@ -111,52 +71,6 @@
     });
     document.querySelector('.toggle-button').addEventListener('click', function() {
         slideout.toggle();
-    });
-    </script>
-    <script>
-    $('#supportForm').submit(function(){
-        alert('Pushed save');
-        var postData = $(this).serialize();
-        $.ajax({
-            type: 'POST',
-            data: postData,
-            url: 'http://eter.rudbeck.info/support/#contact-form-425',
-            success: function(data){            
-                function alertDismissed() {
-                // reload
-                    location.reload();
-                }
-                // Show a custom alertDismissed
-                function showAlert() {
-                    navigator.notification.alert(
-                        'Tack för dina synpunkter!',  // message
-                        alertDismissed,         // callback
-                        'ETER Support',            // title
-                        'OK'                  // buttonName
-                    );
-                }
-                showAlert();
-
-            },
-            error: function(){
-                function alertDismissed() {
-                // do something
-                    location.reload();
-                }
-                // Show a custom alertDismissed
-                //
-                function showAlert() {
-                    navigator.notification.alert(
-                        'Något fel inträffade, prova igen.',  // message
-                        alertDismissed,         // callback
-                        'ETER Support',            // title
-                        'OK'                  // buttonName
-                    );
-                }
-                showAlert();
-            }
-        });
-        return false;
     });
     </script>
     <!-- Get the jQuery functions -->
