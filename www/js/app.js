@@ -23,7 +23,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'eter.services' is found in services.js
 // 'eter.controllers' is found in controllers.js
-angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitize'])
+angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -112,7 +112,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'ngSanitiz
         }
       }
     })
-  
+
   .state('tab.eter', {
     url: '/eter',
     views: {

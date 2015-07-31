@@ -22,7 +22,7 @@
 -->
 <ion-view view-title="" ng-controller="GuidesDetailCtrl">
   <ion-content>
-	<div id="single-wrapper" class="single-wrapper">        
+	<div id="single-wrapper" class="single-wrapper">
             <div id="post_" class="list card">
 
               <div class="item">
@@ -32,7 +32,7 @@
 
               <div class="item item-body">
                 <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
-                <div data-ng-bind-html="post.content"></div>
+                <div ng-bind-html="trustedHtml" compile-template></div>
                 <div id="anks"></div>
               </div>
 
