@@ -49,10 +49,51 @@ function fixCordovaOutboundLinks() {
 		}
 	}
 }
-//added the beginning of a new fixCordovaYoutubePlayers function
-/*function fixCordovaYoutubePlayers() {
-
-}*/
+//Make sure that videos can be played in app via a button
+function fixCordovaYoutubePlayers() {
+	var allElements = document.getElementsByTagName('iframe');
+	for (var i = 0, n = allElements.length; i < n; i++) {
+		var url = allElements[i].getAttribute('src');
+		if(url != null) {
+			if(url.startsWith("http")) {
+				if($('.youtube-player').length) {
+					$(".youtube-player").css('display', 'none');
+				}
+				
+				function openVid(vid_id) {
+					alert('BTN CLICK utube ID: ' + vid_id);
+					YoutubeVideoPlayer.openVideo(vid_id);
+				}
+				
+				function createVidButton(index) {
+					var iframe_url = allElements[index].getAttribute('src');
+					
+					function extractVideoID(url) {
+						var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
+						var match = url.match(regExp);
+						if ( match && match[7].length == 11 ) {
+							return match[7];
+						} else {
+							alert("Could not extract video ID.");
+						}
+					}
+					
+					$("#play-buttons").append('<button class="button button-assertive" id="play-btn' + index + '"><i class="icon ion-play"></i> Spela upp videon</button>');
+					
+					var id = extractVideoID(iframe_url);
+					//alert("utube id: " + id);
+					
+					document.getElementById('play-btn' + index).addEventListener("click", function() {
+						//alert('BTN CLICK utube ID: ' + id);
+						console.log('utube ID: ' + id);
+						YoutubeVideoPlayer.openVideo(id);
+					});
+				}
+				createVidButton(i);
+			}
+		}
+	}
+}
 
 // modules
 angular.module('eter.controllers', ['ngSanitize'])
@@ -452,6 +493,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         });
             $scope.loading = false;
             fixCordovaOutboundLinks();
+			fixCordovaYoutubePlayers();
         });
 
         response.error(function(data, status, headers, config) {
@@ -587,6 +629,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     $scope.$on("$ionicView.beforeEnter", function() {
         app.single();
         fixCordovaOutboundLinks();
+		fixCordovaYoutubePlayers();
     });
 })*/
 
@@ -642,6 +685,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         success(function(data) {
             $scope.iktCoach = data.page;
             fixCordovaOutboundLinks();
+			fixCordovaYoutubePlayers();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
@@ -652,6 +696,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         success(function(data) {
             $scope.omEter = data.page;
             fixCordovaOutboundLinks();
+			fixCordovaYoutubePlayers();
         }).
         error(function(data) {
             $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
