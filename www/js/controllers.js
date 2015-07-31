@@ -60,11 +60,6 @@ function fixCordovaYoutubePlayers() {
 					$(".youtube-player").css('display', 'none');
 				}
 				
-				function openVid(vid_id) {
-					alert('BTN CLICK utube ID: ' + vid_id);
-					YoutubeVideoPlayer.openVideo(vid_id);
-				}
-				
 				function createVidButton(index) {
 					var iframe_url = allElements[index].getAttribute('src');
 					
@@ -78,7 +73,7 @@ function fixCordovaYoutubePlayers() {
 						}
 					}
 					
-					$("#play-buttons").append('<button class="button button-assertive" id="play-btn' + index + '"><i class="icon ion-play"></i> Spela upp videon</button>');
+					$("#play-buttons").append('<button class="button button-assertive" id="play-btn' + index + '"><i class="icon ion-play"></i>  Spela upp videon (' + index + ') </button>');
 					
 					var id = extractVideoID(iframe_url);
 					//alert("utube id: " + id);
