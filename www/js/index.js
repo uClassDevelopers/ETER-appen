@@ -24,30 +24,29 @@
  */
 
 function initPushwoosh() {
-	
 	var pushNotification = window.plugins.pushNotification;
 	
 	//set push notification callback before we initialize the plugin
 	document.addEventListener('push-notification', function(event) {
-								//get the notification payload
-								var notification = event.notification;
+        //get the notification payload
+        var notification = event.notification;
 
-								//display alert to the user for example
-                                function alertDismissed() {
-                                    // reload
-                                }
-                                function showAlert() {
-                                    navigator.notification.alert(
-                                        notification.aps.alert,  // message
-                                        alertDismissed,         // callback
-                                        'ETER',            // title
-                                        'OK'                  // buttonName
-                                    );
-                                }
-                        showAlert();
-        
-								pushNotification.setApplicationIconBadgeNumber(0);
-							});
+        //display alert to the user for example
+        function alertDismissed() {
+            // reload
+        }
+        function showAlert() {
+            navigator.notification.alert(
+                notification.aps.alert,  // message
+                alertDismissed,         // callback
+                'ETER',            // title
+                'OK'                  // buttonName
+            );
+        }
+showAlert();
+
+        pushNotification.setApplicationIconBadgeNumber(0);
+    });
 
 	
     //initialize the plugin

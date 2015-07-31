@@ -73,7 +73,7 @@ function fixCordovaYoutubePlayers() {
 						}
 					}
 					
-					$("#play-buttons").append('<button class="button button-assertive" id="play-btn' + index + '"><i class="icon ion-play"></i>  Spela upp videon (' + index + ') </button>');
+					$("#play-buttons").append('<li><button class="button button-assertive" id="play-btn' + index + '"><i class="icon ion-play"></i>  Spela upp video (' + (index+1) + ') </button></li>');
 					
 					var id = extractVideoID(iframe_url);
 					//alert("utube id: " + id);
