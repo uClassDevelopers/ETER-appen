@@ -479,13 +479,18 @@ angular.module('eter.controllers', ['ngSanitize'])
             $scope.trustedHtml = $sce.trustAsHtml($scope.post.content);
             $http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
                 $('.action-like').html("");
-                $('#num_likes_'+$stateParams.pid).html(" ("+ data.num_votes+")");
+                $('#num_likes_' + $stateParams.pid).html(" ("+ data.num_votes+")");
                 $("#like-icn_"+pid).css("color", "#387EF5");
             })
             response.error(function(data, status, headers, config) {
             alert('Något gick fel');
             console.log(data);
         });
+            document.getElementById('share').addEventListener("click", function() {
+                //alert('Pressed url: ' + $scope.post.url);
+                console.log('like' + $stateParams.pid);
+                window.plugins.socialsharing.share('Kolla in denna artikel: '+ $scope.post.title, 'Rekomenderad artikel på ETER-sajten: ' + $scope.post.title, null, $scope.post.url);
+            });
             $scope.loading = false;
             fixCordovaOutboundLinks();
 			fixCordovaYoutubePlayers();

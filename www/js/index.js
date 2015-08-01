@@ -23,62 +23,6 @@
  * Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
  */
 
-function initPushwoosh() {
-	var pushNotification = window.plugins.pushNotification;
-	
-	//set push notification callback before we initialize the plugin
-	document.addEventListener('push-notification', function(event) {
-        //get the notification payload
-        var notification = event.notification;
-
-        //display alert to the user for example
-        function alertDismissed() {
-            // reload
-        }
-        function showAlert() {
-            navigator.notification.alert(
-                notification.aps.alert,  // message
-                alertDismissed,         // callback
-                'ETER',            // title
-                'OK'                  // buttonName
-            );
-        }
-showAlert();
-
-        pushNotification.setApplicationIconBadgeNumber(0);
-    });
-
-	
-    //initialize the plugin
-    pushNotification.onDeviceReady({pw_appid:"4AB6E-0238F"}); //8EC51-04BD0 //4AB6E-0238F
-
-    //register for pushes
-	pushNotification.registerDevice(function(status) {
-                                        var deviceToken = status['deviceToken'];
-                                        console.warn('registerDevice: ' + deviceToken);
-									},
-									function(status) {
-                                        console.warn('failed to register : ' + JSON.stringify(status));
-									});
-    
-	pushNotification.setApplicationIconBadgeNumber(0);
-    
-	pushNotification.getTags(function(tags) {
-								console.warn('tags for the device: ' + JSON.stringify(tags));
-							 },
-							 function(error) {
-								console.warn('get tags error: ' + JSON.stringify(error));
-							 });
-
-	pushNotification.getPushToken(function(token) {
-								  console.warn('push token device: ' + token);
-							 });
-
-	pushNotification.getPushwooshHWID(function(token) {
-									console.warn('Pushwoosh HWID: ' + token);
-								});
-}
-
 var app = {
     // Application Constructor
     initialize: function() {
@@ -284,7 +228,7 @@ var app = {
     onDeviceReady: function() {
         cordova.exec.setJsToNativeBridgeMode(cordova.exec.jsToNativeModes.XHR_NO_PAYLOAD);
         app.receivedEvent('deviceready');
-        initPushwoosh();
+
         app.initialize();
     },
     // Update DOM on a Received Event
