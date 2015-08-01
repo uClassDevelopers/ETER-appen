@@ -26,19 +26,6 @@
     <script src="js/handlebars-v3.0.3.js"></script>
     <script src="js/jquery.circle-diagram.js"></script>
     <script src="js/index.js"></script>    
-    <script>
-        function initPushwoosh() {
-            var pushNotification = window.plugins.pushNotification;
-            if(device.platform == "Android")
-            {
-                alet('incompatible device! Use iOS!');
-            }else if(device.platform == "iPhone" || device.platform == "iOS")
-            {
-                registerPushwooshIOS();
-            }
-        }
-    </script>
-    <script type="text/javascript" src="js/PushwooshiOS.js"></script>
   </head>
   <body ng-app="eter">
     <!--
@@ -87,4 +74,17 @@
     </script>
     <!-- Get the jQuery functions -->
     <script>app.initialize();</script>
+        <script>
+        function initPushwoosh() {
+            var pushNotification = window.plugins.pushNotification;
+            if(device.platform == "Android")
+            {
+                alet('incompatible device! Use iOS!');
+            }else if(device.platform == "iPhone" || device.platform == "iOS")
+            {
+                registerPushwooshIOS();
+            }
+        }
+    </script>
+    <script type="text/javascript" src="js/PushwooshiOS.js"></script>
 </html>
