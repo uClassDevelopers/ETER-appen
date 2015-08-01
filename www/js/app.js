@@ -27,6 +27,8 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
+    //Start pushwoosh
+      initPushwoosh();
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
