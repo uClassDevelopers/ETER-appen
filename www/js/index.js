@@ -207,7 +207,7 @@ var app = {
     // Bind any events that are required on startup. Common events are:
     // 'load', 'deviceready', 'offline', and 'online'.
     bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
+        /*document.addEventListener('deviceready', this.onDeviceReady, false);
 		
         document.getElementById('renderDb').addEventListener('click', this.onSuccess);
 		document.getElementById('btnOpenDb').addEventListener('click', this.openDatabase);
@@ -219,7 +219,7 @@ var app = {
         document.getElementById('bthTestLongTransactions').addEventListener('click', this.testLongTransactions);
         document.getElementById('btnTestPrelightPostflight').addEventListener('click', this.testPrelightPostflight);
         document.getElementById('btnTestNestedTransaction').addEventListener('click', this.testNestedTransaction);
-        document.getElementById('btnOpenDbMul').addEventListener('click', this.openDatabaseMultipleTimes);
+        document.getElementById('btnOpenDbMul').addEventListener('click', this.openDatabaseMultipleTimes);*/
     },
     // deviceready Event Handler
     //
