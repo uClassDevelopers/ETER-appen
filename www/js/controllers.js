@@ -595,7 +595,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         var courses = [];
         $.each(data.list_all_courses, function(index, obj) { // loop through courses
             courses.push({ id: obj.id, name: obj.name, desc: obj.description, elements: [] });
-            $.each(data.list_all_courses[index].elements, function(i, el) { // loop through elements
+            $.each(data.list_all_courses[index].elements.reverse(), function(i, el) { // loop through elements
                 courses[index].elements.push({ postid: el.id, posttitle: el.title });
             });
         });
