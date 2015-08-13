@@ -596,10 +596,20 @@ angular.module('eter.controllers', ['ngSanitize'])
         $.each(data.list_all_courses, function(index, obj) { // loop through courses
             courses.push({ id: obj.id, name: obj.name, desc: obj.description, elements: [] });
             $.each(data.list_all_courses[index].elements.reverse(), function(i, el) { // loop through elements
-                courses[index].elements.push({ postid: el.id, posttitle: el.title });
+                courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position });
+				courses[index].elements.sort(function (a, b) {
+					if (a.elementOrder > b.elementOrder) {
+						return 1;
+					}
+					if (a.elementOrder < b.elementOrder) {
+						return -1;
+					}
+					// a must be equal to b
+					return 0;
+				});
             });
         });
-        //alert(JSON.stringify(courses, null, 4));
+        alert(JSON.stringify(courses, null, 4));
         $scope.courses = courses;
         $scope.goToGuide = function(id) {
             location.href="#/tab/courses/"+id;
