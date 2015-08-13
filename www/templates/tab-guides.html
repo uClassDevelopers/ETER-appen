@@ -21,7 +21,7 @@
  */
 -->
 
-<ion-view view-title="Guider" ng-controller="GuidesCtrl">        
+<ion-view view-title="Guider" ng-controller="GuidesCtrl"> <!-- language specific -->    
     <ion-nav-buttons side="left">
         <button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
     </ion-nav-buttons>   
@@ -39,20 +39,20 @@
                 <div class="item item-input-inset">
                     <label class="item-input-wrapper" id="search-input">
                         <i class="icon ion-search placeholder-icon"></i>
-                        <input type="text" placeholder="SÖK" ng-model="searchKey">
+                        <input type="text" placeholder="SÖK" ng-model="searchKey"> <!-- language specific -->
                     </label>
                 </div>
             </form>
-            <ion-item ng-click="latest()">Senaste</ion-item>
+            <ion-item ng-click="latest()">Senaste</ion-item> <!-- language specific -->
             <ion-item id="tgl-categories">
-				<a style="display: block; color:#000000; width: 100%; height: 100%;" ng-click="listCate()">Kategorier</a>
+				<a style="display: block; color:#000000; width: 100%; height: 100%;" ng-click="listCate()">Kategorier</a> <!-- language specific -->
 			</ion-item>
             <ion-list class="cate">
                 <ion-item class="child-list" ng-click="loadposts('{{c.slug}}')" ng-repeat="c in cateLoader">{{c.name}}</ion-item>
             </ion-list>
-            <ion-item ng-click="loadNotRead()">Alla olästa</ion-item>
-            <ion-item ng-click="loadposts('larare')">För lärare</ion-item>
-            <ion-item ng-click="loadRead()">Historik</ion-item>
+            <ion-item ng-click="loadNotRead()">Alla olästa</ion-item> <!-- language specific -->
+            <ion-item ng-click="loadposts('larare')">För lärare</ion-item> <!-- language specific -->
+            <ion-item ng-click="loadRead()">Historik</ion-item> <!-- language specific -->
         </ion-list>
     </nav>
     <ion-content>
@@ -64,8 +64,8 @@
             <ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}})">
                 <a data-transition="slide" ><h3>{{g.title}}</h3></a>
                 <p style="float: right;">{{ g.read }}</p>
-                <p>Skriven: {{g.date}}</p>
-                <p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p>
+                <p>Skriven: {{g.date}}</p> <!-- language specific -->
+                <p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
             </ion-item>    
         </ion-list>
     </main>

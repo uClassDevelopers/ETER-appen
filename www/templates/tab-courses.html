@@ -20,7 +20,7 @@
  * under the License.
  */
 -->
-<ion-view view-title="Kurser" ng-controller="CoursesCtrl">
+<ion-view view-title="Kurser" ng-controller="CoursesCtrl"> <!-- language specific -->
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/circle.css">
   <ion-content>
@@ -37,7 +37,7 @@
       </ion-slide-box>
       <br />
       <div id="start-data"></div>
-      <h1 style="margin-left:12px;">Alla kurser</h1>
+      <h1 style="margin-left:12px;">Alla kurser</h1> <!-- language specific -->
       <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
       <div class="list card" style="padding-bottom: 0px;">
           <div class="courseContainer" ng-repeat="c in courses" id="cc{{c.id}}">
@@ -50,7 +50,7 @@
                     <p>{{ c.desc }}</p>
                 </div>
                 <div class="list list-inset dropdown1" id="e{{c.id}}">
-                    <h4>Kursmoment</h4>
+                    <h4>Kursmoment</h4> <!-- language specific -->
 					<div class="elementList">
 						<div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }})">
 							<span class="bold">{{ ($index+1) }}. </span>
