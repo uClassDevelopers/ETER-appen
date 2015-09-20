@@ -50,7 +50,7 @@ function fixCordovaOutboundLinks() {
 						event.preventDefault();
 						var a_url = allElements[index].getAttribute('href');
 						//alert('URL opens: ' + a_url);
-						var ref = window.open(a_url, '_blank', 'location=yes');
+						var ref = window.open(a_url, '_system', 'location=yes');
 					};
 				}
 				clickHandler(i);
