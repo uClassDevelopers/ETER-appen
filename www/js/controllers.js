@@ -19,9 +19,15 @@
  * under the License.
  */
 
+/*******************************************/
+  // GLOBAL CONFIG VARIABLES
+/********************************************/
 //Set to secret api keys before release
 var apikey = "";
 var p_apikey ="";
+
+//ETER baseUrl
+var baseUrl = "http://eter.rudbeck.info/";
 
 // Custom uClassFunctions
 // startsWith function needed for browsers with webkit
@@ -105,7 +111,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     });
 
     // GET TAB-START API
-    $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&startpage=1').
+    $http.get(baseUrl +'eter-app-api/'+ apikey +'&startpage=1').
         success(function(data) {
             $('#start-data').html("");
             var firstPageContent = {
@@ -137,7 +143,7 @@ angular.module('eter.controllers', ['ngSanitize'])
                 // $http.defaults.useXDomain = true;
                 $scope.loading = true;
 
-                var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&'+ p_apikey);
+                var response = $http.get(baseUrl +'category/'+category+'/?json=1&'+ p_apikey);
 
                 response.success(function(data, status, headers, config) {
                     if (data.category.post_count == 0) {
@@ -278,7 +284,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     $scope.posts = [];
 
 	$scope.listCate = function() {
-        var response = $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&list-taxonomy=1&type=category');
+        var response = $http.get(baseUrl +'eter-app-api/'+ apikey +'&list-taxonomy=1&type=category');
         response.success(function(data) {
 			//alert("a");
             var taxonomyArr = [];
@@ -301,7 +307,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
     $scope.latest = function() {
         $scope.loading = true;
-        var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&'+ p_apikey);
+        var response = $http.get(baseUrl +'category/sjalvstudier/?json=1&count=10&'+ p_apikey);
         response.success(function(data) {
 			$scope.posts = data.posts;
 			$scope.loading = false;
@@ -318,7 +324,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.loadRead = function() {
 		$scope.loading = true;
 		var read = [];
-        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+        var response = $http.get(baseUrl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
         response.success(function(data) {
 			app.db.transaction(function (tx) {
 				tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
@@ -361,7 +367,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.loadNotRead = function() {
 		$scope.loading = true;
 		var notRead = [];
-        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+        var response = $http.get(baseUrl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
         response.success(function(data) {
 				app.db.transaction(function (tx) {
                     tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
@@ -417,7 +423,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
 
-        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&'+ p_apikey);
+        var response = $http.get(baseUrl +'category/'+category+'/?json=1&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             if (data.category.post_count == 0) {
@@ -442,7 +448,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
 
-        var response = $http.get('http://eter.rudbeck.info/api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
+        var response = $http.get(baseUrl +'api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             $('#start-data').html('');
@@ -473,7 +479,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         $scope.loading = true;
         console.log("$stateParams",$stateParams);
 
-        var response = $http.get('http://eter.rudbeck.info/?p=' + $stateParams.pid + '&json=1&'+ p_apikey);
+        var response = $http.get(baseUrl +'?p=' + $stateParams.pid + '&json=1&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             console.log(data);
@@ -593,7 +599,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     });
 
     // Get all courses
-    $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&list-all-courses=1&parent=43').
+    $http.get(baseUrl +'eter-app-api/'+ apikey +'&list-all-courses=1&parent=43').
     success(function(data) {
         var courses = [];
         $.each(data.list_all_courses, function(index, obj) { // loop through courses
@@ -626,7 +632,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
     /* Get recommended courses for the slider
     */
-    $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&courses-slider=1').
+    $http.get(baseUrl +'eter-app-api/'+ apikey +'&courses-slider=1').
     success(function(data) {
         //alert(JSON.stringify(data.courses_slider, null, 4));
         $scope.courses_slider = data.courses_slider;
@@ -655,7 +661,7 @@ angular.module('eter.controllers', ['ngSanitize'])
             $.ajax({
                 type: 'POST',
                 data: postData,
-                url: 'http://eter.rudbeck.info/support/#contact-form-425',
+                url: baseUrl +'support/#contact-form-425',
                 success: function(data){
                     function alertDismissed() {
                     // reload
@@ -694,7 +700,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         });
     });
 
-    $http.get('http://eter.rudbeck.info/om-ikt-coacher/?json=1&'+ p_apikey).
+    $http.get(baseUrl +'om-ikt-coacher/?json=1&'+ p_apikey).
         success(function(data) {
             $scope.iktCoach = data.page;
             fixCordovaOutboundLinks();
@@ -705,7 +711,7 @@ angular.module('eter.controllers', ['ngSanitize'])
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
             console.log(data);
         });
-    $http.get('http://eter.rudbeck.info/om-eter/?json=1&'+ p_apikey).
+    $http.get(baseUrl +'om-eter/?json=1&'+ p_apikey).
         success(function(data) {
             $scope.omEter = data.page;
             fixCordovaOutboundLinks();
