@@ -19,6 +19,9 @@
  * under the License.
  */
 
+//Set to secret api keys before release
+var apikey = "";
+var p_apikey ="";
 
 // Custom uClassFunctions
 // startsWith function needed for browsers with webkit
@@ -59,10 +62,10 @@ function fixCordovaYoutubePlayers() {
 				if($('.youtube-player').length) {
 					$(".youtube-player").css('display', 'none');
 				}
-				
+
 				function createVidButton(index) {
 					var iframe_url = allElements[index].getAttribute('src');
-					
+
 					function extractVideoID(url) {
 						var regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#\&\?]*).*/;
 						var match = url.match(regExp);
@@ -72,12 +75,12 @@ function fixCordovaYoutubePlayers() {
 							alert("Could not extract video ID.");
 						}
 					}
-					
+
 					$("#play-buttons").append('<li><button style="margin-bottom: 10px;" class="button button-assertive" id="play-btn' + index + '"><i class="icon ion-play"></i>  Spela upp video (' + (index+1) + ') </button></li>');
-					
+
 					var id = extractVideoID(iframe_url);
 					//alert("utube id: " + id);
-					
+
 					document.getElementById('play-btn' + index).addEventListener("click", function() {
 						//alert('BTN CLICK utube ID: ' + id);
 						console.log('utube ID: ' + id);
@@ -102,7 +105,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     });
 
     // GET TAB-START API
-    $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&startpage=1').
+    $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&startpage=1').
         success(function(data) {
             $('#start-data').html("");
             var firstPageContent = {
@@ -134,7 +137,7 @@ angular.module('eter.controllers', ['ngSanitize'])
                 // $http.defaults.useXDomain = true;
                 $scope.loading = true;
 
-                var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&apikey=ErtYnDsKATCzmuf6');
+                var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&'+ p_apikey);
 
                 response.success(function(data, status, headers, config) {
                     if (data.category.post_count == 0) {
@@ -275,7 +278,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     $scope.posts = [];
 
 	$scope.listCate = function() {
-        var response = $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-taxonomy=1&type=category');
+        var response = $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&list-taxonomy=1&type=category');
         response.success(function(data) {
 			//alert("a");
             var taxonomyArr = [];
@@ -298,7 +301,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
     $scope.latest = function() {
         $scope.loading = true;
-        var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&apikey=ErtYnDsKATCzmuf6');
+        var response = $http.get('http://eter.rudbeck.info/category/sjalvstudier/?json=1&count=10&'+ p_apikey);
         response.success(function(data) {
 			$scope.posts = data.posts;
 			$scope.loading = false;
@@ -315,7 +318,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.loadRead = function() {
 		$scope.loading = true;
 		var read = [];
-        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
+        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
         response.success(function(data) {
 			app.db.transaction(function (tx) {
 				tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
@@ -358,7 +361,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.loadNotRead = function() {
 		$scope.loading = true;
 		var notRead = [];
-        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
+        var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
         response.success(function(data) {
 				app.db.transaction(function (tx) {
                     tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
@@ -414,7 +417,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
 
-        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&apikey=ErtYnDsKATCzmuf6');
+        var response = $http.get('http://eter.rudbeck.info/category/'+category+'/?json=1&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             if (data.category.post_count == 0) {
@@ -439,7 +442,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
 
-        var response = $http.get('http://eter.rudbeck.info/api/get_search_results/?search='+ $scope.searchKey +'&apikey=ErtYnDsKATCzmuf6');
+        var response = $http.get('http://eter.rudbeck.info/api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             $('#start-data').html('');
@@ -470,14 +473,14 @@ angular.module('eter.controllers', ['ngSanitize'])
         $scope.loading = true;
         console.log("$stateParams",$stateParams);
 
-        var response = $http.get('http://eter.rudbeck.info/?p=' + $stateParams.pid + '&json=1&apikey=ErtYnDsKATCzmuf6');
+        var response = $http.get('http://eter.rudbeck.info/?p=' + $stateParams.pid + '&json=1&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             console.log(data);
             $('#start-data').html('');
             $scope.post = data.post;
             $scope.trustedHtml = $sce.trustAsHtml($scope.post.content);
-            $http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
+            $http.get("http://eter.rudbeck.info/eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
                 $('.action-like').html("");
                 $('#num_likes_' + $stateParams.pid).html(" ("+ data.num_votes+")");
                 $("#like-icn_"+pid).css("color", "#387EF5");
@@ -517,7 +520,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 								break;
 							} else {
 								if(i == (rowlength-1)) {
-									$http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+									$http.get("http://eter.rudbeck.info/eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
 										$('.action-like').html("");
 										$('#num_likes_'+pid).html(" ("+ data.num_votes+")");
 										$("#like-icn_"+pid).css("color", "#387EF5");
@@ -531,7 +534,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
 						}
 					} else {
-						$http.get("http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+						$http.get("http://eter.rudbeck.info/eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
 							$('.action-like').html("");
 							$('#num_likes_'+pid).html(" ("+ data.num_votes+")");
 							$("#like-icn_"+pid).css("color", "#387EF5");
@@ -590,7 +593,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     });
 
     // Get all courses
-    $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&list-all-courses=1&parent=43').
+    $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&list-all-courses=1&parent=43').
     success(function(data) {
         var courses = [];
         $.each(data.list_all_courses, function(index, obj) { // loop through courses
@@ -609,7 +612,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 				});
             });
         });
-        alert(JSON.stringify(courses, null, 4));
+        //alert(JSON.stringify(courses, null, 4));
         $scope.courses = courses;
         $scope.goToGuide = function(id) {
             location.href="#/tab/courses/"+id;
@@ -623,7 +626,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
     /* Get recommended courses for the slider
     */
-    $http.get('http://eter.rudbeck.info/eter-app-api/?apikey=vV85LEH2cUJjshrFx5&courses-slider=1').
+    $http.get('http://eter.rudbeck.info/eter-app-api/'+ apikey +'&courses-slider=1').
     success(function(data) {
         //alert(JSON.stringify(data.courses_slider, null, 4));
         $scope.courses_slider = data.courses_slider;
@@ -647,7 +650,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 .controller('EterCtrl', function($scope, $http) {
     $scope.$on("$ionicView.enter", function() {
         $('#supportForm').submit(function(){
-            alert('Pushed save');
+            //alert('Pushed save');
             var postData = $(this).serialize();
             $.ajax({
                 type: 'POST',
@@ -691,7 +694,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         });
     });
 
-    $http.get('http://eter.rudbeck.info/om-ikt-coacher/?json=1&apikey=ErtYnDsKATCzmuf6').
+    $http.get('http://eter.rudbeck.info/om-ikt-coacher/?json=1&'+ p_apikey).
         success(function(data) {
             $scope.iktCoach = data.page;
             fixCordovaOutboundLinks();
@@ -702,7 +705,7 @@ angular.module('eter.controllers', ['ngSanitize'])
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
             console.log(data);
         });
-    $http.get('http://eter.rudbeck.info/om-eter/?json=1&apikey=ErtYnDsKATCzmuf6').
+    $http.get('http://eter.rudbeck.info/om-eter/?json=1&'+ p_apikey).
         success(function(data) {
             $scope.omEter = data.page;
             fixCordovaOutboundLinks();
