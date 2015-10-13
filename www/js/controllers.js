@@ -102,6 +102,25 @@ function fixCordovaYoutubePlayers() {
 // modules
 angular.module('eter.controllers', ['ngSanitize'])
 
+.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+	$scope.$on("$ionicView.beforeEnter", function() {
+         
+    });
+	$http({
+	  method: 'GET',
+	  url: '/someUrl'
+	}).then(function successCallback(response) {
+		//trustAsHtml
+	}, function errorCallback(response) {
+		
+	});
+	$scope.submitCode = function(code) {	
+		if(confirm('Are you sure? Selecting the wrong school will give you wrong content and language')) {
+			console.log(code);
+		}
+	};
+})
+
 .controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
     $scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
