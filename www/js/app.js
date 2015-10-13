@@ -51,7 +51,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
   $stateProvider
 
   // setup an abstract state for the tabs directive
-  
+
 
   .state('tab', {
     url: "/tab",
@@ -65,7 +65,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
 	templateUrl: 'templates/front-page.html',
 	controller: 'FrontCtrl'
   })
-  
+
   // Each tab has its own nav history stack:
   .state('tab.start', {
     url: '/start',
@@ -146,4 +146,19 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/front');
 
-});
+})
+.config(['$translateProvider', function ($translateProvider) {
+  $translateProvider.translations('en', {
+    'TITLE': 'Hello'
+  });
+
+  $translateProvider.translations('de', {
+    'TITLE': 'Hallo'
+  });
+
+  $translateProvider.translations('sv', {
+    'TITLE': 'Hej'
+  });
+
+  $translateProvider.preferredLanguage('sv');
+}]);

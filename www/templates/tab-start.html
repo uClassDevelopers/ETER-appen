@@ -28,10 +28,14 @@
             <div class="box blue"><a href="{{obj.image_url}}"><img src="{{obj.image_url}}"/></a></div>
         </ion-slide>
       </ion-slide-box>
+      <h1>{{ 'TITLE' | translate }}</h1>
+      <button ng-click="changeLanguage('de')" translate="BUTTON_TEXT_DE"></button>
+ <button ng-click="changeLanguage('en')" translate="BUTTON_TEXT_EN"></button>
+  <button ng-click="changeLanguage('sv')" translate="BUTTON_TEXT_EN"></button>
       <div id="start">
 			<div id="top-boxes">
 				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in topData" ng-click="goToGuideTopRow({{obj.postid}})">
-					<div ng-click="goToLinkTopRow(obj.on_link)">	
+					<div ng-click="goToLinkTopRow(obj.on_link)">
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
 							<img style="max-height: 100px !important; max-width: 100px !important;" class="box-image" src="{{obj.image_url}}">
@@ -42,17 +46,17 @@
 			</div>
 			<div id="row-two-boxes">
 				<div id="box{{obj.id}}" class="box3 span4" ng-repeat="obj in bottomData" ng-click="goToGuideBottomRow({{obj.postid}})">
-					<div ng-click="goToLinkBottomRow(obj.on_link)">	
+					<div ng-click="goToLinkBottomRow(obj.on_link)">
 						<p class="box-widget-title bold">{{obj.title}}</p>
 						<p class="box-image-container">
 							<img style="max-height: 123px !important;" class="box-image" src="{{obj.image_url}}">
 						</p>
 						<p class="box-widget-title mini">{{obj.content}}</p>
                     </div>
-				</div> 
-			</div>   
+				</div>
+			</div>
        </div>
-	    <!-- CONSOLE START 
+	    <!-- CONSOLE START
         <div class="bajs" style="display:;">
 			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(666)">Liked postid 666</a>
 			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(111)">Liked postid 111</a>

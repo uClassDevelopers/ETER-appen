@@ -100,11 +100,11 @@ function fixCordovaYoutubePlayers() {
 }
 
 // modules
-angular.module('eter.controllers', ['ngSanitize'])
+angular.module('eter.controllers', ['ngSanitize', 'pascalprecht.translate'])
 
 .controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
 	$scope.$on("$ionicView.beforeEnter", function() {
-         
+
     });
 	$http({
 	  method: 'GET',
@@ -112,23 +112,25 @@ angular.module('eter.controllers', ['ngSanitize'])
 	}).then(function successCallback(response) {
 		//trustAsHtml
 	}, function errorCallback(response) {
-		
+
 	});
-	$scope.submitCode = function(code) {	
+	$scope.submitCode = function(code) {
 		if(confirm('Are you sure? Selecting the wrong school will give you wrong content and language')) {
 			console.log(code);
 		}
 	};
 })
 
-.controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+.controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate, $translate) {
     $scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
     };
     $scope.$on("$ionicView.beforeEnter", function() {
          app.start();
     });
-
+    $scope.changeLanguage = function (langKey) {
+      $translate.use(langKey);
+    };
     // GET TAB-START API
     $http.get(baseUrl +'eter-app-api/'+ apikey +'&startpage=1').
         success(function(data) {
