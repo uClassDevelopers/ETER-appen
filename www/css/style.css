@@ -31,6 +31,29 @@ h2 {
     font-weight: 500 !important; 
     margin-bottom: 5px !important;
 }
+#front-ion-view {
+	
+}
+#front-container {
+	background-color: #FFF;
+	background-image: url("../img/classroom.jpg");
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: center center;
+	background-size: cover;
+}
+#front-container .card {
+	padding: 20px 5%;
+	position: absolute;
+	width: 50%;
+	left: 50%;
+	top: 40vh;
+	transform: translate(-50%, -50%);
+	text-align: center;
+}
+#front-container .button {
+	width: 100%;
+}
 .home {
   background-repeat: no-repeat;
   background-position:center;

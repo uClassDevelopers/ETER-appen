@@ -59,6 +59,10 @@ var app = {
             tx.executeSql("CREATE TABLE IF NOT EXISTS readposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER, added_on TEXT)", []);
 			tx.executeSql("CREATE TABLE IF NOT EXISTS likedposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER)", [],
                 app.onSuccess, app.onError);
+			/*
+			tx.executeSql("CREATE TABLE IF NOT EXISTS schoolinfo(ID INTEGER PRIMARY KEY ASC, otoid INTEGER)", [],
+                app.onSuccess, app.onError);
+			*/
         });
     },
 

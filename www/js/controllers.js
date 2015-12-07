@@ -23,9 +23,8 @@
   // GLOBAL CONFIG VARIABLES
 /********************************************/
 //Set to secret api keys before release
-var apikey = "";
-var p_apikey ="";
-
+var apikey = "?apikey=vV85LEH2cUJjshrFx5";
+var p_apikey ="apikey=ErtYnDsKATCzmuf6";
 //ETER baseUrl
 var baseUrl = "http://eter.rudbeck.info/";
 
@@ -101,6 +100,25 @@ function fixCordovaYoutubePlayers() {
 
 // modules
 angular.module('eter.controllers', ['ngSanitize'])
+
+.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+	$scope.$on("$ionicView.beforeEnter", function() {
+         
+    });
+	$http({
+	  method: 'GET',
+	  url: '/someUrl'
+	}).then(function successCallback(response) {
+		//trustAsHtml
+	}, function errorCallback(response) {
+		
+	});
+	$scope.submitCode = function(code) {	
+		if(confirm('Are you sure? Selecting the wrong school will give you wrong content and language')) {
+			console.log(code);
+		}
+	};
+})
 
 .controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
     $scope.slideHasChanged = function() {
