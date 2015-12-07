@@ -229,7 +229,7 @@ var app = {
         cordova.exec.setJsToNativeBridgeMode(cordova.exec.jsToNativeModes.XHR_NO_PAYLOAD);
         app.receivedEvent('deviceready');
 
-        app.initialize();
+        //app.initialize();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
