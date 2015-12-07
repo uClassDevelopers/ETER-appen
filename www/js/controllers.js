@@ -23,9 +23,8 @@
   // GLOBAL CONFIG VARIABLES
 /********************************************/
 //Set to secret api keys before release
-var apikey = "";
-var p_apikey ="";
-
+var apikey = "?apikey=vV85LEH2cUJjshrFx5";
+var p_apikey ="apikey=ErtYnDsKATCzmuf6";
 //ETER baseUrl
 var baseUrl = "http://eter.rudbeck.info/";
 
