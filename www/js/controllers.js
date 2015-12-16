@@ -103,21 +103,21 @@ angular.module('eter.controllers', ['ngSanitize'])
 
 .controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
 	$scope.$on("$ionicView.beforeEnter", function() {
-         
+         /*app.db.transaction(function (tx) {
+			tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
+				var row;
+				var rowlength = rs.rows.length;
+				if(rowlength > 0) {
+					alert("a school selected");
+					console.log("a school selected");
+				} else {
+					alert("no school selected");
+					console.log("no school selected");
+				}
+			}, app.onError);
+		});*/
     });
-	$http({
-	  method: 'GET',
-	  url: '/someUrl'
-	}).then(function successCallback(response) {
-		//trustAsHtml
-	}, function errorCallback(response) {
-		
-	});
-	$scope.submitCode = function(code) {	
-		if(confirm('Are you sure? Selecting the wrong school will give you wrong content and language')) {
-			console.log(code);
-		}
-	};
+	
 })
 
 .controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
