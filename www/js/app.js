@@ -144,6 +144,6 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
     });
 
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/front');
+  $urlRouterProvider.otherwise('/tab/start');
 
 });

@@ -101,32 +101,35 @@ function fixCordovaYoutubePlayers() {
 // modules
 angular.module('eter.controllers', ['ngSanitize'])
 
-.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state) {
 	$scope.$on("$ionicView.beforeEnter", function() {
-         /*app.db.transaction(function (tx) {
-			tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
-				var row;
-				var rowlength = rs.rows.length;
-				if(rowlength > 0) {
-					alert("a school selected");
-					console.log("a school selected");
-				} else {
-					alert("no school selected");
-					console.log("no school selected");
-				}
-			}, app.onError);
-		});*/
+         
     });
 	
 })
 
-.controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+.controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state) {
     $scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
     };
     $scope.$on("$ionicView.beforeEnter", function() {
          app.start();
     });
+	
+	$scope.$on("$ionicView.enter", function() {
+		app.db.transaction(function (tx) {
+			tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+				var row;
+				var rowlength = rs.rows.length;
+				if(rowlength < 1) {
+					console.log("no school selected");
+					$state.go('front');
+				} else {
+					console.log("a school selected");
+				}
+			}, app.onError);
+		});
+	});
 
     // GET TAB-START API
     $http.get(baseUrl +'eter-app-api/'+ apikey +'&startpage=1').

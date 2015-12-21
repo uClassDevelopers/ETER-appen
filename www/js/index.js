@@ -42,8 +42,8 @@ var app = {
     onSuccess: function (transaction, resultSet) {
         console.log('Created tables successfully!');
         document.getElementById("lblTxInfo").innerHTML = 'RowsAffected: ' + resultSet.rowsAffected + '; InsertId: ' + resultSet.insertId;
-        app.renderReadItems(transaction);
 		app.renderSchoolItems(transaction);
+        app.renderReadItems(transaction);
 		app.renderLikedItems(transaction);
     },
 
