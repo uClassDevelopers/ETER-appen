@@ -21,11 +21,13 @@
  */
 -->
 
-<ion-view view-title="Guider" ng-controller="GuidesCtrl"> <!-- language specific -->    
+<ion-view view-title="{{ 'TAB_GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->    
     <ion-nav-buttons side="left">
         <button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
     </ion-nav-buttons>   
-  
+    <ion-nav-buttons side="right">
+  	    <a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
+    </ion-nav-buttons>
     <nav id="menu" scroll="false">
         <ion-list style="z-index: -2;">
             <!--<div class="bar bar-header item-input-inset">

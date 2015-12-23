@@ -102,9 +102,9 @@ function fixCordovaYoutubePlayers() {
 angular.module('eter.controllers', ['ngSanitize'])
 
 .controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state) {
-	$scope.$on("$ionicView.beforeEnter", function() {
+	/*$scope.$on("$ionicView.beforeEnter", function() {
          
-    });
+    });*/
 	
 })
 

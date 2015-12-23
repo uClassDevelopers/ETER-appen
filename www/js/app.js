@@ -23,7 +23,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'eter.services' is found in services.js
 // 'eter.controllers' is found in controllers.js
-angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
+angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalprecht.translate'])
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
@@ -42,7 +42,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider, $translateProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -145,5 +145,13 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services'])
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/start');
-
+	
+  $translateProvider.translations('ENG', {
+    TAB_GUIDES_TITLE: 'Guides'
+  })
+  .translations('SWE', {
+    TAB_GUIDES_TITLE: 'Guider'
+  });
+  $translateProvider.preferredLanguage('ENG');
+  
 });
