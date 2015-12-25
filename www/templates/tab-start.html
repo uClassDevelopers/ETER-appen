@@ -28,7 +28,7 @@
       <div id="start-data"></div>
       <ion-slide-box delegate-handle="image-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
         <ion-slide ng-repeat="obj in sliderData">
-            <div class="box blue"><a href="{{obj.image_url}}"><img src="{{obj.image_url}}"/></a></div>
+            <div class="box blue"><img src="{{obj.image_url}}"/></div>
         </ion-slide>
       </ion-slide-box>
       <div id="start">

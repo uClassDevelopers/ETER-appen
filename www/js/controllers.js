@@ -168,7 +168,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
                 response.success(function(data, status, headers, config) {
                     if (data.category.post_count == 0) {
-                        $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                        console.log("ERROR 404, no guides found start-tab");
                         $scope.posts = 0;
                     } else {
                         $('#start-data').html('');

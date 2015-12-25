@@ -147,10 +147,58 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
   $urlRouterProvider.otherwise('/tab/start');
 	
   $translateProvider.translations('ENG', {
-    TAB_GUIDES_TITLE: 'Guides'
+	  START_TITLE: 'Start',
+      GUIDES_TITLE: 'Guides',
+	  COURSES_TITLE: 'Courses',
+	  ABOUT_TITLE: 'About & Support',
+	  NAV_BACK: 'Go back',
+	  GUIDES_SLIDEOUT_LATEST: 'Latest',
+	  GUIDES_SLIDEOUT_CATEGORIES: 'Categories',
+	  GUIDES_SLIDEOUT_NOTREAD: 'Non-read',
+	  GUIDES_SLIDEOUT_TEACHERS: 'Teachers',
+	  GUIDES_SLIDEOUT_HISTORY: 'History',
+	  GUIDES_SLIDEOUT_SEARCH: 'SEARCH',
+	  COURSES_HEADER: "All Courses",
+	  COURSE_SUBHEADER: "Course Elements",
+	  OTO_APP_NAME: "The OTO-app",
+	  OTO_APP_PRESENTATION: "The OTO-app (One-To-One) was created by the uClass developers: Adam Feldstein Jacobs and Daniel Holm.",
+	  READ_MORE_UCLASS: "Find out more about uClass.",
+	  FORM_CONTACT: "Contact",
+	  FORM_NAME: "Your name",
+	  FORM_SCHOOL_MAIL: "School mail",
+	  FORM_OPINIONS: "Opinions (Must be filled in)",
+	  FORM_TYPE_OF_OPINION: "What is the message about?",
+	  FORM_TYPE_OPINION: "Opinion on app",
+	  FORM_TYPE_GUIDE: "Guide suggestion",
+	  FORM_TYPE_OTHER: "Other suggestion",
+	  FORM_SEND: "Send message"
   })
   .translations('SWE', {
-    TAB_GUIDES_TITLE: 'Guider'
+	  START_TITLE: 'Start',
+      GUIDES_TITLE: 'Guider',
+	  COURSES_TITLE: 'Kurser',
+	  ABOUT_TITLE: 'Om & support',
+	  NAV_BACK: 'Bakåt',
+	  GUIDES_SLIDEOUT_LATEST: 'Senaste',
+	  GUIDES_SLIDEOUT_CATEGORIES: 'Kategorier',
+	  GUIDES_SLIDEOUT_NOTREAD: 'Oläst',
+	  GUIDES_SLIDEOUT_TEACHERS: 'Lärare',
+	  GUIDES_SLIDEOUT_HISTORY: 'Historik',
+	  GUIDES_SLIDEOUT_SEARCH: 'SÖK',
+	  COURSES_HEADER: "Alla kurser",
+	  COURSE_SUBHEADER: "Kursmoment",
+	  OTO_APP_NAME: 'OTO-appen',
+	  OTO_APP_PRESENTATION: "OTO-appen (One-To-One) är skapad utav uClass Developers Daniel Holm och Adam Feldstein Jacobs.",
+	  READ_MORE_UCLASS: "Läs mer om uClass.",
+	  FORM_CONTACT: "Kontakt",
+	  FORM_NAME: "Ditt namn",
+	  FORM_SCHOOL_MAIL: "Din skolmail",
+	  FORM_OPINIONS: "Synpunkter (måste anges)",
+	  FORM_TYPE_OF_OPINION: "Vad gäller din synpunkt?",
+	  FORM_TYPE_OPINION: "Synpunkt på appen",
+	  FORM_TYPE_GUIDE: "Behov av ny guide",
+	  FORM_TYPE_OTHER: "Annat förslag",
+	  FORM_SEND: "Skicka meddelande"
   });
   $translateProvider.preferredLanguage('ENG');
   
