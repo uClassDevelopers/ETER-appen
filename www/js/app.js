@@ -145,7 +145,14 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/start');
-	
+  
+  $.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( data ) {
+	  console.log("lang get request complete");
+	  $.each( data, function( key, val ) {
+			
+	  });
+});
+  
   $translateProvider.translations('ENG', {
 	  START_TITLE: 'Start',
       GUIDES_TITLE: 'Guides',

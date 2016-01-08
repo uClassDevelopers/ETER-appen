@@ -102,9 +102,28 @@ function fixCordovaYoutubePlayers() {
 angular.module('eter.controllers', ['ngSanitize'])
 
 .controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state) {
-	/*$scope.$on("$ionicView.beforeEnter", function() {
-         
-    });*/
+	// get school ids
+	var schoolsIdsTemp = [];
+	$http({
+		method: 'GET',
+		url: baseUrl + 'eter-app-api/' + apikey + '&oto_directory=1'
+	}).then(function successCallback(data) {
+		$.each( data.data.oto_directory, function( key, val ) {
+			schoolsIdsTemp.push(val.school_id);
+	    });
+		$scope.schoolIds = schoolsIdsTemp;
+		
+		//$schools = data.oto_directory;
+	}, function errorCallback(data) {
+		console.log(data);
+	});
+	
+	// submit school id click event
+	$scope.submitSchoolId = function(id) {
+		console.log("adding school id: " + id);
+		app.checkForSchoolOrAdd(id);
+		$state.go('tab/start');
+	}
 	
 })
 
