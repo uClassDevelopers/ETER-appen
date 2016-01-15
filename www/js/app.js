@@ -201,7 +201,6 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 	  FORM_SEND: "Skicka meddelande"
   });
 	
-  var language = "";
   $.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( response ) {
 	  console.log("lang get request complete");
 	  $.each( response.oto_directory, function( key, schoolObj ) {
@@ -214,8 +213,9 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 						row = rs.rows.item(i);
 						if(row.otoid == schoolObj.school_id) {
 							alert(schoolObj.lang);
-							language = schoolObj.lang;
-							//$translateProvider.preferredLanguage(schoolObj.lang);
+							var language = schoolObj.lang;
+                            //changes lang
+                            $translateProvider.use(language);
 						}
 					}
 				} else {
@@ -225,6 +225,6 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 		});
 	  });
   });
-	
-  $translateProvider.preferredLanguage(language);
+  //set default preferred lang	
+  $translateProvider.preferredLanguage("ENG");
 });
