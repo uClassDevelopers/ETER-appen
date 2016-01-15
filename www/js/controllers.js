@@ -122,7 +122,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.submitSchoolId = function(id) {
 		console.log("adding school id: " + id);
 		app.checkForSchoolOrAdd(id);
-		$state.go('tab/start');
+		$state.go('tab.start');
 	}
 	
 })
