@@ -146,14 +146,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/start');
   
-  $.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( data ) {
-	  console.log("lang get request complete");
-	  $.each( data, function( key, val ) {
-			
-	  });
-});
-  
-  $translateProvider.translations('ENG', {
+  $translateProvider.translations("ENG", {
 	  START_TITLE: 'Start',
       GUIDES_TITLE: 'Guides',
 	  COURSES_TITLE: 'Courses',
@@ -180,7 +173,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 	  FORM_TYPE_OTHER: "Other suggestion",
 	  FORM_SEND: "Send message"
   })
-  .translations('SWE', {
+  .translations("SWE", {
 	  START_TITLE: 'Start',
       GUIDES_TITLE: 'Guider',
 	  COURSES_TITLE: 'Kurser',
@@ -207,6 +200,31 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 	  FORM_TYPE_OTHER: "Annat förslag",
 	  FORM_SEND: "Skicka meddelande"
   });
-  $translateProvider.preferredLanguage('ENG');
-  
+	
+  var language = "";
+  $.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( response ) {
+	  console.log("lang get request complete");
+	  $.each( response.oto_directory, function( key, schoolObj ) {
+		app.db.transaction(function (tx) {
+			tx.executeSql("SELECT * FROM schoolinfo", [], function(tx, rs) {
+				var row;
+				var rowlength = rs.rows.length;
+				if(rowlength > 0) {
+					for (var i = 0; i < rowlength; i++) {
+						row = rs.rows.item(i);
+						if(row.otoid == schoolObj.school_id) {
+							alert(schoolObj.lang);
+							language = schoolObj.lang;
+							//$translateProvider.preferredLanguage(schoolObj.lang);
+						}
+					}
+				} else {
+					console.log("no school selected");
+				}
+			}, app.onError);
+		});
+	  });
+  });
+	
+  $translateProvider.preferredLanguage(language);
 });

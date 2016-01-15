@@ -107,8 +107,8 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$http({
 		method: 'GET',
 		url: baseUrl + 'eter-app-api/' + apikey + '&oto_directory=1'
-	}).then(function successCallback(data) {
-		$.each( data.data.oto_directory, function( key, val ) {
+	}).then(function successCallback(response) {
+		$.each( response.data.oto_directory, function( key, val ) {
 			schoolsIdsTemp.push(val.school_id);
 	    });
 		$scope.schoolIds = schoolsIdsTemp;
@@ -232,7 +232,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 					$scope.goToLinkTopRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '' });
+                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '' });
                         });
 						$scope.goToGuideTopRow = function(id) {
 							if(typeof id == "number") {
@@ -242,7 +242,7 @@ angular.module('eter.controllers', ['ngSanitize'])
                     } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
                         $.each(data.list_all_courses, function(index, course) {
                             if(index < 3) {
-                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste Kurser', on_link: '' });
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '' });
                             }
                         });
 						$scope.goToGuideTopRow = function() {};
@@ -263,7 +263,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 					$scope.goToLinkBottomRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Senaste Guider", on_link: '' });
+                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '' });
                         });
 						$scope.goToGuideBottomRow = function(id) {
 							if(typeof id == "number") {
@@ -274,7 +274,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
                         $.each(data.list_all_courses.reverse() , function(index, course) {
                             if(index < 3) {
-                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Senaste Kurser', on_link: '' });
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '' });
                             }
                         });
 						$scope.goToGuideBottomRow = function() {};

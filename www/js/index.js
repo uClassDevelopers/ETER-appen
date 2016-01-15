@@ -65,6 +65,13 @@ var app = {
         });
     },
 
+	deleteSchoolInfoById: function (id) {
+        console.log('Delete school info item: ' + id);
+        app.db.transaction(function (tx) {
+            tx.executeSql("DELETE FROM schoolinfo WHERE ID=?", [id], app.renderSchoolItems);
+        });
+    },
+	
 	checkForSchoolOrAdd: function(oid) {
 		app.db.transaction(function (tx) {
             tx.executeSql("SELECT * FROM schoolinfo", [], function(tx, rs) {
@@ -73,21 +80,8 @@ var app = {
                 if(rowlength > 0) {
                     for (var i = 0; i < rowlength; i++) {
                         row = rs.rows.item(i);
-                        if(parseInt(row.otoid) === parseInt(oid)) {
-                            //alert("break");
-                            break;
-                        }
-                        if(i == (rowlength-1)) {
-                            if(parseInt(row.otoid) === parseInt(oid)) {
-                                //alert("break on last index");
-                                break;
-                            } else {
-								app.db.transaction(function (tx) {
-									tx.executeSql("INSERT INTO schoolinfo(otoid) VALUES (?)", [oid], app.onSuccess, app.onError);
-									//alert("added!");
-								});
-                            }
-                        }
+                        app.deleteSchoolInfoById(row.ID);
+						tx.executeSql("INSERT INTO schoolinfo(otoid) VALUES (?)", [oid], app.onSuccess, app.onError);
                     }
                 } else {
 					app.db.transaction(function (tx) {
@@ -237,13 +231,6 @@ var app = {
                 todoItems.innerHTML = rowOutput;
             }
         }, app.onError);
-    },
-
-	deleteSchoolInfoById: function (id) {
-        console.log('Delete school info item: ' + id);
-        app.db.transaction(function (tx) {
-            tx.executeSql("DELETE FROM schoolinfo WHERE ID=?", [id], app.renderSchoolItems);
-        });
     },
 	
     deleteReadById: function (id) {
