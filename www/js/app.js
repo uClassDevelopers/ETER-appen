@@ -212,7 +212,6 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 					for (var i = 0; i < rowlength; i++) {
 						row = rs.rows.item(i);
 						if(row.otoid == schoolObj.school_id) {
-							alert(schoolObj.lang);
 							var language = schoolObj.lang;
                             //changes lang
                             $translateProvider.use(language);
