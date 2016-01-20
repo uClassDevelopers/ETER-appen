@@ -101,7 +101,7 @@ function fixCordovaYoutubePlayers() {
 // modules
 angular.module('eter.controllers', ['ngSanitize'])
 
-.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
+.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state) {
 	// get school ids
 	var schoolsIdsTemp = [];
 	$http({
@@ -122,21 +122,13 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.submitSchoolId = function(id) {
 		console.log("adding school id: " + id);
 		app.checkForSchoolOrAdd(id);
-		
-		$.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( response ) {
-			$.each( response.oto_directory, function( key, schoolObj ) {
-				if(schoolObj.school_id == id) {
-					$translate.use(schoolObj.lang);
-				}
-			});
-		});
 		$state.go('tab.start');
 	}
 	
 })
 
-.controller('StartCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
-	$scope.slideHasChanged = function() {
+.controller('StartCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state) {
+    $scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
     };
     $scope.$on("$ionicView.beforeEnter", function() {
@@ -309,7 +301,7 @@ angular.module('eter.controllers', ['ngSanitize'])
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
             console.log(data);
         });
-}])
+})
 
 .controller('GuidesCtrl', function($scope, $http) {
     $scope.$on("$ionicView.beforeEnter", function() {
