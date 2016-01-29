@@ -23,9 +23,9 @@
 // the 2nd parameter is an array of 'requires'
 // 'eter.services' is found in services.js
 // 'eter.controllers' is found in controllers.js
-angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalprecht.translate'])
+var eter = angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalprecht.translate']);
 
-.run(function($ionicPlatform) {
+eter.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     //Start pushwoosh
       initPushwoosh();
@@ -42,7 +42,7 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $translateProvider) {
+eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 'baseurlProvider', function($stateProvider, $urlRouterProvider, $translateProvider, baseurlProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -146,6 +146,8 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/start');
   
+	
+	
   $translateProvider.translations("ENG", {
 	  START_TITLE: 'Start',
       GUIDES_TITLE: 'Guides',
@@ -213,8 +215,13 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
 						row = rs.rows.item(i);
 						if(row.otoid == schoolObj.school_id) {
 							var language = schoolObj.lang;
-                            //changes lang
+                            //set lang and baseurl then start
                             $translateProvider.use(language);
+							baseurlProvider.setUrl(schoolObj.school_domain);
+							/*alert("translated and baseurl set");
+							angular.element(document).ready(function() {
+							  angular.bootstrap(document, ['eter']);
+							});*/
 						}
 					}
 				} else {
@@ -226,4 +233,4 @@ angular.module('eter', ['ionic', 'eter.controllers', 'eter.services', 'pascalpre
   });
   //set default preferred lang	
   $translateProvider.preferredLanguage("ENG");
-});
+}]);

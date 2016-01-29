@@ -18,4 +18,19 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+function BaseUrl(url) {
+    this.url = url;
+}
+
 angular.module('eter.services', [])
+	.provider("baseurl", [function () {
+		var url = "http://eter.rudbeck.info/";
+
+		this.setUrl = function (textString) {
+			url = textString;
+		};
+
+		this.$get = [function () {
+			return new BaseUrl(url);
+		}];
+	}]);

@@ -99,14 +99,14 @@ function fixCordovaYoutubePlayers() {
 }
 
 // modules
-angular.module('eter.controllers', ['ngSanitize'])
+angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
-.controller('FrontCtrl', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
+.controller('FrontCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', 'baseurl', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate, baseurl) {
 	// get school ids
 	var schoolsIdsTemp = [];
 	$http({
 		method: 'GET',
-		url: baseUrl + 'eter-app-api/' + apikey + '&oto_directory=1'
+		url: 'http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1'
 	}).then(function successCallback(response) {
 		$.each( response.data.oto_directory, function( key, val ) {
 			schoolsIdsTemp.push(val.school_id);
@@ -133,16 +133,16 @@ angular.module('eter.controllers', ['ngSanitize'])
 		$state.go('tab.start');
 	}
 	
-})
+}])
 
-.controller('StartCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
+.controller('StartCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', 'baseurl', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate, baseurl) {
 	$scope.slideHasChanged = function() {
         $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
     };
     $scope.$on("$ionicView.beforeEnter", function() {
          app.start();
     });
-	
+
 	$scope.$on("$ionicView.enter", function() {
 		app.db.transaction(function (tx) {
 			tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
@@ -159,7 +159,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	});
 
     // GET TAB-START API
-    $http.get(baseUrl +'eter-app-api/'+ apikey +'&startpage=1').
+    $http.get(baseurl.url +'eter-app-api/'+ apikey +'&startpage=1').
         success(function(data) {
             $('#start-data').html("");
             var firstPageContent = {
@@ -191,7 +191,7 @@ angular.module('eter.controllers', ['ngSanitize'])
                 // $http.defaults.useXDomain = true;
                 $scope.loading = true;
 
-                var response = $http.get(baseUrl +'category/'+category+'/?json=1&'+ p_apikey);
+                var response = $http.get(baseurl.url +'category/'+category+'/?json=1&'+ p_apikey);
 
                 response.success(function(data, status, headers, config) {
                     if (data.category.post_count == 0) {
@@ -240,7 +240,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 					$scope.goToLinkTopRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '' });
+                            firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "oto", on_link: '' });
                         });
 						$scope.goToGuideTopRow = function(id) {
 							if(typeof id == "number") {
@@ -250,7 +250,7 @@ angular.module('eter.controllers', ['ngSanitize'])
                     } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
                         $.each(data.list_all_courses, function(index, course) {
                             if(index < 3) {
-                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '' });
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'oto', on_link: '' });
                             }
                         });
 						$scope.goToGuideTopRow = function() {};
@@ -271,7 +271,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 					$scope.goToLinkBottomRow = function() {};
                     if(data.hasOwnProperty('posts')) { // the latest guides
                         $.each(data.posts, function(index, post) {
-                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '' });
+                            firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "oto", on_link: '' });
                         });
 						$scope.goToGuideBottomRow = function(id) {
 							if(typeof id == "number") {
@@ -282,7 +282,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
                         $.each(data.list_all_courses.reverse() , function(index, course) {
                             if(index < 3) {
-                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '' });
+                                firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'oto', on_link: '' });
                             }
                         });
 						$scope.goToGuideBottomRow = function() {};
@@ -311,7 +311,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         });
 }])
 
-.controller('GuidesCtrl', function($scope, $http) {
+.controller('GuidesCtrl', ['$scope', '$http', 'baseurl', function($scope, $http, baseurl) {
     $scope.$on("$ionicView.beforeEnter", function() {
      var slideout = new Slideout({
         'panel': document.getElementById('panel'),
@@ -332,7 +332,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     $scope.posts = [];
 
 	$scope.listCate = function() {
-        var response = $http.get(baseUrl +'eter-app-api/'+ apikey +'&list-taxonomy=1&type=category');
+        var response = $http.get(baseurl.url +'eter-app-api/'+ apikey +'&list-taxonomy=1&type=category');
         response.success(function(data) {
 			//alert("a");
             var taxonomyArr = [];
@@ -355,7 +355,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
     $scope.latest = function() {
         $scope.loading = true;
-        var response = $http.get(baseUrl +'category/sjalvstudier/?json=1&count=10&'+ p_apikey);
+        var response = $http.get(baseurl.url +'category/sjalvstudier/?json=1&count=10&'+ p_apikey);
         response.success(function(data) {
 			$scope.posts = data.posts;
 			$scope.loading = false;
@@ -372,7 +372,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.loadRead = function() {
 		$scope.loading = true;
 		var read = [];
-        var response = $http.get(baseUrl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+        var response = $http.get(baseurl.url +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
         response.success(function(data) {
 			app.db.transaction(function (tx) {
 				tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
@@ -415,7 +415,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 	$scope.loadNotRead = function() {
 		$scope.loading = true;
 		var notRead = [];
-        var response = $http.get(baseUrl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+        var response = $http.get(baseurl.url +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
         response.success(function(data) {
 				app.db.transaction(function (tx) {
                     tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
@@ -471,7 +471,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
 
-        var response = $http.get(baseUrl +'category/'+category+'/?json=1&'+ p_apikey);
+        var response = $http.get(baseurl.url +'category/'+category+'/?json=1&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             if (data.category.post_count == 0) {
@@ -496,7 +496,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         // $http.defaults.useXDomain = true;
         $scope.loading = true;
 
-        var response = $http.get(baseUrl +'api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
+        var response = $http.get(baseurl.url +'api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             $('#start-data').html('');
@@ -521,13 +521,13 @@ angular.module('eter.controllers', ['ngSanitize'])
             });
             $scope.latest();
     });
-})
-.controller('GuidesDetailCtrl', ['$scope','$http', '$stateParams', '$sce', function GuidesDetailCtrl($scope, $http, $stateParams, $sce) {
+}])
+.controller('GuidesDetailCtrl', ['$scope','$http', '$stateParams', '$sce', 'baseurl', function GuidesDetailCtrl($scope, $http, $stateParams, $sce, baseurl) {
    $scope.loadpost = function() {
         $scope.loading = true;
         console.log("$stateParams",$stateParams);
 
-        var response = $http.get(baseUrl +'?p=' + $stateParams.pid + '&json=1&'+ p_apikey);
+        var response = $http.get(baseurl.url +'?p=' + $stateParams.pid + '&json=1&'+ p_apikey);
 
         response.success(function(data, status, headers, config) {
             console.log(data);
@@ -622,7 +622,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     }
 })
 
-.controller('CoursesCtrl', function($scope, $http, $ionicSlideBoxDelegate) {
+.controller('CoursesCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', 'baseurl', function($scope, $http, $ionicSlideBoxDelegate, baseurl) {
     $scope.loading = true;
 
 	$scope.courseDropdown = function(id, e) {
@@ -647,7 +647,7 @@ angular.module('eter.controllers', ['ngSanitize'])
     });
 
     // Get all courses
-    $http.get(baseUrl +'eter-app-api/'+ apikey +'&list-all-courses=1&parent=43').
+    $http.get(baseurl.url +'eter-app-api/'+ apikey +'&list-all-courses=1&parent=43').
     success(function(data) {
         var courses = [];
         $.each(data.list_all_courses, function(index, obj) { // loop through courses
@@ -680,7 +680,7 @@ angular.module('eter.controllers', ['ngSanitize'])
 
     /* Get recommended courses for the slider
     */
-    $http.get(baseUrl +'eter-app-api/'+ apikey +'&courses-slider=1').
+    $http.get(baseurl.url +'eter-app-api/'+ apikey +'&courses-slider=1').
     success(function(data) {
         //alert(JSON.stringify(data.courses_slider, null, 4));
         $scope.courses_slider = data.courses_slider;
@@ -690,16 +690,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         console.log(data);
     });
 
-})
-
-/*.controller('CoursesDetailCtrl', function($scope) {
-    $scope.$on("$ionicView.beforeEnter", function() {
-        app.single();
-        fixCordovaOutboundLinks();
-		fixCordovaYoutubePlayers();
-    });
-})*/
-
+}])
 
 .controller('EterCtrl', function($scope, $http) {
     $scope.$on("$ionicView.enter", function() {
@@ -709,7 +700,7 @@ angular.module('eter.controllers', ['ngSanitize'])
             $.ajax({
                 type: 'POST',
                 data: postData,
-                url: baseUrl +'support/#contact-form-425',
+                url: baseurl.url +'support/#contact-form-425',
                 success: function(data){
                     function alertDismissed() {
                     // reload
@@ -748,7 +739,7 @@ angular.module('eter.controllers', ['ngSanitize'])
         });
     });
 
-    $http.get(baseUrl +'om-ikt-coacher/?json=1&'+ p_apikey).
+    $http.get(baseurl.url +'om-ikt-coacher/?json=1&'+ p_apikey).
         success(function(data) {
             $scope.iktCoach = data.page;
             fixCordovaOutboundLinks();
@@ -759,7 +750,7 @@ angular.module('eter.controllers', ['ngSanitize'])
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
             console.log(data);
         });
-    $http.get(baseUrl +'om-eter/?json=1&'+ p_apikey).
+    $http.get(baseurl.url +'om-eter/?json=1&'+ p_apikey).
         success(function(data) {
             $scope.omEter = data.page;
             fixCordovaOutboundLinks();
