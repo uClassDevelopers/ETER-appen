@@ -59,7 +59,7 @@ var app = {
         app.db.transaction(function (tx) {
             tx.executeSql("CREATE TABLE IF NOT EXISTS readposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER, added_on TEXT)", []);
 			tx.executeSql("CREATE TABLE IF NOT EXISTS likedposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER)", []);
-			tx.executeSql("CREATE TABLE IF NOT EXISTS schoolinfo(ID INTEGER PRIMARY KEY ASC, otoid INTEGER)", [],
+			tx.executeSql("CREATE TABLE IF NOT EXISTS schoolinfo(ID INTEGER PRIMARY KEY ASC, otoid INTEGER, otourl TEXT)", [],
                 app.onSuccess, app.onError);
 			
         });
@@ -72,7 +72,7 @@ var app = {
         });
     },
 	
-	checkForSchoolOrAdd: function(oid) {
+	checkForSchoolOrAdd: function(oid, oUrl) {
 		app.db.transaction(function (tx) {
             tx.executeSql("SELECT * FROM schoolinfo", [], function(tx, rs) {
                 var row;
@@ -81,11 +81,12 @@ var app = {
                     for (var i = 0; i < rowlength; i++) {
                         row = rs.rows.item(i);
                         app.deleteSchoolInfoById(row.ID);
-						tx.executeSql("INSERT INTO schoolinfo(otoid) VALUES (?)", [oid], app.onSuccess, app.onError);
+											  console.log("adding school: " + row.ID + " | " + row.otourl);
+												tx.executeSql("INSERT INTO schoolinfo(otoid, otourl) VALUES (?,?)", [oid, oUrl], app.onSuccess, app.onError);
                     }
                 } else {
 					app.db.transaction(function (tx) {
-						tx.executeSql("INSERT INTO schoolinfo(otoid) VALUES (?)", [oid], app.onSuccess, app.onError);
+						tx.executeSql("INSERT INTO schoolinfo(otoid, otourl) VALUES (?,?)", [oid, oUrl], app.onSuccess, app.onError);
 						//alert("added!");
 					});
                 }
@@ -181,7 +182,7 @@ var app = {
 
             for (var i = 0; i < rs.rows.length; i++) {
                 row = rs.rows.item(i);
-                rowOutput += "<li style='border:1px solid #000000; margin: 2px;'> ID: " + row.ID + ", otoid:" + row.otoid + " [<a href='javascript:void(0);' onclick=\'app.deleteSchoolInfoById(" + row.ID + ");\'>Delete</a>]</li>";
+                rowOutput += "<li style='border:1px solid #000000; margin: 2px;'> ID: " + row.ID + ", otoid:" + row.otoid + ", otourl: " + row.otourl + "[<a href='javascript:void(0);' onclick=\'app.deleteSchoolInfoById(" + row.ID + ");\'>Delete</a>]</li>";
             }
             if (typeof window.MSApp != 'undefined') {
                 MSApp.execUnsafeLocalFunction(function () {

@@ -42,7 +42,7 @@ eter.run(function($ionicPlatform) {
   });
 })
 
-eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 'baseurlProvider', function($stateProvider, $urlRouterProvider, $translateProvider, baseurlProvider) {
+eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', function($stateProvider, $urlRouterProvider, $translateProvider) {
 
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -150,7 +150,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 'base
 	
   $translateProvider.translations("ENG", {
 	  START_TITLE: 'Start',
-      GUIDES_TITLE: 'Guides',
+    GUIDES_TITLE: 'Guides',
 	  COURSES_TITLE: 'Courses',
 	  ABOUT_TITLE: 'About & Support',
 	  NAV_BACK: 'Go back',
@@ -177,7 +177,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 'base
   })
   .translations("SWE", {
 	  START_TITLE: 'Start',
-      GUIDES_TITLE: 'Guider',
+    GUIDES_TITLE: 'Guider',
 	  COURSES_TITLE: 'Kurser',
 	  ABOUT_TITLE: 'Om & support',
 	  NAV_BACK: 'Bakåt',
@@ -203,32 +203,27 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', 'base
 	  FORM_SEND: "Skicka meddelande"
   });
 	
+	// Set language
   $.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( response ) {
 	  console.log("lang get request complete");
 	  $.each( response.oto_directory, function( key, schoolObj ) {
-		app.db.transaction(function (tx) {
-			tx.executeSql("SELECT * FROM schoolinfo", [], function(tx, rs) {
-				var row;
-				var rowlength = rs.rows.length;
-				if(rowlength > 0) {
-					for (var i = 0; i < rowlength; i++) {
-						row = rs.rows.item(i);
-						if(row.otoid == schoolObj.school_id) {
-							var language = schoolObj.lang;
-                            //set lang and baseurl then start
-                            $translateProvider.use(language);
-							baseurlProvider.setUrl(schoolObj.school_domain);
-							/*alert("translated and baseurl set");
-							angular.element(document).ready(function() {
-							  angular.bootstrap(document, ['eter']);
-							});*/
+			app.db.transaction(function (tx) {
+				tx.executeSql("SELECT * FROM schoolinfo", [], function(tx, rs) {
+					var row;
+					var rowlength = rs.rows.length;
+					if(rowlength > 0) {
+						for (var i = 0; i < rowlength; i++) {
+							row = rs.rows.item(i);
+							if(row.otoid == schoolObj.school_id) {
+								var language = schoolObj.lang;
+								$translateProvider.use(language);
+							}
 						}
+					} else {
+						console.log("no school selected");
 					}
-				} else {
-					console.log("no school selected");
-				}
-			}, app.onError);
-		});
+				}, app.onError);
+			});
 	  });
   });
   //set default preferred lang	
