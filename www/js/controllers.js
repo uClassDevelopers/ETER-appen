@@ -644,26 +644,23 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 										break;
 									} else {
 										if(i == (rowlength-1)) {
-											app.db.transaction(function (tx) {
-												tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-													var rowlength = rs.rows.length;
-													if(rowlength > 0) {
-															$http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-																$('.action-like').html("");
-																$('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-																$("#like-icn_"+pid).css("color", "#387EF5");
-															})
-														response.error(function(data, status, headers, config) {
-															alert('Något gick fel när du skulle gilla');
-															console.log(data);
-														});
-													} else {
-														console.log("no school selected");
-														$state.go('front');
-													}
-												}, app.onError);
-											});
-											
+											tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+												var rowlength = rs.rows.length;
+												if(rowlength > 0) {
+														$http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+															$('.action-like').html("");
+															$('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+															$("#like-icn_"+pid).css("color", "#387EF5");
+														})
+													response.error(function(data, status, headers, config) {
+														alert('Något gick fel när du skulle gilla');
+														console.log(data);
+													});
+												} else {
+													console.log("no school selected");
+													$state.go('front');
+												}
+											}, app.onError);
 										}
 									}
 								}
@@ -708,31 +705,31 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 .controller('CoursesCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', function($scope, $http, $ionicSlideBoxDelegate) {
 	$scope.loading = true;
 	
+	$scope.courseDropdown = function(id, e) {
+		//e.currentTarget.innerHTML = id;
+		var eid = "#e" + id; // id of dropdown element
+		var ccid = "#cc" + id; // id of course container
+		var cid = "#c" + id; // if of clicked element
+		$(eid).slideToggle();
+		var otherDropdowns = ".dropdown1:not(" + eid + ")";
+				$(otherDropdowns).slideUp();
+		// toggle highlighting
+		$(ccid).toggleClass('courseHighlight');
+		$(".courseContainer").not(ccid).removeClass('courseHighlight');
+
+	}
+	
+	$scope.slideHasChanged = function() {
+		$ionicSlideBoxDelegate.$getByHandle('course-viewer').update();
+	}
+	$scope.$on("$ionicView.enter", function() {
+
+	});
+	
 	app.db.transaction(function (tx) {
 		tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
 			var rowlength = rs.rows.length;
 			if(rowlength > 0) {
-				$scope.courseDropdown = function(id, e) {
-					//e.currentTarget.innerHTML = id;
-					var eid = "#e" + id; // id of dropdown element
-					var ccid = "#cc" + id; // id of course container
-					var cid = "#c" + id; // if of clicked element
-					$(eid).slideToggle();
-					var otherDropdowns = ".dropdown1:not(" + eid + ")";
-							$(otherDropdowns).slideUp();
-					// toggle highlighting
-					$(ccid).toggleClass('courseHighlight');
-					$(".courseContainer").not(ccid).removeClass('courseHighlight');
-
-				}
-
-				$scope.slideHasChanged = function() {
-						$ionicSlideBoxDelegate.$getByHandle('course-viewer').update();
-				}
-				$scope.$on("$ionicView.enter", function() {
-
-				});
-
 				// Get all courses
 				$http.get(rs.rows.item(0).otourl +'eter-app-api/'+ apikey +'&list-all-courses=1&parent=43').
 				success(function(data) {
@@ -790,7 +787,6 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 			var rowlength = rs.rows.length;
 			if(rowlength > 0) {
 				//rs.rows.item(0).otourl
-				$scope.$on("$ionicView.enter", function() {
 				 $('#supportForm').submit(function(){
 						var postData = $(this).serialize();
 						$.ajax({
@@ -831,32 +827,32 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 									showAlert();
 							}
 						});
-					return false;
-				});
-			});
+						return false;
+					});
+				
 
-			$http.get(rs.rows.item(0).otourl +'om-ikt-coacher/?json=1&'+ p_apikey).
-			success(function(data) {
-				$scope.iktCoach = data.page;
-				fixCordovaOutboundLinks();
-				fixCordovaYoutubePlayers();
-			}).
-			error(function(data) {
-				$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-				$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-				console.log(data);
-			});
-			$http.get(rs.rows.item(0).otourl +'om-eter/?json=1&'+ p_apikey).
+				$http.get(rs.rows.item(0).otourl +'om-ikt-coacher/?json=1&'+ p_apikey).
 				success(function(data) {
-				$scope.omEter = data.page;
-				fixCordovaOutboundLinks();
-				fixCordovaYoutubePlayers();
-			}).
-			error(function(data) {
-				$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-				$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-				console.log(data);
-			});
+					$scope.iktCoach = data.page;
+					fixCordovaOutboundLinks();
+					fixCordovaYoutubePlayers();
+				}).
+				error(function(data) {
+					$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+					$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+					console.log(data);
+				});
+				$http.get(rs.rows.item(0).otourl +'om-eter/?json=1&'+ p_apikey).
+					success(function(data) {
+					$scope.omEter = data.page;
+					fixCordovaOutboundLinks();
+					fixCordovaYoutubePlayers();
+				}).
+				error(function(data) {
+					$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+					$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+					console.log(data);
+				});
 
 			} else {
 				console.log("no school selected");

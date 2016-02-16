@@ -25,20 +25,20 @@
 	<ion-content id="front-container">
 		<div class="card">
 		  <div class="item item-text-wrap">
-			<h1>Welcome to the One-To-One App!</h1>
-			<br />
-			<br />
-			<label class="item item-input item-select">
-				<div class="input-label">
-				  Select school code
-				</div>
-				<select ng-model="otoCode">
-				  <option ng-repeat="i in schoolIds">{{i}}</option>
-				</select>
-			 </label>
-			 <br />
+				<h1>Welcome to the One-To-One App!</h1>
+				<br />
+				<br />
+				<label class="item item-input item-select">
+					<div class="input-label">
+						Select school code
+					</div>
+					<select ng-model="otoCode">
+						<option ng-repeat="i in schoolIds">{{i}}</option>
+					</select>
+				</label>
 			  <br />
-			<button class="button button-positive" ng-click="submitSchoolId(otoCode)">Submit</button>
+			  <br />
+				<button class="button button-positive" ng-click="submitSchoolId(otoCode)">Submit</button>
 		  </div>
 		</div>
 	</ion-content>

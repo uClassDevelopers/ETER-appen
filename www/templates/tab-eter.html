@@ -24,54 +24,54 @@
 <!-- the whole file is language specific -->
 <ion-view view-title="<img class='animated bounce' height='40' src='img/ETER-logga.png'/>" ng-controller="EterCtrl">
   <ion-nav-buttons side="right">
-  	  <a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
+  	<a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
   </ion-nav-buttons>
   <ion-content>
     <div class="card">
       <div class="item item-text-wrap">
-          <h2 style="font-weight: bold;">{{ 'OTO_APP_NAME' | translate }}</h2> 
-          <p><a href="#" onclick="window.open('http://uclass.se', '_system', 'location=yes');"><img style="height: 85px; float: right;" src="img/logo_uclass.png" alt="uClass"/></a> {{ 'OTO_APP_PRESENTATION' | translate }}<a style="text-decoration: underline; color: #000;" href="#" onclick="window.open('http://uclass.se', '_system', 'location=yes');">{{ 'READ_MORE_UCLASS' | translate }}</a>
-          </p>
-          <br/>
-		  <!-- The One-To-One idea is presented here -->
-          <div id="om-eter">
-            <h2 style="font-weight: bold;">{{omEter.title}}</h2>
-              <p data-ng-bind-html="omEter.content"></p>
-          </div>
-          <br/>
-		  <!-- Present what the school's students can do to help the school's IT development-->
-          <div id="ikt-coacher">
-            <h2 style="font-weight: bold;">{{iktCoach.title}}</h2>
-              <p data-ng-bind-html="iktCoach.content"></p>
-          </div>
+      	<h2 style="font-weight: bold;">{{ 'OTO_APP_NAME' | translate }}</h2> 
+        <p><a href="#" onclick="window.open('http://uclass.se', '_system', 'location=yes');"><img style="height: 85px; float: right;" src="img/logo_uclass.png" alt="uClass"/></a> {{ 'OTO_APP_PRESENTATION' | translate }}<a style="text-decoration: underline; color: #000;" href="#" onclick="window.open('http://uclass.se', '_system', 'location=yes');">{{ 'READ_MORE_UCLASS' | translate }}</a>
+        </p>
+        <br/>
+		  	<!-- The One-To-One idea is presented here -->
+				<div id="om-eter">
+					<h2 style="font-weight: bold;">{{omEter.title}}</h2>
+						<p data-ng-bind-html="omEter.content"></p>
+				</div>
+				<br/>
+		  	<!-- Present what the school's students can do to help the school's IT development-->
+				<div id="ikt-coacher">
+					<h2 style="font-weight: bold;">{{iktCoach.title}}</h2>
+						<p data-ng-bind-html="iktCoach.content"></p>
+				</div>
       </div>
     </div>
-        <form name="supportForm" id="supportForm" class="card">
-            <div class="list item item-text-wrap" style="margin: 10px;">
-                <h2 style="font-weight: bold;">{{ 'FORM_CONTACT' | translate }}</h2>
-                <span class="input-label">{{ 'FORM_NAME' | translate }}</span>
-                <input style="border: 1px solid #e4e4e4;" name="g425-namn" aria-required="true" id="g425-namn" type="text" placeholder="Namn">
-                <span class="input-label">{{ 'FORM_SCHOOL_MAIL' | translate }}</span>
-                <input style="border: 1px solid #e4e4e4;" type="text" name="g425-epost" id="g425-epost" placeholder="xxx@edu.sollentuna.se">
-                <div>
-                    <span class="input-label">{{ 'FORM_OPINIONS' | translate }}</span>
-                    <textarea class="greyBorder" style="width: 100%;" name="g425-synpunkter" id="contact-form-comment-g425-synpunkter" rows="10" required="" aria-required="true"></textarea>
-                </div>
-                <div class="input-label">
-                  {{ 'FORM_TYPE_OF_OPINION' | translate }}
-                </div>
-                <select name="g425-vadgllerdinsynpunkt" id="g425-vadgllerdinsynpunkt">
-                    <option>{{ 'FORM_TYPE_OPINION' | translate }}</option>
-                    <option>{{ 'FORM_TYPE_GUIDE' | translate }}</option>
-                    <option>{{ 'FORM_TYPE_OTHER' | translate }}</option>
-                </select>
-                <input class="button button-block button-positive" id="btn-submit-support" class="submit" type="submit" value="{{ 'FORM_SEND' | translate }}"/>
-            </div>
-            
-            <input type="hidden" name="_wpnonce" value="3f06f99e8d">    
-            <input type="hidden" name="_wp_http_referer" value="/support/">
-            <input type="hidden" name="contact-form-id" value="425">
-            <input type="hidden" name="action" value="grunion-contact-form">   
-        </form>
+		<form name="supportForm" id="supportForm" class="card">
+			<div class="list item item-text-wrap" style="margin: 10px;">
+				<h2 style="font-weight: bold;">{{ 'FORM_CONTACT' | translate }}</h2>
+				<span class="input-label">{{ 'FORM_NAME' | translate }}</span>
+				<input style="border: 1px solid #e4e4e4;" name="g425-namn" aria-required="true" id="g425-namn" type="text" placeholder="Namn">
+				<span class="input-label">{{ 'FORM_SCHOOL_MAIL' | translate }}</span>
+				<input style="border: 1px solid #e4e4e4;" type="text" name="g425-epost" id="g425-epost" placeholder="xxx@edu.sollentuna.se">
+				<div>
+					<span class="input-label">{{ 'FORM_OPINIONS' | translate }}</span>
+					<textarea class="greyBorder" style="width: 100%;" name="g425-synpunkter" id="contact-form-comment-g425-synpunkter" rows="10" required="" aria-required="true"></textarea>
+				</div>
+				<div class="input-label">
+					{{ 'FORM_TYPE_OF_OPINION' | translate }}
+				</div>
+				<select name="g425-vadgllerdinsynpunkt" id="g425-vadgllerdinsynpunkt">
+					<option>{{ 'FORM_TYPE_OPINION' | translate }}</option>
+					<option>{{ 'FORM_TYPE_GUIDE' | translate }}</option>
+					<option>{{ 'FORM_TYPE_OTHER' | translate }}</option>
+				</select>
+				<input class="button button-block button-positive" id="btn-submit-support" class="submit" type="submit" value="{{ 'FORM_SEND' | translate }}"/>
+			</div>
+
+			<input type="hidden" name="_wpnonce" value="3f06f99e8d">    
+			<input type="hidden" name="_wp_http_referer" value="/support/">
+			<input type="hidden" name="contact-form-id" value="425">
+			<input type="hidden" name="action" value="grunion-contact-form">   
+		</form>
   </ion-content>
 </ion-view>
