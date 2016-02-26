@@ -25,47 +25,21 @@
 	<ion-content id="front-container">
 		<div class="card">
 		  <div class="item item-text-wrap">
-			<h1>Welcome to the One-To-One App!</h1>
-			<br />
-			<br />
-			<label class="item item-input item-select">
-				<div class="input-label">
-				  Select school code
-				</div>
-				<select ng-model="otoCode">
-				  <!--<option>A43C</option>
-				  <option>32DS</option>
-				  <option>FFF1</option>-->
-					{{options}}
-				</select>
-			 </label>
-			 <br />
+				<h1>Welcome to the One-To-One App!</h1>
+				<br />
+				<br />
+				<label class="item item-input item-select">
+					<div class="input-label">
+						Select school code
+					</div>
+					<select ng-model="otoCode">
+						<option ng-repeat="i in schoolIds">{{i}}</option>
+					</select>
+				</label>
 			  <br />
-			<button class="button button-positive" ng-click="submitCode(otoCode)">Submit</button>
+			  <br />
+				<button class="button button-positive" ng-click="submitSchoolId(otoCode)">Submit</button>
 		  </div>
-            	  
-        <a href="#/tab/guides">GÅÅÅÅÅåååÅÅåÅÅÅåÅåÅ</a>    
-        <div class="bajs" style="display:;">
-			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(666)">Liked postid 666</a>
-			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(111)">Liked postid 111</a>
-			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(999)">Liked postid 999</a>
-            <p id="lblTxInfo"></p>
-			<p>Read items:</p>
-			<br />
-			<ul>
-            	<p id="lblInfo"></p>
-			</ul>
-			<p>Liked items:</p>
-			<br />
-			<ul>
-				<p id="lblInfo2"></p>
-			</ul>
-            <p id="lblDBInfo"></p>
-            <p id="lblDBError"></p>
-            <p id="console"></p>
-	    <section id="status" class="ok">ready</section>
-        </div>
-        
 		</div>
 	</ion-content>
 </ion-view>

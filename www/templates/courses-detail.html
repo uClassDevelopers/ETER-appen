@@ -21,38 +21,37 @@
  */
 -->
 <ion-view view-title="" ng-controller="GuidesDetailCtrl">
-<ion-nav-bar>
-  <ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;">
-    <i class="icon ion-ios-arrow-back"></i> Kurser <!-- language specific -->
-  </ion-nav-back-button>
-</ion-nav-bar>
+	<ion-nav-bar>
+		<ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;">
+			<i class="icon ion-ios-arrow-back"></i> {{ 'NAV_BACK' | translate }} <!-- language specific -->
+		</ion-nav-back-button>
+	</ion-nav-bar>
 
   <ion-content>
-	<div id="single-wrapper" class="single-wrapper">        
-            <div id="post_" class="list card">
+		<div id="single-wrapper" class="single-wrapper">        
+			<div id="post_" class="list card">
+				<div class="item">
+					<h2>{{post.title}}</h2>
+					<p>{{post.date}}</p>
+				</div>
 
-              <div class="item">
-                <h2>{{post.title}}</h2>
-                <p>{{post.date}}</p>
-              </div>
+				<div class="item item-body">
+					<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
+					<div ng-bind-html="trustedHtml" compile-template></div>
+					<ul style="list-style: none;" id="play-buttons"></ul>
+				</div>
 
-              <div class="item item-body">
-                <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
-                <div ng-bind-html="trustedHtml" compile-template></div>
-                <ul style="list-style: none;" id="play-buttons"></ul>
-              </div>
-
-              <div class="item tabs tabs-secondary tabs-icon-left">
-                <a class="tab-item" ng-click="like(post.id)">
-                  <i id="like-icn_{{post.id}}" class="icon ion-thumbsup"></i> Gilla <span id="num_likes_{{post.id}}"></span> <!-- language specific -->
-                </a>
-                <div id="start-data"></div>
-                <a class="tab-item" href="#" id="share">
-                  <i class="icon ion-share"></i>
-                  Dela <!-- language specific -->
-                </a>
-            </div>
-        </div>
-	</div>
+				<div class="item tabs tabs-secondary tabs-icon-left">
+					<a class="tab-item" ng-click="like(post.id)">
+						<i id="like-icn_{{post.id}}" class="icon ion-thumbsup"></i> Gilla <span id="num_likes_{{post.id}}"></span> <!-- language specific -->
+					</a>
+					<div id="start-data"></div>
+					<a class="tab-item" href="#" id="share">
+						<i class="icon ion-share"></i>
+						Dela <!-- language specific -->
+					</a>
+				</div>
+			</div>
+		</div>
   </ion-content>
 </ion-view>

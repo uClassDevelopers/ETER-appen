@@ -22,31 +22,30 @@
 -->
 <ion-view view-title="" ng-controller="GuidesDetailCtrl">
   <ion-content>
-	<div id="single-wrapper" class="single-wrapper">
-            <div id="post_" class="list card">
+		<div id="single-wrapper" class="single-wrapper">
+			<div id="post_" class="list card">
+				<div class="item">
+					<h2>{{post.title}}</h2>
+					<p>{{post.date}}</p>
+				</div>
 
-              <div class="item">
-                <h2>{{post.title}}</h2>
-                <p>{{post.date}}</p>
-              </div>
+				<div class="item item-body">
+					<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
+					<div ng-bind-html="trustedHtml" compile-template></div>
+					<ul style="list-style: none;" id="play-buttons"></ul>
+				</div>
 
-              <div class="item item-body">
-                <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
-                <div ng-bind-html="trustedHtml" compile-template></div>
-                 <ul style="list-style: none;" id="play-buttons"></ul>
-              </div>
-
-              <div class="item tabs tabs-secondary tabs-icon-left">
-                <a class="tab-item" ng-click="like(post.id)">
-                  <i id="like-icn_{{post.id}}" class="icon ion-thumbsup"></i> Gilla <span id="num_likes_{{post.id}}"></span> <!-- language specific -->
-                </a>
-                <div id="start-data"></div>
-                <a class="tab-item" id="share">
-                  <i class="icon ion-share"></i>
-                  Dela <!-- language specific -->
-                </a>
-            </div>
-        </div>
-	</div>
+				<div class="item tabs tabs-secondary tabs-icon-left">
+					<a class="tab-item" ng-click="like(post.id)">
+						<i id="like-icn_{{post.id}}" class="icon ion-thumbsup"></i> Gilla <span id="num_likes_{{post.id}}"></span> <!-- language specific -->
+					</a>
+					<div id="start-data"></div>
+					<a class="tab-item" id="share">
+						<i class="icon ion-share"></i>
+						Dela <!-- language specific -->
+					</a>
+				</div>
+			</div>
+		</div>
   </ion-content>
 </ion-view>
