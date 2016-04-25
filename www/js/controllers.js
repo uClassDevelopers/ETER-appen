@@ -370,15 +370,22 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $scope.latest = function() {
 			$scope.loading = true;
 			app.db.transaction(function (tx) {
+				console.log("Inside first db trans");
 				tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+					console.log("Inside second db trans");
 					var rowlength = rs.rows.length;
+					console.log("rowlength " + rowlength);
+					console.log("rs.rows.item(0).otourl " + rs.rows.item(0).otourl);
 					if(rowlength > 0) {
-						var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
+						console.log("inside if");
+						var response = $http.get(rs.rows.item(0).otourl +'category/sjalvstuider/?json=1&count=10&'+ p_apikey);
 						response.success(function(data) {
+							console.log("inside success");
 							$scope.posts = data.posts;
 							$scope.loading = false;
 						}).
 						error(function(data) {
+							console.log("inside error");
 							$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
 							$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
 							console.log(data);
