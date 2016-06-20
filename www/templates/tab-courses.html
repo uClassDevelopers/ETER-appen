@@ -29,7 +29,7 @@
   <ion-content>
 		<ion-slide-box delegate-handle="course-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
 			<ion-slide ng-repeat="rc in courses_slider">
-				<div class="card" style="height: 90%;">     
+				<div class="card" style="height: 90%;">
 					<div class="item item-text-wrap">
 						<h2>{{ rc.course }} - {{ rc.title }}</h2>
 						<img style="max-width: 150px; max-height: 150px; width: 100%; float: left; margin-right: 5px;" src="{{ rc.image_url }}" alt=".."/>
@@ -52,7 +52,7 @@
 				<div class="list list-inset dropdown1" id="e{{c.id}}">
 					<h4>{{ 'COURSE_SUBHEADER' | translate }}</h4> <!-- language specific -->
 					<div class="elementList">
-						<div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }})">
+						<div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }},'course')">
 							<span class="bold">{{ ($index+1) }}. </span>
 							{{ el.posttitle }}
 						</div>
