@@ -117,7 +117,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     }
   })
     .state('tab.courses-detail', {
-    url: '/courses/:pid',
+    url: '/courses/:pid/:postType',
     views: {
       'tab-courses': {
         templateUrl: 'templates/courses-detail.html',
@@ -228,6 +228,6 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
       });
     });
   });
-  //set default preferred lang	
+  //set default preferred lang
   $translateProvider.preferredLanguage("ENG");
 }]);

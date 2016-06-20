@@ -753,7 +753,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 						//alert(JSON.stringify(courses, null, 4));
 						$scope.courses = courses;
 						$scope.goToGuide = function(id) {
-								location.href="#/tab/courses/"+id;
+								location.href="#/tab/courses/"+id+'/course';
 						}
 						$scope.loading = false;
 				}).
