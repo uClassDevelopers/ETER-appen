@@ -18,5 +18,8 @@
     "org.apache.cordova.dialogs",
     "org.apache.cordova.inappbrowser",
     "com.msopentech.websql"
+  ],
+  "cordovaPlatforms": [
+    "ios"
   ]
 }
