@@ -232,7 +232,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 $scope.goToLinkTopRow = function() {};
                 if(data.hasOwnProperty('posts')) { // the latest guides
                   $.each(data.posts, function(index, post) {
-                    firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "oto", on_link: '' });
+                    firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '', contentClass: 'dynamiska' });
                   });
                   $scope.goToGuideTopRow = function(id) {
                     if(typeof id == "number") {
@@ -242,7 +242,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
                   $.each(data.list_all_courses, function(index, course) {
                     if(index < 3) {
-                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'oto', on_link: '' });
+                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '', contentClass: 'dynamiska'});
                     }
                   });
                   $scope.goToGuideTopRow = function() {};
@@ -263,7 +263,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 $scope.goToLinkBottomRow = function() {};
                 if(data.hasOwnProperty('posts')) { // the latest guides
                   $.each(data.posts, function(index, post) {
-                    firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "oto", on_link: '' });
+                    firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '', contentClass: 'dynamiska' });
                   });
                   $scope.goToGuideBottomRow = function(id) {
                     if(typeof id == "number") {
@@ -274,7 +274,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
                   $.each(data.list_all_courses.reverse() , function(index, course) {
                     if(index < 3) {
-                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'oto', on_link: '' });
+                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '', contentClass: 'dynamiska' });
                     }
                   });
                   $scope.goToGuideBottomRow = function() {};
@@ -599,123 +599,118 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             $scope.post = data.post;
             console.log($scope.post);
 
-            if($stateParams.postType != 'course') {
+            if($stateParams.postType != 'guide') {
               $scope.trustedHtml = $sce.trustAsHtml($scope.post.content);
             } else {
-              /*for (var k in $scope.post.content.guide_parts){
-              if (typeof $scope.post.content.guide_parts[k] !== 'function') {
-              alert("Key is " + k + ", value is" + $scope.post.content.guide_parts[k]);
-              console.log("Key is " + k + ", value is" );
-              console.log($scope.post.content.guide_parts[k]);
-              var asString = "";
-              asString = $scope.post.content.guide_parts[k];
-              $scope.trustedHtml = $sce.trustAsHtml(asString);
-              console.log($scope.post.content.guide_parts[guideIndex]);
-            }
-          }*/
-          var getParts = $scope.post.content.guide_parts;
-          for (var i=0; i< getParts.length; i++){
-            console.log(Object.keys(getParts[i]));
-            var key = String(Object.keys(getParts[i]));
-            console.log(key);
-            key = key.substring(key.lastIndexOf('_'), key.lastIndexOf(']')-1);
-            console.log("fake"+getParts[i]._Guide_post_desc);
-            console.log(key);
+              var getParts = $scope.post.content.guide_parts;
+              var finaleParts = "";
+              for (var i=0; i< getParts.length; i++){
+                console.log(Object.keys(getParts[i]));
+                var key = String(Object.keys(getParts[i]));
+                console.log(key);
 
-            var part = getParts[i].key;
-            console.log(part);
-
-            $scope.trustedHtml = $sce.trustAsHtml(part);
-          }
-        }
-
-        $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
-          $('.action-like').html("");
-          $('#num_likes_' + $stateParams.pid).html(" ("+ data.num_votes+")");
-          $("#like-icn_"+pid).css("color", "#387EF5");
-        })
-        response.error(function(data, status, headers, config) {
-          alert('Något gick fel');
-          console.log(data);
-        });
-        document.getElementById('share').addEventListener("click", function() {
-          //alert('Pressed url: ' + $scope.post.url);
-          console.log('like' + $stateParams.pid);
-          window.plugins.socialsharing.share('Kolla in denna artikel: '+ $scope.post.title, 'Rekomenderad artikel på ETER-sajten: ' + $scope.post.title, null, $scope.post.url);
-        });
-        $scope.loading = false;
-        fixCordovaOutboundLinks();
-        fixCordovaYoutubePlayers();
-      });
-
-      response.error(function(data, status, headers, config) {
-        $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-        $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-        console.log(data);
-      });
-    } else {
-      console.log("no school selected");
-      $state.go('front');
-    }
-  }, app.onError);
-});
-};
-$scope.like = function (pid) {
-  id = parseInt(pid);
-  app.checkIfLikedAndAdd(pid);
-  app.db.transaction(function (tx) {
-    tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
-      var row;
-      var rowlength = rs.rows.length;
-      if(rowlength > 0) {
-        for (var i = 0; i < rowlength; i++) {
-          row = rs.rows.item(i);
-          if(id == row.postid) {
-            $('#num_likes_'+pid).html("(Redan gillat)");
-            break;
-          } else {
-            if(i == (rowlength-1)) {
-              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-                var rowlength = rs.rows.length;
-                if(rowlength > 0) {
-                  $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-                    $('.action-like').html("");
-                    $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-                    $("#like-icn_"+pid).css("color", "#387EF5");
-                  })
-                  response.error(function(data, status, headers, config) {
-                    alert('Något gick fel när du skulle gilla');
-                    console.log(data);
-                  });
+                if(key != "_Guide_post_desc"){
+                  var part = getParts[i][key];
+                  console.log(part);
+                  var buildPartHtml = '<div style="display: block; width: 70%; border: 1px solid black;">'+part+'</div>'
+                  finaleParts += buildPartHtml;
                 } else {
-                  console.log("no school selected");
-                  $state.go('front');
+                  var part = getParts[i][key];
+                  console.log(part);
+                  finaleParts += part;
                 }
-              }, app.onError);
+
+                $scope.trustedHtml = $sce.trustAsHtml(finaleParts);
+              }
+            }
+
+            $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
+              $('.action-like').html("");
+              $('#num_likes_' + $stateParams.pid).html(" ("+ data.num_votes+")");
+              $("#like-icn_"+pid).css("color", "#387EF5");
+            })
+            response.error(function(data, status, headers, config) {
+              alert('Något gick fel');
+              console.log(data);
+            });
+            document.getElementById('share').addEventListener("click", function() {
+              //alert('Pressed url: ' + $scope.post.url);
+              console.log('like' + $stateParams.pid);
+              window.plugins.socialsharing.share('Kolla in denna artikel: '+ $scope.post.title, 'Rekomenderad artikel på ETER-sajten: ' + $scope.post.title, null, $scope.post.url);
+            });
+            $scope.loading = false;
+            fixCordovaOutboundLinks();
+            fixCordovaYoutubePlayers();
+          });
+
+          response.error(function(data, status, headers, config) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+          });
+        } else {
+          console.log("no school selected");
+          $state.go('front');
+        }
+      }, app.onError);
+    });
+  };
+  $scope.like = function (pid) {
+    id = parseInt(pid);
+    app.checkIfLikedAndAdd(pid);
+    app.db.transaction(function (tx) {
+      tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
+        var row;
+        var rowlength = rs.rows.length;
+        if(rowlength > 0) {
+          for (var i = 0; i < rowlength; i++) {
+            row = rs.rows.item(i);
+            if(id == row.postid) {
+              $('#num_likes_'+pid).html("(Redan gillat)");
+              break;
+            } else {
+              if(i == (rowlength-1)) {
+                tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+                  var rowlength = rs.rows.length;
+                  if(rowlength > 0) {
+                    $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+                      $('.action-like').html("");
+                      $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+                      $("#like-icn_"+pid).css("color", "#387EF5");
+                    })
+                    response.error(function(data, status, headers, config) {
+                      alert('Något gick fel när du skulle gilla');
+                      console.log(data);
+                    });
+                  } else {
+                    console.log("no school selected");
+                    $state.go('front');
+                  }
+                }, app.onError);
+              }
             }
           }
+        } else {
+          $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+            $('.action-like').html("");
+            $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+            $("#like-icn_"+pid).css("color", "#387EF5");
+          })
+          response.error(function(data, status, headers, config) {
+            alert('Något gick fel när du skulle gilla');
+            console.log(data);
+          });
         }
-      } else {
-        $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-          $('.action-like').html("");
-          $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-          $("#like-icn_"+pid).css("color", "#387EF5");
-        })
-        response.error(function(data, status, headers, config) {
-          alert('Något gick fel när du skulle gilla');
-          console.log(data);
-        });
-      }
-    }, app.onError);
+      }, app.onError);
+    });
+  };
+
+
+  $scope.$on("$ionicView.beforeEnter", function() {
+    $scope.loadpost();
+    console.log("$stateParams",$stateParams);
+    app.checkIfReadAndAdd($stateParams.pid);
   });
-};
-
-
-$scope.$on("$ionicView.beforeEnter", function() {
-  $scope.loadpost();
-  console.log("$stateParams",$stateParams);
-  app.checkIfReadAndAdd($stateParams.pid);
-});
 
 }])
 
@@ -768,7 +763,7 @@ $scope.$on("$ionicView.beforeEnter", function() {
           $.each(data.list_all_courses, function(index, obj) { // loop through courses
             courses.push({ id: obj.id, name: obj.name, desc: obj.description, elements: [] });
             $.each(data.list_all_courses[index].elements.reverse(), function(i, el) { // loop through elements
-              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position });
+              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type});
               courses[index].elements.sort(function (a, b) {
                 if (a.elementOrder > b.elementOrder) {
                   return 1;
@@ -783,8 +778,8 @@ $scope.$on("$ionicView.beforeEnter", function() {
           });
           //alert(JSON.stringify(courses, null, 4));
           $scope.courses = courses;
-          $scope.goToGuide = function(id) {
-            location.href="#/tab/courses/"+id+'/course';
+          $scope.goToGuide = function(id, posttype) {
+            location.href="#/tab/courses/"+id+"/"+posttype;
           }
           $scope.loading = false;
         }).

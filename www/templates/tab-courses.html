@@ -27,7 +27,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/circle.css">
   <ion-content>
-		<ion-slide-box delegate-handle="course-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
+		<!--<ion-slide-box delegate-handle="course-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
 			<ion-slide ng-repeat="rc in courses_slider">
 				<div class="card" style="height: 90%;">
 					<div class="item item-text-wrap">
@@ -38,21 +38,21 @@
 				</div>
 		 </ion-slide>
 		</ion-slide-box>
-    <br />
+    <br />-->
     <div id="start-data"></div>
     <h1 style="margin-left:12px;">{{ 'COURSES_HEADER' | translate }}</h1> <!-- language specific -->
     <ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
-		<div class="list card" style="padding-bottom: 0px;">
+		<div class="list card" style="padding-bottom: 0px;" style="clear: both;">
 			<div class="courseContainer" ng-repeat="c in courses" id="cc{{c.id}}">
-				<div class="item item-icon-left course" id="c{{c.id}}" ng-click="courseDropdown(c.id, $event)">
-					<i class="icon"></i>
+				<div class="item course" id="c{{c.id}}" ng-click="courseDropdown(c.id, $event)">
 					<h2>{{ c.name }}</h2>
 					<p>{{ c.desc }}</p>
+          <button style="float: right; border: none; background-color: none; color: #fff;">Starta Kursen  <i class="icon ion-arrow-right-b"></i></button>
 				</div>
 				<div class="list list-inset dropdown1" id="e{{c.id}}">
 					<h4>{{ 'COURSE_SUBHEADER' | translate }}</h4> <!-- language specific -->
 					<div class="elementList">
-						<div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }},'course')">
+						<div ng-repeat="el in c.elements" class="item" ng-click="goToGuide({{ el.postid }},'{{el.type}}')">
 							<span class="bold">{{ ($index+1) }}. </span>
 							{{ el.posttitle }}
 						</div>

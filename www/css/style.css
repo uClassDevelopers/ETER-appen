@@ -19,6 +19,24 @@
  * under the License.
  */
 /* ETER-Appen, main stylesheet */
+ion-tabs.tabs-color-active-positive .tab-item.tab-item-active {
+  color: #9e1b32;
+}
+.ion-tabs.tabs-color-active-positive .tab-item.activated{
+  color: #9e1b32 !important;
+}
+ion-tabs.tabs-color-active-positive .tab-item.tab-item-active, ion-tabs.tabs-color-active-positive .tab-item.active, ion-tabs.tabs-color-active-positive .tab-item.activated {
+    color: #9e1b32 !important;
+}
+.oto-tabs .tab-nav{
+  background-color: #F2F2F2 !important;
+}
+.bar-stable {
+	background-color: #fff !important;
+}
+#settings-btn {
+  color: #9e1b32;
+}
 #uclass {
     position: fixed;
     bottom: 8px;
@@ -27,12 +45,12 @@
     height: 25px;
 }
 h2 {
-    font-size: 22px !important; 
-    font-weight: 500 !important; 
+    font-size: 22px !important;
+    font-weight: 500 !important;
     margin-bottom: 5px !important;
 }
 #front-ion-view {
-	
+
 }
 #front-container {
 	background-color: #FFF;
@@ -97,20 +115,40 @@ a {
     display: none;
 }
 .loading {
-    display: block; 
+    display: block;
     text-align:center;
 }
 /* start */
 ion-slide div img {
     width: 100%;
      height: 350px;
-} 
+     border-radius: 0px 0px 5px 5px !important;
+}
 #start {
     margin: auto;
 }
 #top-boxes {
     text-align: center;
 }
+#top-boxes .box3:nth-child(1){
+  background-color: rgb(158, 27, 50);
+}
+#top-boxes .box3:nth-child(2) {
+  background-color: rgb(119, 184, 0);
+}
+#top-boxes .box3:nth-child(3) {
+  background-color: rgb(0, 197, 181);
+}
+#row-two-boxes .box3:nth-child(1){
+  background-color: rgb(180, 112, 21);
+}
+#row-two-boxes .box3:nth-child(2) {
+  background-color: rgb(103, 59, 184);
+}
+#row-two-boxes .box3:nth-child(3) {
+  background-color: rgba(158, 27, 50, 0.6);
+}
+
 #row-two-boxes {
     text-align: center;
 }
@@ -121,6 +159,9 @@ ion-slide div img {
 #rows2 {
     margin-top: 20px;
 }
+.box3 div p {
+	color: #fff;
+}
 .box3 {
     font-size: 18px;
     display: inline-block;
@@ -129,14 +170,15 @@ ion-slide div img {
     margin-bottom: 30px;
     padding: 20px;
     margin: 1.5%;
-    border: 1px solid #EAEAEA;
     border-radius: 0px;
     background: none repeat scroll 0% 0% #FDFDFD;
-    box-shadow: 0px 1px 0px 0px #ADADAD;
     width: 220px;
     text-align: center;
     border-radius: 5px;
     height: 230px;
+}
+.dynamiska {
+      text-align: left !important;
 }
 .box2 {
     font-size: 12px;
@@ -191,7 +233,7 @@ ion-slide div img {
 .alignleft {
     float: left;
     margin: 5px 20px 20px 0px;
-} 
+}
 .alignright {
     float: right;
     margin: 5px 20px 20px 0px;
@@ -240,9 +282,23 @@ ion-slide div img {
 /* tab-eter */
 
 /* tab courses */
+.course {
+  color: #fff;
+}
+.course {
+  color: #fff;
+}
+.courseContainer:nth-child(even) .course{
+    background-color: rgba(158, 27, 50, 0.6) !important;
+}
+.courseContainer:nth-child(odd) .course{
+      background-color: rgb(158, 27, 50) !important;
+}
+.course h2, .course p {
+  color: #fff;
+}
 .courseContainer {
-    border-top: 1px solid #e4e4e4;
-    border-bottom: 1px solid #e4e4e4;
+  padding: 2px;
 }
 .dropdown1 {
     display:none;
@@ -252,7 +308,7 @@ ion-slide div img {
 }
 .dropdown1:last-child {
     margin-bottom: 40px;
-} 
-.courseHighlight {
-	border: 10px solid #A4D3EE;
 }
+/*.courseHighlight {
+	border: 10px solid #A4D3EE;
+}*/

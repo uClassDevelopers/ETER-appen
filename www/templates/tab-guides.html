@@ -21,10 +21,10 @@
  */
 -->
 
-<ion-view view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->    
+<ion-view view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->
 	<ion-nav-buttons side="left">
 		<button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
-  </ion-nav-buttons>   
+  </ion-nav-buttons>
 	<ion-nav-buttons side="right">
 		<a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
 	</ion-nav-buttons>
@@ -51,16 +51,16 @@
 		</ion-list>
 	</nav>
 	<ion-content>
-		<main id="panel"> 
+		<main id="panel">
 			<div id="start-data"></div>
-			<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>     
+			<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 			<ion-list id="abc">
-				<ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}})">
+				<ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}}, {{g.type}})">
 						<a data-transition="slide" ><h3>{{g.title}}</h3></a>
 						<p style="float: right;">{{ g.read }}</p>
 						<p>Skriven: {{g.date}}</p> <!-- language specific -->
 						<p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
-				</ion-item>    
+				</ion-item>
 			</ion-list>
 		</main>
 	</ion-content>
