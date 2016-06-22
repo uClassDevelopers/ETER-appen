@@ -605,6 +605,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             } else {
               var getParts = $scope.post.content.guide_parts;
               var finaleParts = "";
+
               for (var i=0; i< getParts.length; i++){
                 console.log(Object.keys(getParts[i]));
                 var key = String(Object.keys(getParts[i]));
@@ -613,12 +614,12 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 if(key != "_Guide_post_desc"){
                   var part = getParts[i][key];
                   console.log(part);
-                  var buildPartHtml = '<div style="display: block; width: 70%; border: 1px solid black;">'+part+'</div>'
+                  var buildPartHtml = '<div class="card guideStepBox"><div class="item item-divider">Steg: '+i+'</div><div class="item item-text-wrap">'+part+'</div></div>';
                   finaleParts += buildPartHtml;
                 } else {
                   var part = getParts[i][key];
                   console.log(part);
-                  finaleParts += part;
+                  finaleParts += '<div class="introduction">'+part+'</div>';
                 }
 
                 $scope.trustedHtml = $sce.trustAsHtml(finaleParts);
@@ -793,7 +794,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
           $.each(data.list_all_courses, function(index, obj) { // loop through courses
             courses.push({ id: obj.id, name: obj.name, desc: obj.description, elements: [] });
             $.each(data.list_all_courses[index].elements.reverse(), function(i, el) { // loop through elements
-              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type});
+              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type, nextId: data.list_all_courses[index+1].elements.id, previousId:  data.list_all_courses[index-1].elements.id});
               courses[index].elements.sort(function (a, b) {
                 if (a.elementOrder > b.elementOrder) {
                   return 1;

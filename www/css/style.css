@@ -278,7 +278,13 @@ ion-slide div img {
 	margin-top:20px;
 }
 /* guider-details.html */
-
+.guideStepBox {
+  box-shadow: none;
+  margin: 0px;
+}
+.introduction {
+  margin-bottom: 8px;
+}
 /* tab-eter */
 
 /* tab courses */

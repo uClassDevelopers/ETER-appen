@@ -32,13 +32,12 @@
 			<div ng-bind-html="showNextButton" compile-template></div>
     </ion-nav-buttons>
 	</ion-nav-bar>
-
 	<ion-content>
 		<div id="single-wrapper" class="single-wrapper">
 			<div id="post_" class="list card">
 				<div class="item">
-					<h2>Moment:{{humanRedablePosition}}, {{post.title}}</h2>
-					<p>{{post.date}}</p>
+					<h2>Moment: {{humanRedablePosition}}, {{post.title}}</h2>
+					<p>{{post.date | date:'H:mm, d/m/yyyy'}}</p>
 				</div>
 
 				<div class="item item-body">

@@ -54,7 +54,7 @@
 					<div class="elementList">
 						<div ng-repeat="el in c.elements" class="item singleGuide" ng-click="goToGuide({{ el.postid }},'{{el.type}}', 'inCourseTrue', '{{ c.name }}')">
 							<span class="bold">{{ ($index+1) }}. </span>
-							{{ el.posttitle }}
+							{{ el.posttitle }} NEXT: {{el.nextId}} PreV: {{el.previousId}}
 						</div>
 					</div>
 				</div>
