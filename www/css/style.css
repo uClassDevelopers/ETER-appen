@@ -288,23 +288,50 @@ ion-slide div img {
 .course {
   color: #fff;
 }
+.btn-start-course {
+  float: right;
+  border: none;
+  background-color: none;
+}
 .courseContainer:nth-child(even) .course{
-    background-color: rgba(158, 27, 50, 0.6) !important;
+    background-color: #fff !important;
 }
 .courseContainer:nth-child(odd) .course{
-      background-color: rgb(158, 27, 50) !important;
+      background-color: rgba(158, 27, 50, 0.6) !important;
 }
-.course h2, .course p {
+.courseContainer:nth-child(even) .course h2 {
+  color: rgba(158, 27, 50, 0.6);
+}
+.courseContainer:nth-child(even) .course p {
+  color: rgba(158, 27, 50, 0.6);
+}
+.courseContainer:nth-child(even) .btn-start-course{
+  color: rgba(158, 27, 50, 0.6);
+}
+.courseContainer:nth-child(odd) .course h2 {
+  color: #fff;
+}
+.courseContainer:nth-child(odd) .course p {
+  color: #fff;
+}
+.courseContainer:nth-child(odd) .btn-start-course {
   color: #fff;
 }
 .courseContainer {
   padding: 2px;
+  border-bottom: : 2px solid #e4e4e4;
 }
 .dropdown1 {
     display:none;
 }
 .elementList {
     border: 2px solid #e4e4e4;
+}
+.singleGuide:nth-child(even) {
+  background-color: #F2F2F2 !important;
+}
+.singleGuide:nth-child(odd) {
+  background-color: #fff !important;
 }
 .dropdown1:last-child {
     margin-bottom: 40px;

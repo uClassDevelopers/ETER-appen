@@ -98,7 +98,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     }
   })
     .state('tab.guides-detail', {
-    url: '/guides/:pid/:postType',
+    url: '/guides/:pid/:postType/',
     views: {
       'tab-guides': {
         templateUrl: 'templates/guides-detail.html',
@@ -117,7 +117,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     }
   })
     .state('tab.courses-detail', {
-    url: '/courses/:pid/:postType',
+    url: '/courses/:pid/:postType/:inCourse/:courseName',
     views: {
       'tab-courses': {
         templateUrl: 'templates/courses-detail.html',
@@ -156,6 +156,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     COURSES_TITLE: 'Courses',
     ABOUT_TITLE: 'About & Support',
     NAV_BACK: 'Go back',
+    NAV_BACK_COURSES: 'All Courses',
     GUIDES_SLIDEOUT_LATEST: 'Latest',
     GUIDES_SLIDEOUT_CATEGORIES: 'Categories',
     GUIDES_SLIDEOUT_NOTREAD: 'Non-read',
@@ -183,6 +184,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     COURSES_TITLE: 'Kurser',
     ABOUT_TITLE: 'Om & support',
     NAV_BACK: 'Bakåt',
+    NAV_BACK_COURSES: 'Alla Kurser',
     GUIDES_SLIDEOUT_LATEST: 'Senaste',
     GUIDES_SLIDEOUT_CATEGORIES: 'Kategorier',
     GUIDES_SLIDEOUT_NOTREAD: 'Oläst',

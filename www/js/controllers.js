@@ -591,13 +591,14 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
         if(rowlength > 0) {
           console.log("$stateParams",$stateParams);
 
-          var response = $http.get(rs.rows.item(0).otourl +'?p=' + $stateParams.pid + '&json=1&'+ p_apikey);
+          var response = $http.get(rs.rows.item(0).otourl +'?p=' + $stateParams.pid + '&json=1&custom_fields=eter_guide_position&'+ p_apikey);
 
           response.success(function(data, status, headers, config) {
             console.log(data);
             $('#start-data').html('');
             $scope.post = data.post;
             console.log($scope.post);
+            $scope.guideInCourseTitle = $stateParams.courseName;
 
             if($stateParams.postType != 'guide') {
               $scope.trustedHtml = $sce.trustAsHtml($scope.post.content);
@@ -622,6 +623,23 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
                 $scope.trustedHtml = $sce.trustAsHtml(finaleParts);
               }
+            }
+            var machineRedablePosition = parseInt($scope.post.custom_fields.eter_guide_position);
+            $scope.humanRedablePosition = machineRedablePosition;
+
+            console.log("$stateParams",$stateParams);
+            if($stateParams.inCourse == 'inCourseTrue' ) {
+              console.log("inCourseTrue");
+
+              var listId = $scope.post.custom_fields.eter_guide_position;
+              var previousListId = listId-1;
+              var nextListId = previousListId+2;
+              console.log("PREVS "+previousListId);
+              console.log("NEXT "+nextListId);
+              if(!(listId <= 1)) {
+                $scope.showPreviousButton = $sce.trustAsHtml('<button class="button back-button buttons  button-clear header-item" style="color: black;"><i style="color: #9e1b32;" class="icon ion-ios-arrow-back"></i> Moment '+previousListId+'</button>');
+              }
+              $scope.showNextButton = $sce.trustAsHtml('<button class="button back-button buttons  button-clear header-item" style="color: black;">Moment '+nextListId+' <i style="color: #9e1b32;" class="icon ion-ios-arrow-forward"></i></button>');
             }
 
             $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
@@ -655,6 +673,18 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
       }, app.onError);
     });
   };
+
+  /*$scop.ShowPrevious = function (listId, postType){
+    console.log("$stateParams",$stateParams);
+    if($stateParams.inCourse == 'inCourseTrue' ) {
+      var previousListId = listId-1;
+      $scope.showPrevious = $sce.trustAsHtml('<ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;"><i class="icon ion-ios-arrow-back"></i>Steg '+previousListId+'</ion-nav-back-button>');
+    }
+  }*/
+  /*$scop.ShowNext= function(listId, postType){
+
+  }*/
+
   $scope.like = function (pid) {
     id = parseInt(pid);
     app.checkIfLikedAndAdd(pid);
@@ -778,8 +808,8 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
           });
           //alert(JSON.stringify(courses, null, 4));
           $scope.courses = courses;
-          $scope.goToGuide = function(id, posttype) {
-            location.href="#/tab/courses/"+id+"/"+posttype;
+          $scope.goToGuide = function(id, posttype, incourseval, courseName) {
+            location.href="#/tab/courses/"+id+"/"+posttype+"/"+incourseval+"/"+courseName;
           }
           $scope.loading = false;
         }).
