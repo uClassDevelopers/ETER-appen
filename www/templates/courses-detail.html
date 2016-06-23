@@ -22,10 +22,8 @@
 -->
 <ion-view view-title="{{guideInCourseTitle}}" ng-controller="GuidesDetailCtrl">
 	<ion-nav-bar>
-		<ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;">
-			<i class="icon ion-ios-arrow-back"></i> {{ 'NAV_BACK_COURSES' | translate }} <!-- language specific -->
-		</ion-nav-back-button>
 		<ion-nav-buttons side="left">
+			<a class='button back-button buttons  button-clear header-item' style='color: black;' href="#/tab/courses"><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i>Alla Kurser</a>
 			<div ng-bind-html="showPreviousButton" compile-template></div>
     </ion-nav-buttons>
 		<ion-nav-buttons side="right">
@@ -36,7 +34,7 @@
 		<div id="single-wrapper" class="single-wrapper">
 			<div id="post_" class="list card">
 				<div class="item">
-					<h2>Moment: {{humanRedablePosition}}, {{post.title}}</h2>
+					<h2>{{getAll}} Moment: {{humanRedablePosition}}, {{post.title}}</h2>
 					<p>{{post.date | date:'H:mm, d/m/yyyy'}}</p>
 				</div>
 

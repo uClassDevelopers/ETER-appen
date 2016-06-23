@@ -52,9 +52,9 @@
 				<div class="list list-inset dropdown1" id="e{{c.id}}">
 					<h4>{{ 'COURSE_SUBHEADER' | translate }}</h4> <!-- language specific -->
 					<div class="elementList">
-						<div ng-repeat="el in c.elements" class="item singleGuide" ng-click="goToGuide({{ el.postid }},'{{el.type}}', 'inCourseTrue', '{{ c.name }}')">
+						<div ng-repeat="el in c.elements" class="item singleGuide" ng-click="goToGuide({{ el.postid }},'{{el.type}}', 'inCourseTrue', '{{ c.name }}', '{{c.slug}}')">
 							<span class="bold">{{ ($index+1) }}. </span>
-							{{ el.posttitle }} NEXT: {{el.nextId}} PreV: {{el.previousId}}
+							{{ el.posttitle }}
 						</div>
 					</div>
 				</div>

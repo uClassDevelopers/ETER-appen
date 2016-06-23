@@ -582,7 +582,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $scope.latest();
   });
 }])
-.controller('GuidesDetailCtrl', ['$scope','$http', '$stateParams', '$sce', function GuidesDetailCtrl($scope, $http, $stateParams, $sce) {
+.controller('GuidesDetailCtrl', ['$scope','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $http,  $state, $stateParams, $sce, guidesInCourse) {
   $scope.loadpost = function() {
     $scope.loading = true;
     app.db.transaction(function (tx) {
@@ -628,20 +628,81 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             var machineRedablePosition = parseInt($scope.post.custom_fields.eter_guide_position);
             $scope.humanRedablePosition = machineRedablePosition;
 
-            console.log("$stateParams",$stateParams);
-            if($stateParams.inCourse == 'inCourseTrue' ) {
-              console.log("inCourseTrue");
+            /*BEGIN FIND NEXT AND PREV*/
+            // Get all courses
+            $http.get(rs.rows.item(0).otourl +'category/43/'+$stateParams.courseSlug+'/?json=1&custom_fields=eter_guide_position').
+            success(function(data) {
+              var prevNext = [];
+              $.each(data.posts, function(index, obj) {
+                var customsFields = parseInt($scope.post.custom_fields.eter_guide_position);
+                //console.log("cf "+customsFields);
+                var prev = customsFields-1;
+                var next = customsFields+1;
+/*
+                console.log("prevs "+prev);
+                console.log("next "+next);
+                console.log('innan '+obj.custom_fields.eter_guide_position+' vs '+ next);
+                console.log('innan '+obj.custom_fields.eter_guide_position +' vs '+ prev);
+*/
+                if(obj.custom_fields.eter_guide_position == prev || obj.custom_fields.eter_guide_position == next) {
 
-              var listId = $scope.post.custom_fields.eter_guide_position;
-              var previousListId = listId-1;
-              var nextListId = previousListId+2;
-              console.log("PREVS "+previousListId);
-              console.log("NEXT "+nextListId);
-              if(!(listId <= 1)) {
-                $scope.showPreviousButton = $sce.trustAsHtml('<button class="button back-button buttons  button-clear header-item" style="color: black;"><i style="color: #9e1b32;" class="icon ion-ios-arrow-back"></i> Moment '+previousListId+'</button>');
-              }
-              $scope.showNextButton = $sce.trustAsHtml('<button class="button back-button buttons  button-clear header-item" style="color: black;">Moment '+nextListId+' <i style="color: #9e1b32;" class="icon ion-ios-arrow-forward"></i></button>');
-            }
+                  //console.log(obj.custom_fields.eter_guide_position +' vs '+ next);
+                  //console.log(obj.custom_fields.eter_guide_position +' vs '+ prev);
+                  prevNext.push({ id: obj.id, title: obj.title, position: obj.custom_fields.eter_guide_position});
+
+                  //console.log("prevNext:");
+                  //console.log(prevNext);
+                }
+                $scope.goToCourseGuide = function(id) {
+                  //console.log("RUN PRESS");
+                  //console.log(id);
+                  $state.go('tab.courses-detail',{pid: id, postType: obj.type, inCourse: $stateParams.inCourse, courseName:$stateParams.inCourse});
+                }
+              });
+
+              $.each(prevNext, function(index, obj) {
+                console.log("$stateParams",$stateParams);
+
+                if($stateParams.inCourse == 'inCourseTrue' ) {
+                  //console.log("inCourseTrue");
+
+                  var listId = $scope.post.custom_fields.eter_guide_position;
+                  var previousListId = listId-1;
+                  var nextListId = previousListId+2;
+                  //console.log("PREVS "+previousListId);
+                  //console.log("NEXT "+nextListId);
+                  if(!(listId <= 1) && obj.position < listId) {
+                    $scope.showPreviousButton = $sce.trustAsHtml("<button class='button back-button buttons  button-clear header-item' style='color: black;' ng-click='goToCourseGuide("+obj.id+")'><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i> Moment "+previousListId+"</button>");
+                  } else {
+                    $scope.showNextButton = $sce.trustAsHtml("<button class='button back-button buttons  button-clear header-item' style='color: black;'   ng-click='goToCourseGuide("+obj.id+")'>Moment "+nextListId+" <i style='color: #9e1b32;' class='icon ion-ios-arrow-forward'></i> </button>");
+
+                  }
+                }
+              });
+
+              console.log(prevNext);
+
+              $scope.loading = false;
+            }).
+            error(function(data) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
+              console.log(data);
+            });
+
+            /*
+            Get recommended courses for the slider
+            */
+            $http.get(rs.rows.item(0).otourl +'eter-app-api/'+ apikey +'&courses-slider=1').
+            success(function(data) {
+              //alert(JSON.stringify(data.courses_slider, null, 4));
+              $scope.courses_slider = data.courses_slider;
+            }).
+            error(function(data) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in de rekommenderade kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
+              console.log(data);
+            });
+
+            /*END*/
 
             $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
               $('.action-like').html("");
@@ -676,72 +737,72 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   };
 
   /*$scop.ShowPrevious = function (listId, postType){
-    console.log("$stateParams",$stateParams);
-    if($stateParams.inCourse == 'inCourseTrue' ) {
-      var previousListId = listId-1;
-      $scope.showPrevious = $sce.trustAsHtml('<ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;"><i class="icon ion-ios-arrow-back"></i>Steg '+previousListId+'</ion-nav-back-button>');
-    }
-  }*/
-  /*$scop.ShowNext= function(listId, postType){
+  console.log("$stateParams",$stateParams);
+  if($stateParams.inCourse == 'inCourseTrue' ) {
+  var previousListId = listId-1;
+  $scope.showPrevious = $sce.trustAsHtml('<ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;"><i class="icon ion-ios-arrow-back"></i>Steg '+previousListId+'</ion-nav-back-button>');
+}
+}*/
+/*$scop.ShowNext= function(listId, postType){
 
-  }*/
+}*/
 
-  $scope.like = function (pid) {
-    id = parseInt(pid);
-    app.checkIfLikedAndAdd(pid);
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
-        var row;
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          for (var i = 0; i < rowlength; i++) {
-            row = rs.rows.item(i);
-            if(id == row.postid) {
-              $('#num_likes_'+pid).html("(Redan gillat)");
-              break;
-            } else {
-              if(i == (rowlength-1)) {
-                tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-                  var rowlength = rs.rows.length;
-                  if(rowlength > 0) {
-                    $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-                      $('.action-like').html("");
-                      $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-                      $("#like-icn_"+pid).css("color", "#387EF5");
-                    })
-                    response.error(function(data, status, headers, config) {
-                      alert('Något gick fel när du skulle gilla');
-                      console.log(data);
-                    });
-                  } else {
-                    console.log("no school selected");
-                    $state.go('front');
-                  }
-                }, app.onError);
-              }
+$scope.like = function (pid) {
+  id = parseInt(pid);
+  app.checkIfLikedAndAdd(pid);
+  app.db.transaction(function (tx) {
+    tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
+      var row;
+      var rowlength = rs.rows.length;
+      if(rowlength > 0) {
+        for (var i = 0; i < rowlength; i++) {
+          row = rs.rows.item(i);
+          if(id == row.postid) {
+            $('#num_likes_'+pid).html("(Redan gillat)");
+            break;
+          } else {
+            if(i == (rowlength-1)) {
+              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+                var rowlength = rs.rows.length;
+                if(rowlength > 0) {
+                  $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+                    $('.action-like').html("");
+                    $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+                    $("#like-icn_"+pid).css("color", "#387EF5");
+                  })
+                  response.error(function(data, status, headers, config) {
+                    alert('Något gick fel när du skulle gilla');
+                    console.log(data);
+                  });
+                } else {
+                  console.log("no school selected");
+                  $state.go('front');
+                }
+              }, app.onError);
             }
           }
-        } else {
-          $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-            $('.action-like').html("");
-            $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-            $("#like-icn_"+pid).css("color", "#387EF5");
-          })
-          response.error(function(data, status, headers, config) {
-            alert('Något gick fel när du skulle gilla');
-            console.log(data);
-          });
         }
-      }, app.onError);
-    });
-  };
-
-
-  $scope.$on("$ionicView.beforeEnter", function() {
-    $scope.loadpost();
-    console.log("$stateParams",$stateParams);
-    app.checkIfReadAndAdd($stateParams.pid);
+      } else {
+        $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+          $('.action-like').html("");
+          $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+          $("#like-icn_"+pid).css("color", "#387EF5");
+        })
+        response.error(function(data, status, headers, config) {
+          alert('Något gick fel när du skulle gilla');
+          console.log(data);
+        });
+      }
+    }, app.onError);
   });
+};
+
+
+$scope.$on("$ionicView.beforeEnter", function() {
+  $scope.loadpost();
+  console.log("$stateParams",$stateParams);
+  app.checkIfReadAndAdd($stateParams.pid);
+});
 
 }])
 
@@ -792,9 +853,10 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
         success(function(data) {
           var courses = [];
           $.each(data.list_all_courses, function(index, obj) { // loop through courses
-            courses.push({ id: obj.id, name: obj.name, desc: obj.description, elements: [] });
+            courses.push({ id: obj.id, slug: obj.slug, name: obj.name, desc: obj.description, elements: [] });
             $.each(data.list_all_courses[index].elements.reverse(), function(i, el) { // loop through elements
-              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type, nextId: data.list_all_courses[index+1].elements.id, previousId:  data.list_all_courses[index-1].elements.id});
+
+              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type});
               courses[index].elements.sort(function (a, b) {
                 if (a.elementOrder > b.elementOrder) {
                   return 1;
@@ -809,8 +871,9 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
           });
           //alert(JSON.stringify(courses, null, 4));
           $scope.courses = courses;
-          $scope.goToGuide = function(id, posttype, incourseval, courseName) {
-            location.href="#/tab/courses/"+id+"/"+posttype+"/"+incourseval+"/"+courseName;
+
+          $scope.goToGuide = function(id, posttype, incourseval, courseName, courseSlug) {
+            location.href="#/tab/courses/"+id+"/"+posttype+"/"+incourseval+"/"+courseName+'/'+courseSlug;
           }
           $scope.loading = false;
         }).

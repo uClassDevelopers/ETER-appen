@@ -117,7 +117,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     }
   })
     .state('tab.courses-detail', {
-    url: '/courses/:pid/:postType/:inCourse/:courseName',
+    url: '/courses/:pid/:postType/:inCourse/:courseName/:courseSlug',
     views: {
       'tab-courses': {
         templateUrl: 'templates/courses-detail.html',
