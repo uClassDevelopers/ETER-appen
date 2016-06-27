@@ -320,10 +320,10 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
       'padding': 256,
       'tolerance': 70
     });
-
     // Toggle button
     document.querySelector('.toggle-button').addEventListener('click', function() {
       slideout.toggle();
+      console.log('press');
     });
   });
 
@@ -362,9 +362,6 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
         }
       }, app.onError);
     });
-
-
-
   };
 
   $scope.latest = function() {
@@ -870,7 +867,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               });
             });
           });
-          alert(JSON.stringify(courses, null, 4));
+          //alert(JSON.stringify(courses, null, 4));
           $scope.courses = courses;
 
           $scope.goToGuide = function(id, posttype, incourseval, courseName, courseSlug) {

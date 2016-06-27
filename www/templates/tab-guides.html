@@ -1,65 +1,65 @@
 <!--
 /*
- * Copyright (C) 2015 uClass Developers Daniel Holm & Adam Jacobs Feldstein
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+* Copyright (C) 2015 uClass Developers Daniel Holm & Adam Jacobs Feldstein
+*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
 -->
 
 <ion-view view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->
 	<ion-nav-buttons side="left">
-		<button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button"></button>
-  </ion-nav-buttons>
+		<button id="mango-menu-btn" class="button button-icon button-clear ion-navicon toggle-button" onclick="slideout.toggle();"></button>
+	</ion-nav-buttons>
 	<ion-nav-buttons side="right">
 		<a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
 	</ion-nav-buttons>
-	<nav id="menu" scroll="false">
-		<ion-list style="z-index: -2;">
-			<form id="guide-search" ng-submit="search()">
-				<div class="item item-input-inset">
-					<label class="item-input-wrapper" id="search-input">
-						<i class="icon ion-search placeholder-icon"></i>
-						<input type="text" placeholder="{{ 'GUIDES_SLIDEOUT_SEARCH' | translate }}" ng-model="searchKey"> <!-- language specific -->
-					</label>
-				</div>
-			</form>
-			<ion-item ng-click="latest()">{{ 'GUIDES_SLIDEOUT_LATEST' | translate }}</ion-item> <!-- language specific -->
-			<ion-item id="tgl-categories">
-				<a style="display: block; color:#000000; width: 100%; height: 100%;" ng-click="listCate()">{{ 'GUIDES_SLIDEOUT_CATEGORIES' | translate }}</a> <!-- language specific -->
-			</ion-item>
-			<ion-list class="cate">
-					<ion-item class="child-list" ng-click="loadposts('{{c.slug}}')" ng-repeat="c in cateLoader">{{c.name}}</ion-item>
-			</ion-list>
-			<ion-item ng-click="loadNotRead()">{{ 'GUIDES_SLIDEOUT_NOTREAD' | translate }}</ion-item> <!-- language specific -->
-			<ion-item ng-click="loadposts('larare')">{{ 'GUIDES_SLIDEOUT_TEACHERS' | translate }}</ion-item> <!-- language specific -->
-			<ion-item ng-click="loadRead()">{{ 'GUIDES_SLIDEOUT_HISTORY' | translate }}</ion-item> <!-- language specific -->
-		</ion-list>
-	</nav>
 	<ion-content>
+		<nav id="menu" scroll="false">
+			<ion-list>
+				<form id="guide-search" ng-submit="search()">
+					<div class="item item-input-inset">
+						<label class="item-input-wrapper" id="search-input">
+							<i class="icon ion-search placeholder-icon"></i>
+							<input type="text" placeholder="{{ 'GUIDES_SLIDEOUT_SEARCH' | translate }}" ng-model="searchKey"> <!-- language specific -->
+						</label>
+					</div>
+				</form>
+				<ion-item ng-click="latest()">{{ 'GUIDES_SLIDEOUT_LATEST' | translate }}</ion-item> <!-- language specific -->
+				<ion-item id="tgl-categories">
+					<a style="display: block; color:#000000; width: 100%; height: 100%;" ng-click="listCate()">{{ 'GUIDES_SLIDEOUT_CATEGORIES' | translate }}</a> <!-- language specific -->
+				</ion-item>
+				<ion-list class="cate">
+					<ion-item class="child-list" ng-click="loadposts('{{c.slug}}')" ng-repeat="c in cateLoader">{{c.name}}</ion-item>
+				</ion-list>
+				<ion-item ng-click="loadNotRead()">{{ 'GUIDES_SLIDEOUT_NOTREAD' | translate }}</ion-item> <!-- language specific -->
+				<ion-item ng-click="loadposts('larare')">{{ 'GUIDES_SLIDEOUT_TEACHERS' | translate }}</ion-item> <!-- language specific -->
+				<ion-item ng-click="loadRead()">{{ 'GUIDES_SLIDEOUT_HISTORY' | translate }}</ion-item> <!-- language specific -->
+			</ion-list>
+		</nav>
 		<main id="panel">
 			<div id="start-data"></div>
 			<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 			<ion-list id="abc">
 				<ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}}, {{g.type}})">
-						<a data-transition="slide" ><h3>{{g.title}}</h3></a>
-						<p style="float: right;">{{ g.read }}</p>
-						<p>Skriven: {{g.date}}</p> <!-- language specific -->
-						<p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
+					<a data-transition="slide" ><h3>{{g.title}}</h3></a>
+					<p style="float: right;">{{ g.read }}</p>
+					<p>Skriven: {{g.date}}</p> <!-- language specific -->
+					<p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
 				</ion-item>
 			</ion-list>
 		</main>
