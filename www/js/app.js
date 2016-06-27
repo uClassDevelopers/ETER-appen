@@ -60,7 +60,6 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     abstract: true,
     templateUrl: "templates/tabs.html"
   })
-
   // front page
     .state('front', {
     url: '/front',
@@ -228,6 +227,6 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
       });
     });
   });
-  //set default preferred lang	
+  //set default preferred lang
   $translateProvider.preferredLanguage("ENG");
 }]);

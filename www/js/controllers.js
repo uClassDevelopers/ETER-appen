@@ -112,16 +112,16 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 			schoolsIdsTemp.push(val.school_id);
 	    });
 		$scope.schoolIds = schoolsIdsTemp;
-		
+
 		//$schools = data.oto_directory;
 	}, function errorCallback(data) {
 		console.log(data);
 	});
-	
+
 	// submit school id and base url click event
 	$scope.submitSchoolId = function(id) {
 		console.log("adding school id: " + id);
-		
+
 		$.getJSON( "http://eter.rudbeck.info//eter-app-api/?apikey=vV85LEH2cUJjshrFx5&oto_directory=1", function( response ) {
 			$.each( response.oto_directory, function( key, schoolObj ) {
 				if(schoolObj.school_id == id) {
@@ -132,7 +132,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 			});
 		});
 	}
-	
+
 }])
 
 .controller('StartCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
@@ -140,7 +140,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 	$scope.slideHasChanged = function() {
   	$ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
   };
-	
+
   $scope.$on("$ionicView.beforeEnter", function() {
   	app.start();
   });
@@ -304,7 +304,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 				} else {
 					console.log("no school selected");
 					$state.go('front');
-					
+
 				}
 			}, app.onError);
 		});
@@ -312,7 +312,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
 }])
 
-.controller('GuidesCtrl', ['$scope', '$http', function($scope, $http) {
+.controller('GuidesCtrl', ['$scope', '$ionicSideMenuDelegate','$http', function($scope, $ionicSideMenuDelegate, $http) {
 	$scope.$on("$ionicView.beforeEnter", function() {
 		var slideout = new Slideout({
 			'panel': document.getElementById('panel'),
@@ -326,11 +326,13 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 			slideout.toggle();
 		});
   });
-
+  $scope.showMenu = function () {
+    $ionicSideMenuDelegate.toggleLeft();
+  };
 	$scope.goToGuide = function(id) {
 		location.href="#/tab/guides/"+id;
 	};
-  
+
 	$scope.posts = [];
 
 	$scope.listCate = function() {
@@ -362,8 +364,8 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 				}
 			}, app.onError);
 		});
-		
-        
+
+
 
     };
 
@@ -444,7 +446,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 			}, app.onError);
 		});
 	};
-	
+
 	var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
 	$scope.loadNotRead = function() {
 		$scope.loading = true;
@@ -678,14 +680,14 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 						}, app.onError);
 					});
 				};
-	
-	
+
+
 				$scope.$on("$ionicView.beforeEnter", function() {
 					$scope.loadpost();
 					console.log("$stateParams",$stateParams);
 					app.checkIfReadAndAdd($stateParams.pid);
 				});
-			
+
 }])
 
 .directive('compileTemplate', function($compile, $parse){
@@ -704,7 +706,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
 .controller('CoursesCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', function($scope, $http, $ionicSlideBoxDelegate) {
 	$scope.loading = true;
-	
+
 	$scope.courseDropdown = function(id, e) {
 		//e.currentTarget.innerHTML = id;
 		var eid = "#e" + id; // id of dropdown element
@@ -718,14 +720,14 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 		$(".courseContainer").not(ccid).removeClass('courseHighlight');
 
 	}
-	
+
 	$scope.slideHasChanged = function() {
 		$ionicSlideBoxDelegate.$getByHandle('course-viewer').update();
 	}
 	$scope.$on("$ionicView.enter", function() {
 
 	});
-	
+
 	app.db.transaction(function (tx) {
 		tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
 			var rowlength = rs.rows.length;
@@ -829,7 +831,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 						});
 						return false;
 					});
-				
+
 
 				$http.get(rs.rows.item(0).otourl +'om-ikt-coacher/?json=1&'+ p_apikey).
 				success(function(data) {
