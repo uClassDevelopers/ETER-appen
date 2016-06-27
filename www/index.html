@@ -1,90 +1,77 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title></title>
-    <link href="css/animate.min.css" rel="stylesheet">
-    <link href="lib/ionic/css/ionic.css" rel="stylesheet">
-    <link href="css/style.css" rel="stylesheet">
-		<script src="js/jquery-1.11.3.min.js"></script>
-    <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
-    <link href="css/ionic.app.css" rel="stylesheet">
-    -->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <title></title>
+  <link href="css/animate.min.css" rel="stylesheet">
+  <link href="lib/ionic/css/ionic.css" rel="stylesheet">
+  <link href="css/style.css" rel="stylesheet">
+  <script src="js/jquery-1.11.3.min.js"></script>
+  <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
+  <link href="css/ionic.app.css" rel="stylesheet">
+-->
 
-    <!-- ionic/angularjs js -->
-    <script src="js/angular-sanitize.js"></script>
-    <script src="lib/ionic/js/ionic.bundle.js"></script>
+<!-- ionic/angularjs js -->
+<script src="js/angular-sanitize.js"></script>
+<script src="lib/ionic/js/ionic.bundle.js"></script>
 
-    <!-- cordova script (this will be a 404 during development) -->
-    <script src="cordova.js"></script>
+<!-- cordova script (this will be a 404 during development) -->
+<script src="cordova.js"></script>
 
-    <!-- your app's js -->
-    <script src="js/app.js"></script>
-    <script src="js/controllers.js"></script>
-    <script src="js/services.js"></script>
-    <script src="js/handlebars-v3.0.3.js"></script>
-    <script src="js/jquery.circle-diagram.js"></script>
-    <script src="js/index.js"></script>
-		<script src="js/angular-translate.min.js"></script>
-  </head>
-  <body ng-app="eter">
-    <!--
-      The nav bar that will be updated as we navigate between views.
-    -->
-    <ion-nav-bar class="bar-stable">
-      <ion-nav-back-button>
-      </ion-nav-back-button>
-    </ion-nav-bar>
+<!-- your app's js -->
+<script src="js/app.js"></script>
+<script src="js/controllers.js"></script>
+<script src="js/services.js"></script>
+<script src="js/handlebars-v3.0.3.js"></script>
+<script src="js/jquery.circle-diagram.js"></script>
+<script src="js/index.js"></script>
+<script src="js/angular-translate.min.js"></script>
+</head>
+<body ng-app="eter">
+  <!--
+  The nav bar that will be updated as we navigate between views.
+-->
+<ion-nav-bar class="bar-stable">
+  <ion-nav-back-button>
+  </ion-nav-back-button>
+</ion-nav-bar>
 
-    <!--
-      The views will be rendered in the <ion-nav-view> directive below
-      Templates are in the /templates folder (but you could also
-      have templates inline in this html file if you'd like).
-    -->
-    <img id="uclass" src="img/favicon.png" alt=""/>
-    <ion-nav-view></ion-nav-view>
-  </body>
-  <script>
-		// format an ISO date using Moment.js
-		// http://momentjs.com/
-		// moment syntax example: moment(Date("2011-07-18T15:50:52")).format("MMMM YYYY")
-		// usage: {{dateFormat creation_date format="MMMM YYYY"}}
-		Handlebars.registerHelper('dateFormat', function(context, block) {
-			if (window.moment) {
-				var f = block.hash.format || "MMM DD, YYYY hh:mm:ss A";
-				return moment(context).format(f); //had to remove Date(context)
-			}else{
-				return context; // moment plugin not available. return data as is.
-			};
-		});
-	</script>
-
-  <script src="js/slideout.min.js"></script>
-	<script>
-	var slideout = new Slideout({
-		'panel': document.getElementById('panel'),
-		'menu': document.getElementById('menu'),
-		'padding': 256,
-		'tolerance': 70
-	});
-	document.querySelector('.toggle-button').addEventListener('click', function() {
-		slideout.toggle();
-	});
-	</script>
-  <!-- Get the jQuery functions -->
-	<script>
-		function initPushwoosh() {
-			var pushNotification = window.plugins.pushNotification;
-				if(device.platform == "Android")
-			{
-				alert('incompatible device! Use iOS!');
-			} else if(device.platform == "iPhone" || device.platform == "iOS")
-			{
-				registerPushwooshIOS();
-			}
-		}
-	</script>
-	<script>app.initialize();</script>
-	<script type="text/javascript" src="js/PushwooshiOS.js"></script>
+<!--
+The views will be rendered in the <ion-nav-view> directive below
+Templates are in the /templates folder (but you could also
+have templates inline in this html file if you'd like).
+-->
+<img id="uclass" src="img/favicon.png" alt=""/>
+<ion-nav-view></ion-nav-view>
+</body>
+<script>
+// format an ISO date using Moment.js
+// http://momentjs.com/
+// moment syntax example: moment(Date("2011-07-18T15:50:52")).format("MMMM YYYY")
+// usage: {{dateFormat creation_date format="MMMM YYYY"}}
+Handlebars.registerHelper('dateFormat', function(context, block) {
+  if (window.moment) {
+    var f = block.hash.format || "MMM DD, YYYY hh:mm:ss A";
+    return moment(context).format(f); //had to remove Date(context)
+  }else{
+    return context; // moment plugin not available. return data as is.
+  };
+});
+</script>
+<!-- Get the jQuery functions -->
+<script>
+function initPushwoosh() {
+  var pushNotification = window.plugins.pushNotification;
+  if(device.platform == "Android")
+  {
+    alert('incompatible device! Use iOS!');
+  } else if(device.platform == "iPhone" || device.platform == "iOS")
+  {
+    registerPushwooshIOS();
+  }
+}
+</script>
+<script>app.initialize();</script>
+<script type="text/javascript" src="js/PushwooshiOS.js"></script>
 </html>
