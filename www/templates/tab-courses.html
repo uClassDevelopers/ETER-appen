@@ -22,7 +22,7 @@
 -->
 <ion-view view-title="{{ 'COURSES_TITLE' | translate }}" ng-controller="CoursesCtrl"> <!-- language specific -->
   <ion-nav-buttons side="right">
-  	  <a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
+  	  <a href="#/front" ng-click="clearHistory();"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
   </ion-nav-buttons>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/circle.css">
@@ -47,7 +47,6 @@
 				<div class="item course" id="c{{c.id}}" ng-click="courseDropdown(c.id, $event)">
 					<h2>{{ c.name }}</h2>
 					<p>{{ c.desc }}</p>
-          <button class="btn-start-course">Starta Kursen  <i class="icon ion-arrow-right-b"></i></button>
 				</div>
 				<div class="list list-inset dropdown1" id="e{{c.id}}">
 					<h4>{{ 'COURSE_SUBHEADER' | translate }}</h4> <!-- language specific -->

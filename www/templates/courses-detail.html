@@ -22,11 +22,11 @@
 -->
 <ion-view view-title="{{guideInCourseTitle}}" ng-controller="GuidesDetailCtrl">
 	<ion-nav-bar>
-		<ion-nav-buttons side="left">
-			<a class='button back-button buttons  button-clear header-item' style='color: black;' href="#/tab/courses"><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i>Alla Kurser</a>
+		<ion-nav-buttons side="left" nav-direction='back'>
+			<button class='button back-button buttons  button-clear header-item' style='color: black;' nav-direction='back' ng-click="goBackToCourses();"><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i>Alla Kurser</button>
 			<div ng-bind-html="showPreviousButton" compile-template></div>
     </ion-nav-buttons>
-		<ion-nav-buttons side="right">
+		<ion-nav-buttons side="right" nav-direction='forward'>
 			<div ng-bind-html="showNextButton" compile-template></div>
     </ion-nav-buttons>
 	</ion-nav-bar>

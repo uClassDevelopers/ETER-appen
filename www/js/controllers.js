@@ -582,7 +582,18 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $scope.latest();
   });
 }])
-.controller('GuidesDetailCtrl', ['$scope','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $http,  $state, $stateParams, $sce, guidesInCourse) {
+.controller('GuidesDetailCtrl', ['$scope','$ionicViewSwitcher', '$ionicHistory','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $ionicViewSwitcher, $ionicHistory, $http,  $state, $stateParams, $sce, guidesInCourse) {
+  $ionicHistory.nextViewOptions({
+    disableBack: true
+  });
+  $scope.goBackToCourses = function() {
+    $ionicHistory.clearHistory();
+    $ionicHistory.clearCache();
+    $ionicViewSwitcher.nextDirection('back');
+    $state.go('tab.courses');
+    $ionicHistory.clearHistory();
+    $ionicHistory.removeBackView();
+  }
   $scope.loadpost = function() {
     $scope.loading = true;
     app.db.transaction(function (tx) {
@@ -600,7 +611,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             console.log($scope.post);
             $scope.guideInCourseTitle = $stateParams.courseName;
 
-            if($stateParams.postType != 'guide') {
+            if($scope.post.type != 'guide') {
               $scope.trustedHtml = $sce.trustAsHtml($scope.post.content);
             } else {
               var getParts = $scope.post.content.guide_parts;
@@ -638,12 +649,12 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 //console.log("cf "+customsFields);
                 var prev = customsFields-1;
                 var next = customsFields+1;
-/*
+                /*
                 console.log("prevs "+prev);
                 console.log("next "+next);
                 console.log('innan '+obj.custom_fields.eter_guide_position+' vs '+ next);
                 console.log('innan '+obj.custom_fields.eter_guide_position +' vs '+ prev);
-*/
+                */
                 if(obj.custom_fields.eter_guide_position == prev || obj.custom_fields.eter_guide_position == next) {
 
                   //console.log(obj.custom_fields.eter_guide_position +' vs '+ next);
@@ -653,10 +664,17 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                   //console.log("prevNext:");
                   //console.log(prevNext);
                 }
-                $scope.goToCourseGuide = function(id) {
+                $scope.goToCourseGuide = function(id,typeofs) {
                   //console.log("RUN PRESS");
                   //console.log(id);
-                  $state.go('tab.courses-detail',{pid: id, postType: obj.type, inCourse: $stateParams.inCourse, courseName:$stateParams.inCourse});
+                  $ionicViewSwitcher.nextDirection('forward');
+                  $state.go('tab.courses-detail',{pid: id, postType: typeofs, inCourse: $stateParams.inCourse, courseName:$stateParams.courseName});
+                }
+                $scope.goBackGuide = function(id, typeofs) {
+                  //console.log("RUN PRESS");
+                  //console.log(id);
+                  $ionicViewSwitcher.nextDirection('back');
+                  $state.go('tab.courses-detail',{pid: id, postType: typeofs, inCourse: $stateParams.inCourse, courseName:$stateParams.courseName});
                 }
               });
 
@@ -672,10 +690,9 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                   //console.log("PREVS "+previousListId);
                   //console.log("NEXT "+nextListId);
                   if(!(listId <= 1) && obj.position < listId) {
-                    $scope.showPreviousButton = $sce.trustAsHtml("<button class='button back-button buttons  button-clear header-item' style='color: black;' ng-click='goToCourseGuide("+obj.id+")'><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i> Moment "+previousListId+"</button>");
+                    $scope.showPreviousButton = $sce.trustAsHtml("<button nav-direction='back' class='button back-button buttons  button-clear header-item' style='color: black;' ng-click='goBackGuide("+obj.id+",\""+obj.type+"\")'><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i> Moment "+previousListId+"</button>");
                   } else {
-                    $scope.showNextButton = $sce.trustAsHtml("<button class='button back-button buttons  button-clear header-item' style='color: black;'   ng-click='goToCourseGuide("+obj.id+")'>Moment "+nextListId+" <i style='color: #9e1b32;' class='icon ion-ios-arrow-forward'></i> </button>");
-
+                    $scope.showNextButton = $sce.trustAsHtml("<button nav-direction='forward' class='button back-button buttons  button-clear header-item' style='color: black;'   ng-click='goToCourseGuide("+obj.id+",\""+obj.type+"\")'>Moment "+nextListId+" <i style='color: #9e1b32;' class='icon ion-ios-arrow-forward'></i> </button>");
                   }
                 }
               });
@@ -736,73 +753,62 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     });
   };
 
-  /*$scop.ShowPrevious = function (listId, postType){
-  console.log("$stateParams",$stateParams);
-  if($stateParams.inCourse == 'inCourseTrue' ) {
-  var previousListId = listId-1;
-  $scope.showPrevious = $sce.trustAsHtml('<ion-nav-back-button class="button back-button buttons  button-clear header-item" style="color: black;"><i class="icon ion-ios-arrow-back"></i>Steg '+previousListId+'</ion-nav-back-button>');
-}
-}*/
-/*$scop.ShowNext= function(listId, postType){
-
-}*/
-
-$scope.like = function (pid) {
-  id = parseInt(pid);
-  app.checkIfLikedAndAdd(pid);
-  app.db.transaction(function (tx) {
-    tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
-      var row;
-      var rowlength = rs.rows.length;
-      if(rowlength > 0) {
-        for (var i = 0; i < rowlength; i++) {
-          row = rs.rows.item(i);
-          if(id == row.postid) {
-            $('#num_likes_'+pid).html("(Redan gillat)");
-            break;
-          } else {
-            if(i == (rowlength-1)) {
-              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-                var rowlength = rs.rows.length;
-                if(rowlength > 0) {
-                  $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-                    $('.action-like').html("");
-                    $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-                    $("#like-icn_"+pid).css("color", "#387EF5");
-                  })
-                  response.error(function(data, status, headers, config) {
-                    alert('Något gick fel när du skulle gilla');
-                    console.log(data);
-                  });
-                } else {
-                  console.log("no school selected");
-                  $state.go('front');
-                }
-              }, app.onError);
+  $scope.like = function (pid) {
+    id = parseInt(pid);
+    app.checkIfLikedAndAdd(pid);
+    app.db.transaction(function (tx) {
+      tx.executeSql("SELECT * FROM likedposts", [], function(tx, rs) {
+        var row;
+        var rowlength = rs.rows.length;
+        if(rowlength > 0) {
+          for (var i = 0; i < rowlength; i++) {
+            row = rs.rows.item(i);
+            if(id == row.postid) {
+              $('#num_likes_'+pid).html("(Redan gillat)");
+              break;
+            } else {
+              if(i == (rowlength-1)) {
+                tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+                  var rowlength = rs.rows.length;
+                  if(rowlength > 0) {
+                    $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+                      $('.action-like').html("");
+                      $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+                      $("#like-icn_"+pid).css("color", "#387EF5");
+                    })
+                    response.error(function(data, status, headers, config) {
+                      alert('Något gick fel när du skulle gilla');
+                      console.log(data);
+                    });
+                  } else {
+                    console.log("no school selected");
+                    $state.go('front');
+                  }
+                }, app.onError);
+              }
             }
           }
+        } else {
+          $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
+            $('.action-like').html("");
+            $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
+            $("#like-icn_"+pid).css("color", "#387EF5");
+          })
+          response.error(function(data, status, headers, config) {
+            alert('Något gick fel när du skulle gilla');
+            console.log(data);
+          });
         }
-      } else {
-        $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+pid  +"&new_vote=1").success(function(data, status) {
-          $('.action-like').html("");
-          $('#num_likes_'+pid).html(" ("+ data.num_votes+")");
-          $("#like-icn_"+pid).css("color", "#387EF5");
-        })
-        response.error(function(data, status, headers, config) {
-          alert('Något gick fel när du skulle gilla');
-          console.log(data);
-        });
-      }
-    }, app.onError);
+      }, app.onError);
+    });
+  };
+
+
+  $scope.$on("$ionicView.beforeEnter", function() {
+    $scope.loadpost();
+    console.log("$stateParams",$stateParams);
+    app.checkIfReadAndAdd($stateParams.pid);
   });
-};
-
-
-$scope.$on("$ionicView.beforeEnter", function() {
-  $scope.loadpost();
-  console.log("$stateParams",$stateParams);
-  app.checkIfReadAndAdd($stateParams.pid);
-});
 
 }])
 
@@ -820,7 +826,7 @@ $scope.$on("$ionicView.beforeEnter", function() {
   }
 })
 
-.controller('CoursesCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', function($scope, $http, $ionicSlideBoxDelegate) {
+.controller('CoursesCtrl', ['$scope','$ionicHistory', '$ionicNavBarDelegate', '$http', '$ionicSlideBoxDelegate', function($scope, $ionicHistory, $ionicNavBarDelegate, $http, $ionicSlideBoxDelegate) {
   $scope.loading = true;
 
   $scope.courseDropdown = function(id, e) {
@@ -840,8 +846,10 @@ $scope.$on("$ionicView.beforeEnter", function() {
   $scope.slideHasChanged = function() {
     $ionicSlideBoxDelegate.$getByHandle('course-viewer').update();
   }
-  $scope.$on("$ionicView.enter", function() {
-
+  $scope.$on("$ionicView.beforeEnter", function(){
+    $ionicHistory.clearHistory();
+    $ionicHistory.clearCache();
+    $ionicNavBarDelegate.showBackButton(false);
   });
 
   app.db.transaction(function (tx) {
@@ -854,22 +862,15 @@ $scope.$on("$ionicView.beforeEnter", function() {
           var courses = [];
           $.each(data.list_all_courses, function(index, obj) { // loop through courses
             courses.push({ id: obj.id, slug: obj.slug, name: obj.name, desc: obj.description, elements: [] });
-            $.each(data.list_all_courses[index].elements.reverse(), function(i, el) { // loop through elements
+            $.each(data.list_all_courses[index].elements, function(i, el) { // loop through elements
 
               courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type});
               courses[index].elements.sort(function (a, b) {
-                if (a.elementOrder > b.elementOrder) {
-                  return 1;
-                }
-                if (a.elementOrder < b.elementOrder) {
-                  return -1;
-                }
-                // a must be equal to b
-                return 0;
+                return a.elementOrder - b.elementOrder;
               });
             });
           });
-          //alert(JSON.stringify(courses, null, 4));
+          alert(JSON.stringify(courses, null, 4));
           $scope.courses = courses;
 
           $scope.goToGuide = function(id, posttype, incourseval, courseName, courseSlug) {
@@ -899,6 +900,8 @@ $scope.$on("$ionicView.beforeEnter", function() {
       }
     }, app.onError);
   });
+  $ionicHistory.clearHistory();
+  $ionicHistory.clearCache();
 }])
 
 .controller('EterCtrl', function($scope, $http) {
