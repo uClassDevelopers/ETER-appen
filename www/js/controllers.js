@@ -311,7 +311,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   });
 
 }])
-.controller('TabsSidemenuController', ['$scope', '$ionicSideMenuDelegate', '$http', function($scope, $ionicSideMenuDelegate, $http) {
+.controller('TabsSidemenuController', ['$scope', '$ionicSideMenuDelegate', '$state','$stateParams', '$ionicNavBarDelegate','$ionicViewSwitcher', '$ionicHistory', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $ionicNavBarDelegate, $ionicViewSwitcher, $ionicHistory, $http) {
   $scope.listCate = function() {
     app.db.transaction(function (tx) {
       tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
@@ -343,10 +343,14 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     });
   };
 
-  $scope.loadposts = function(passedCategory, passedSpecialAmmount) {
-    $ionicViewSwitcher.nextDirection('forward');
+  $scope.loadposts = function(passedCategory) {
+    $ionicNavBarDelegate.showBackButton(false);
+
+    $ionicHistory.clearHistory();
+    $ionicHistory.clearCache();
+
     $ionicSideMenuDelegate.toggleLeft();
-    $state.go('tab.guides',{category: passedCategory, specialAmmount: passedSpecialAmmount;});
+    $state.go($state.current, {category: passedCategory}, {reload: true});
   };
 
   $scope.searchKey = "";
@@ -377,28 +381,19 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
       }, app.onError);
     });
   };
-
-  $scope.$on("$ionicView.enter", function() {
-    $( "#tgl-categories" ).unbind().click(function() {
-      $( ".cate" ).toggle();
-    });
-    $( "#tgl-tags" ).unbind().click(function() {
-      $( ".tags" ).toggle();
-    });
-    $scope.latest();
-  });
 }])
-.controller('GuidesCtrl', ['$scope', '$state','$stateParams', '$ionicSideMenuDelegate', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $http) {
+.controller('GuidesCtrl', ['$scope', '$ionicSideMenuDelegate', '$state','$stateParams', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $http) {
   $scope.showMenu = function () {
     $ionicSideMenuDelegate.toggleLeft();
   };
 
   $scope.goToGuide = function(id, postType) {
-    location.href="#/tab/guides/"+id+"/"+postType;
+    /*location.href="#/tab/guides/"+id+"/"+postType;*/
+    $state.go("tab.guides-detail", {pid: id, postType: postType});
   };
 
   $scope.posts = [];
-
+/*
   $scope.latest = function() {
     $scope.loading = true;
     app.db.transaction(function (tx) {
@@ -421,7 +416,17 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
         }
       }, app.onError);
     });
-  };
+  };*/
+
+  $scope.$on("$ionicView.enter", function() {
+    $( "#tgl-categories" ).unbind().click(function() {
+      $( ".cate" ).toggle();
+    });
+    $( "#tgl-tags" ).unbind().click(function() {
+      $( ".tags" ).toggle();
+    });
+    $scope.loadpost();
+  });
 
   $scope.loadpost = function() {
     $scope.loading = true;
@@ -431,23 +436,36 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
         tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
           var rowlength = rs.rows.length;
           if(rowlength > 0) {
-            var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
-            response.success(function(data, status, headers, config) {
-              if (data.category.post_count == 0) {
-                $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
-                $scope.posts = 0;
-              } else {
-                $('#start-data').html('');
-                $scope.posts = data.posts;
-              }
-              $scope.loading = false;
-            });
+            if($stateParams.category != "all") {
+              var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
+              response.success(function(data, status, headers, config) {
+                if (data.category.post_count == 0) {
+                  $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                  $scope.posts = 0;
+                } else {
+                  $('#start-data').html('');
+                  $scope.posts = data.posts;
+                }
+                $scope.loading = false;
+              });
 
-            response.error(function(data, status, headers, config) {
-              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-              console.log(data);
-            });
+              response.error(function(data, status, headers, config) {
+                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                console.log(data);
+              });
+            } else {
+              var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
+              response.success(function(data) {
+                $scope.posts = data.posts;
+                $scope.loading = false;
+              }).
+              error(function(data) {
+                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                console.log(data);
+              });
+            }
           } else {
             console.log("no school selected");
             $state.go('front');
@@ -620,6 +638,9 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $state.go('tab.courses');
     $ionicHistory.clearHistory();
     $ionicHistory.removeBackView();
+  }
+  $scope.goBackGuides = function() {
+    $ionicHistory.goBack();
   }
   $scope.loadpost = function() {
     $scope.loading = true;

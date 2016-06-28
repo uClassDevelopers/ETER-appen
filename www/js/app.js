@@ -90,7 +90,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
   })
 
     .state('tab.guides', {
-    url: '/guides/:category/:specialAmmount',
+    url: '/guide/:category',
     views: {
       'tab-guides': {
         templateUrl: 'templates/tab-guides.html',

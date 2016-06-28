@@ -21,9 +21,9 @@
 */
 -->
 
-<ion-view view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->
+<ion-view cache-view="false" view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->
 	<ion-nav-buttons side="left">
-		<button class="button button-icon button-clear ion-navicon" ng-click="showMenu()"></button>
+		<button class="button button-icon button-clear ion-navicon" ng-click="showMenu()"> Arkiv &amp; Sök</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="right">
 		<a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>

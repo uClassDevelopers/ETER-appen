@@ -21,6 +21,11 @@
  */
 -->
 <ion-view view-title="" ng-controller="GuidesDetailCtrl">
+  <ion-nav-bar>
+    <ion-nav-buttons side="left" nav-direction='back'>
+      <button class='button back-button buttons  button-clear header-item' style='color: black;' nav-direction='back' ng-click="goBackGuides();"><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i>Alla guider</button>
+    </ion-nav-buttons>
+  </ion-nav-bar>
   <ion-content>
 		<div id="single-wrapper" class="single-wrapper">
 			<div id="post_" class="list card">
