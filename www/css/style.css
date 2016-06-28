@@ -339,6 +339,28 @@ height: 110px;
 .dropdown1:last-child {
   margin-bottom: 40px;
 }
+.theTrustedContent ol {
+  list-style-type: decimal !important;
+  margin: 20px;
+}
+.theTrustedContent p {
+  font-size: 100% !important;
+}
+.theTrustedContent a img.alignnone {
+  margin: 2% !important;
+  display: block !important;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  vertical-align: middle;
+  border: 0;
+}
+.theTrustedContent .alignright {
+  float: right !important;
+}
+.theTrustedContent .alignleft {
+  float: left !important;
+}
 /*.courseHighlight {
 border: 10px solid #A4D3EE;
 }*/

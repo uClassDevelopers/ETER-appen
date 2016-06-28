@@ -188,7 +188,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     NAV_BACK_COURSES: 'Alla Kurser',
     GUIDES_SLIDEOUT_LATEST: 'Senaste',
     GUIDES_SLIDEOUT_CATEGORIES: 'Kategorier',
-    GUIDES_SLIDEOUT_NOTREAD: 'Oläst',
+    GUIDES_SLIDEOUT_NOTREAD: 'Alla Olästa',
     GUIDES_SLIDEOUT_TEACHERS: 'Lärare',
     GUIDES_SLIDEOUT_HISTORY: 'Historik',
     GUIDES_SLIDEOUT_SEARCH: 'SÖK',

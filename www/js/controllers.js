@@ -349,6 +349,13 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $ionicHistory.clearHistory();
     $ionicHistory.clearCache();
 
+    $ionicHistory.nextViewOptions({
+      disableAnimate: true,
+      disableBack: true,
+      historyRoot: true
+    });
+
+
     $ionicSideMenuDelegate.toggleLeft();
     $state.go($state.current, {category: passedCategory}, {reload: true});
   };
@@ -393,217 +400,53 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   };
 
   $scope.posts = [];
-/*
+  /*
   $scope.latest = function() {
-    $scope.loading = true;
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
-          response.success(function(data) {
-            $scope.posts = data.posts;
-            $scope.loading = false;
-          }).
-          error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        } else {
-          console.log("no school selected");
-          $state.go('front');
-        }
-      }, app.onError);
-    });
-  };*/
+  $scope.loading = true;
+  app.db.transaction(function (tx) {
+  tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+  var rowlength = rs.rows.length;
+  if(rowlength > 0) {
+  var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
+  response.success(function(data) {
+  $scope.posts = data.posts;
+  $scope.loading = false;
+}).
+error(function(data) {
+$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+console.log(data);
+});
+} else {
+console.log("no school selected");
+$state.go('front');
+}
+}, app.onError);
+});
+};*/
 
-  $scope.$on("$ionicView.enter", function() {
-    $( "#tgl-categories" ).unbind().click(function() {
-      $( ".cate" ).toggle();
-    });
-    $( "#tgl-tags" ).unbind().click(function() {
-      $( ".tags" ).toggle();
-    });
-    $scope.loadpost();
+$scope.$on("$ionicView.enter", function() {
+  $( "#tgl-categories" ).unbind().click(function() {
+    $( ".cate" ).toggle();
   });
+  $( "#tgl-tags" ).unbind().click(function() {
+    $( ".tags" ).toggle();
+  });
+  $scope.loadpost();
+});
 
-  $scope.loadpost = function() {
-    $scope.loading = true;
-    console.log("$stateParams",$stateParams);
+$scope.loadpost = function() {
+  $scope.loading = true;
+  console.log("$stateParams",$stateParams);
 
-      app.db.transaction(function (tx) {
-        tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-          var rowlength = rs.rows.length;
-          if(rowlength > 0) {
-            if($stateParams.category != "all") {
-              var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
-              response.success(function(data, status, headers, config) {
-                if (data.category.post_count == 0) {
-                  $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
-                  $scope.posts = 0;
-                } else {
-                  $('#start-data').html('');
-                  $scope.posts = data.posts;
-                }
-                $scope.loading = false;
-              });
-
-              response.error(function(data, status, headers, config) {
-                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                console.log(data);
-              });
-            } else {
-              var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
-              response.success(function(data) {
-                $scope.posts = data.posts;
-                $scope.loading = false;
-              }).
-              error(function(data) {
-                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                console.log(data);
-              });
-            }
-          } else {
-            console.log("no school selected");
-            $state.go('front');
-          }
-        }, app.onError);
-      });
-    };
-
-  var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
-  $scope.loadRead = function() {
-    $scope.loading = true;
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          var read = [];
-          var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-          response.success(function(data) {
-            app.db.transaction(function (tx) {
-              tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
-                var row;
-                var rowlength = rs.rows.length;
-                if(rowlength > 0) {
-                  $.each(data.posts, function(index, post) { // loop through posts
-                    for (var i = 0; i < rowlength; i++) { // loop through read db
-                      row = rs.rows.item(i);
-
-                      if(parseInt(row.postid) == parseInt(post.id)) {
-                        data.posts[index].read = "Läst: " + row.added_on;
-                        read.push(data.posts[index]);
-                        break;
-                      }
-                    }
-                  });
-                  //alert(JSON.stringify(read, null, 4));
-                  $scope.posts = read;
-                }
-
-                l_index++;
-                if(l_index < 2) { // make sure function runs twice and not get overwritten by other posts
-                  $scope.loadRead();
-                } else {
-                  $scope.restoreLoadIndex();
-                }
-
-                $scope.loading = false;
-              }, app.onError);
-            });
-          }).
-          error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        } else {
-          console.log("no school selected");
-          $state.go('front');
-        }
-      }, app.onError);
-    });
-  };
-
-  var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
-  $scope.loadNotRead = function() {
-    $scope.loading = true;
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          var notRead = [];
-          var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-          response.success(function(data) {
-            app.db.transaction(function (tx) {
-              tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
-                var row;
-                var rowlength = rs.rows.length;
-                if(rowlength > 0) {
-                  $.each(data.posts, function(index, post) { // loop through posts
-                    for (var i = 0; i < rowlength; i++) { // loop through read db
-                      row = rs.rows.item(i);
-
-                      if(parseInt(row.postid) == parseInt(post.id)) {
-                        return true;
-                      } else {
-                        if(i == (rowlength-1)) {
-                          notRead.push(data.posts[index]);
-                        }
-                      }
-                    }
-                  });
-                  //alert(JSON.stringify($scope.posts, null, 4));
-                  $scope.posts = notRead;
-                } else {
-                  $scope.posts = data.posts;
-                }
-
-                l_index2++;
-                if(l_index2 < 2) { // make sure function runs twice and not get overwritten by other posts
-                  $scope.loadNotRead();
-                } else {
-                  $scope.restoreLoadIndex2();
-                }
-
-                $scope.loading = false;
-              }, app.onError);
-            });
-          }).
-          error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        } else {
-          console.log("no school selected");
-          $state.go('front');
-        }
-      }, app.onError);
-    });
-  };
-
-  // restore the loading indexes to be able to run the functions twice again
-  $scope.restoreLoadIndex = function() {
-    l_index = 0;
-  };
-  $scope.restoreLoadIndex2 = function() {
-    l_index2 = 0;
-  };
-  /* Old loadposts
-  $scope.loadposts = function(category) {
-    // $http.defaults.useXDomain = true;
-    $scope.loading = true;
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          var response = $http.get(rs.rows.item(0).otourl +'category/'+category+'/?json=1&'+ p_apikey);
+  app.db.transaction(function (tx) {
+    tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+      var rowlength = rs.rows.length;
+      if(rowlength > 0) {
+        if($stateParams.category != "all" && $stateParams.category != "systemLoadAllRead" && $stateParams.category != "systemLoadAllUnRead") {
+          var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
           response.success(function(data, status, headers, config) {
-            if (data.category.post_count == 0) {
+            if (data.category.post_count == 0 || data.category.post_count == undefined) {
               $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
               $scope.posts = 0;
             } else {
@@ -618,13 +461,272 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
             console.log(data);
           });
+        } else if($stateParams.category == "systemLoadAllRead"){
+          var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
+
+          $scope.loading = true;
+          app.db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+              var rowlength = rs.rows.length;
+              if(rowlength > 0) {
+                var read = [];
+                var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+                response.success(function(data) {
+                  app.db.transaction(function (tx) {
+                    tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
+                      var row;
+                      var rowlength = rs.rows.length;
+                      if(rowlength > 0) {
+                        $.each(data.posts, function(index, post) { // loop through posts
+                          for (var i = 0; i < rowlength; i++) { // loop through read db
+                            row = rs.rows.item(i);
+
+                            if(parseInt(row.postid) == parseInt(post.id)) {
+                              data.posts[index].read = "Läst: " + row.added_on;
+                              read.push(data.posts[index]);
+                              break;
+                            }
+                          }
+                        });
+                        //alert(JSON.stringify(read, null, 4));
+                        $scope.posts = read;
+                      }
+
+                      $scope.loading = false;
+                    }, app.onError);
+                  });
+                }).
+                error(function(data) {
+                  $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                  $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                  console.log(data);
+                });
+              } else {
+                console.log("no school selected");
+                $state.go('front');
+              }
+            }, app.onError);
+          });
+        } else if($stateParams.category == "systemLoadAllUnRead"){
+          var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
+          $scope.loading = true;
+          app.db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+              var rowlength = rs.rows.length;
+              if(rowlength > 0) {
+                var notRead = [];
+                var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+                response.success(function(data) {
+                  app.db.transaction(function (tx) {
+                    tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+                      var row;
+                      var rowlength = rs.rows.length;
+                      if(rowlength > 0) {
+                        $.each(data.posts, function(index, post) { // loop through posts
+                          for (var i = 0; i < rowlength; i++) { // loop through read db
+                            row = rs.rows.item(i);
+
+                            if(parseInt(row.postid) == parseInt(post.id)) {
+                              return true;
+                            } else {
+                              if(i == (rowlength-1)) {
+                                notRead.push(data.posts[index]);
+                              }
+                            }
+                          }
+                        });
+                        //alert(JSON.stringify($scope.posts, null, 4));
+                        $scope.posts = notRead;
+                      } else {
+                        $scope.posts = data.posts;
+                      }
+
+                      $scope.loading = false;
+                    }, app.onError);
+                  });
+                }).
+                error(function(data) {
+                  $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                  $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                  console.log(data);
+                });
+              } else {
+                console.log("no school selected");
+                $state.go('front');
+              }
+            }, app.onError);
+          });
         } else {
-          console.log("no school selected");
-          $state.go('front');
+          var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
+          response.success(function(data) {
+            $scope.posts = data.posts;
+            $scope.loading = false;
+          }).
+          error(function(data) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+          });
         }
-      }, app.onError);
-    });
-  };*/
+      } else {
+        console.log("no school selected");
+        $state.go('front');
+      }
+    }, app.onError);
+  });
+};
+/*
+var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
+$scope.loadRead = function() {
+$scope.loading = true;
+app.db.transaction(function (tx) {
+tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+var rowlength = rs.rows.length;
+if(rowlength > 0) {
+var read = [];
+var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+response.success(function(data) {
+app.db.transaction(function (tx) {
+tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
+var row;
+var rowlength = rs.rows.length;
+if(rowlength > 0) {
+$.each(data.posts, function(index, post) { // loop through posts
+for (var i = 0; i < rowlength; i++) { // loop through read db
+row = rs.rows.item(i);
+
+if(parseInt(row.postid) == parseInt(post.id)) {
+data.posts[index].read = "Läst: " + row.added_on;
+read.push(data.posts[index]);
+break;
+}
+}
+});
+//alert(JSON.stringify(read, null, 4));
+$scope.posts = read;
+}
+
+l_index++;
+if(l_index < 2) { // make sure function runs twice and not get overwritten by other posts
+$scope.loadRead();
+} else {
+$scope.restoreLoadIndex();
+}
+
+$scope.loading = false;
+}, app.onError);
+});
+}).
+error(function(data) {
+$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+console.log(data);
+});
+} else {
+console.log("no school selected");
+$state.go('front');
+}
+}, app.onError);
+});
+};
+
+var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
+$scope.loadNotRead = function() {
+  $scope.loading = true;
+  app.db.transaction(function (tx) {
+    tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+      var rowlength = rs.rows.length;
+      if(rowlength > 0) {
+        var notRead = [];
+        var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+        response.success(function(data) {
+          app.db.transaction(function (tx) {
+            tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+              var row;
+              var rowlength = rs.rows.length;
+              if(rowlength > 0) {
+                $.each(data.posts, function(index, post) { // loop through posts
+                  for (var i = 0; i < rowlength; i++) { // loop through read db
+                    row = rs.rows.item(i);
+
+                    if(parseInt(row.postid) == parseInt(post.id)) {
+                      return true;
+                    } else {
+                      if(i == (rowlength-1)) {
+                        notRead.push(data.posts[index]);
+                      }
+                    }
+                  }
+                });
+                //alert(JSON.stringify($scope.posts, null, 4));
+                $scope.posts = notRead;
+              } else {
+                $scope.posts = data.posts;
+              }
+
+              l_index2++;
+              if(l_index2 < 2) { // make sure function runs twice and not get overwritten by other posts
+                $scope.loadNotRead();
+              } else {
+                $scope.restoreLoadIndex2();
+              }
+
+              $scope.loading = false;
+            }, app.onError);
+          });
+        }).
+        error(function(data) {
+          $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+          $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+          console.log(data);
+        });
+      } else {
+        console.log("no school selected");
+        $state.go('front');
+      }
+    }, app.onError);
+  });
+};*/
+
+// restore the loading indexes to be able to run the functions twice again
+$scope.restoreLoadIndex = function() {
+  l_index = 0;
+};
+$scope.restoreLoadIndex2 = function() {
+  l_index2 = 0;
+};
+/* Old loadposts
+$scope.loadposts = function(category) {
+// $http.defaults.useXDomain = true;
+$scope.loading = true;
+app.db.transaction(function (tx) {
+tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+var rowlength = rs.rows.length;
+if(rowlength > 0) {
+var response = $http.get(rs.rows.item(0).otourl +'category/'+category+'/?json=1&'+ p_apikey);
+response.success(function(data, status, headers, config) {
+if (data.category.post_count == 0) {
+$('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+$scope.posts = 0;
+} else {
+$('#start-data').html('');
+$scope.posts = data.posts;
+}
+$scope.loading = false;
+});
+
+response.error(function(data, status, headers, config) {
+$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+console.log(data);
+});
+} else {
+console.log("no school selected");
+$state.go('front');
+}
+}, app.onError);
+});
+};*/
 }])
 
 .controller('GuidesDetailCtrl', ['$scope','$ionicViewSwitcher', '$ionicHistory','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $ionicViewSwitcher, $ionicHistory, $http,  $state, $stateParams, $sce, guidesInCourse) {
