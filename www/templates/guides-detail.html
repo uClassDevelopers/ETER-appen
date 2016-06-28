@@ -38,6 +38,7 @@
 					<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 					<div class="theTrustedContent" ng-bind-html="trustedHtml" compile-template></div>
 					<ul style="list-style: none;" id="play-buttons"></ul>
+          <p>Taggad som: <span ng-repeat="tag in post.tags">{{tag.title + ", "}}</span></p>
 				</div>
 
 				<div class="item tabs tabs-secondary tabs-icon-left">

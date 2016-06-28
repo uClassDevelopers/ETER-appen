@@ -25,10 +25,10 @@
 		<ion-nav-buttons side="left" nav-direction='back'>
 			<button class='button back-button buttons  button-clear header-item' style='color: black;' nav-direction='back' ng-click="goBackToCourses();"><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i>Alla Kurser</button>
 			<div ng-bind-html="showPreviousButton" compile-template></div>
-    </ion-nav-buttons>
+		</ion-nav-buttons>
 		<ion-nav-buttons side="right" nav-direction='forward'>
 			<div ng-bind-html="showNextButton" compile-template></div>
-    </ion-nav-buttons>
+		</ion-nav-buttons>
 	</ion-nav-bar>
 	<ion-content>
 		<div id="single-wrapper" class="single-wrapper">
@@ -42,6 +42,7 @@
 					<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 					<div class="theTrustedContent" ng-bind-html="trustedHtml" compile-template></div>
 					<ul style="list-style: none;" id="play-buttons"></ul>
+					<p>Taggad som: <span ng-repeat="tag in post.tags">{{tag.title + ", "}}</span></p>
 				</div>
 
 				<div class="item tabs tabs-secondary tabs-icon-left">
