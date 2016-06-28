@@ -56,9 +56,10 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
 
 
     .state('tab', {
-    url: "/tab",
+    url: '/tab',
     abstract: true,
-    templateUrl: "templates/tabs.html"
+    templateUrl: 'templates/tabs.html',
+    controller: 'TabsSidemenuController'
   })
 
   // front page
@@ -89,7 +90,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
   })
 
     .state('tab.guides', {
-    url: '/guides',
+    url: '/guides/:category/:specialAmmount',
     views: {
       'tab-guides': {
         templateUrl: 'templates/tab-guides.html',

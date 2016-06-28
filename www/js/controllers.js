@@ -311,18 +311,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   });
 
 }])
-
-.controller('GuidesCtrl', ['$scope', '$ionicSideMenuDelegate', '$http', function($scope, $ionicSideMenuDelegate, $http) {
-  $scope.showMenu = function () {
-    $ionicSideMenuDelegate.toggleLeft();
-  };
-
-  $scope.goToGuide = function(id, postType) {
-    location.href="#/tab/guides/"+id+"/"+postType;
-  };
-
-  $scope.posts = [];
-
+.controller('TabsSidemenuController', ['$scope', '$ionicSideMenuDelegate', '$http', function($scope, $ionicSideMenuDelegate, $http) {
   $scope.listCate = function() {
     app.db.transaction(function (tx) {
       tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
@@ -354,6 +343,62 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     });
   };
 
+  $scope.loadposts = function(passedCategory, passedSpecialAmmount) {
+    $ionicViewSwitcher.nextDirection('forward');
+    $ionicSideMenuDelegate.toggleLeft();
+    $state.go('tab.guides',{category: passedCategory, specialAmmount: passedSpecialAmmount;});
+  };
+
+  $scope.searchKey = "";
+  $scope.search = function () {
+    // $http.defaults.useXDomain = true;
+    $scope.loading = true;
+    app.db.transaction(function (tx) {
+      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+        var rowlength = rs.rows.length;
+        if(rowlength > 0) {
+          var response = $http.get(rs.rows.item(0).otourl +'api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
+          response.success(function(data, status, headers, config) {
+            $('#start-data').html('');
+            $scope.posts = data.posts;
+
+            $scope.loading = false;
+          });
+
+          response.error(function(data, status, headers, config) {
+            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+            console.log(data);
+          });
+        } else {
+          console.log("no school selected");
+          $state.go('front');
+        }
+      }, app.onError);
+    });
+  };
+
+  $scope.$on("$ionicView.enter", function() {
+    $( "#tgl-categories" ).unbind().click(function() {
+      $( ".cate" ).toggle();
+    });
+    $( "#tgl-tags" ).unbind().click(function() {
+      $( ".tags" ).toggle();
+    });
+    $scope.latest();
+  });
+}])
+.controller('GuidesCtrl', ['$scope', '$state','$stateParams', '$ionicSideMenuDelegate', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $http) {
+  $scope.showMenu = function () {
+    $ionicSideMenuDelegate.toggleLeft();
+  };
+
+  $scope.goToGuide = function(id, postType) {
+    location.href="#/tab/guides/"+id+"/"+postType;
+  };
+
+  $scope.posts = [];
+
   $scope.latest = function() {
     $scope.loading = true;
     app.db.transaction(function (tx) {
@@ -377,6 +422,39 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
       }, app.onError);
     });
   };
+
+  $scope.loadpost = function() {
+    $scope.loading = true;
+    console.log("$stateParams",$stateParams);
+
+      app.db.transaction(function (tx) {
+        tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+          var rowlength = rs.rows.length;
+          if(rowlength > 0) {
+            var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
+            response.success(function(data, status, headers, config) {
+              if (data.category.post_count == 0) {
+                $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                $scope.posts = 0;
+              } else {
+                $('#start-data').html('');
+                $scope.posts = data.posts;
+              }
+              $scope.loading = false;
+            });
+
+            response.error(function(data, status, headers, config) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          } else {
+            console.log("no school selected");
+            $state.go('front');
+          }
+        }, app.onError);
+      });
+    };
 
   var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
   $scope.loadRead = function() {
@@ -497,7 +575,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   $scope.restoreLoadIndex2 = function() {
     l_index2 = 0;
   };
-
+  /* Old loadposts
   $scope.loadposts = function(category) {
     // $http.defaults.useXDomain = true;
     $scope.loading = true;
@@ -528,47 +606,9 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
         }
       }, app.onError);
     });
-  };
-
-  $scope.searchKey = "";
-  $scope.search = function () {
-    // $http.defaults.useXDomain = true;
-    $scope.loading = true;
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          var response = $http.get(rs.rows.item(0).otourl +'api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
-          response.success(function(data, status, headers, config) {
-            $('#start-data').html('');
-            $scope.posts = data.posts;
-
-            $scope.loading = false;
-          });
-
-          response.error(function(data, status, headers, config) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        } else {
-          console.log("no school selected");
-          $state.go('front');
-        }
-      }, app.onError);
-    });
-  };
-
-  $scope.$on("$ionicView.enter", function() {
-    $( "#tgl-categories" ).unbind().click(function() {
-      $( ".cate" ).toggle();
-    });
-    $( "#tgl-tags" ).unbind().click(function() {
-      $( ".tags" ).toggle();
-    });
-    $scope.latest();
-  });
+  };*/
 }])
+
 .controller('GuidesDetailCtrl', ['$scope','$ionicViewSwitcher', '$ionicHistory','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $ionicViewSwitcher, $ionicHistory, $http,  $state, $stateParams, $sce, guidesInCourse) {
   $ionicHistory.nextViewOptions({
     disableBack: true
