@@ -23,7 +23,7 @@
 
 <ion-view cache-view="false" view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->
 	<ion-nav-buttons side="left">
-		<button class="button button-icon button-clear ion-navicon" ng-click="showMenu()"> Arkiv &amp; Sök</button>
+		<button class="button button-icon button-clear ion-navicon" ng-click="showMenu()"> {{ 'GUIDES_MENU_TOGGLE' | translate }}</button>
 	</ion-nav-buttons>
 	<ion-nav-buttons side="right">
 		<a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
@@ -33,10 +33,10 @@
 		<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 		<ion-list id="abc">
 			<ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}}, {{g.type}})">
-				<a data-transition="slide" ><h3>{{g.title}}</h3></a>
+				<h3>{{g.title}}</h3>
 				<p style="float: right;">{{ g.read }}</p>
-				<p>Skriven: {{g.date}}</p> <!-- language specific -->
-				<p>Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
+				<p><i class="ion-ios-calendar-outline"></i> Skriven: {{g.date}}</p> <!-- language specific -->
+				<p><i class="ion-pound"></i> Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
 			</ion-item>
 		</ion-list>
 	</ion-content>

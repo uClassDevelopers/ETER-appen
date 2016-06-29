@@ -361,6 +361,9 @@ height: 110px;
 .theTrustedContent .alignleft {
   float: left !important;
 }
+.specialText, .theTrustedContent a {
+  color:  #9e1b32;
+}
 /*.courseHighlight {
 border: 10px solid #A4D3EE;
 }*/

@@ -101,6 +101,7 @@ function fixCordovaYoutubePlayers() {
 // modules
 angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
+//Controller for the start/ front page where user choose school
 .controller('FrontCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
   // get school ids
   var schoolsIdsTemp = [];
@@ -135,7 +136,8 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
 }])
 
-.controller('StartCtrl', ['$scope', '$http', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSlideBoxDelegate, $state, $translate) {
+//Controller for the school start page with thier customized featured content
+.controller('StartCtrl', ['$scope', '$http', '$ionicSideMenuDelegate', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSideMenuDelegate, $ionicSlideBoxDelegate, $state, $translate) {
   // change slide
   $scope.slideHasChanged = function() {
     $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
@@ -143,6 +145,10 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
   $scope.$on("$ionicView.beforeEnter", function() {
     app.start();
+  });
+
+  $scope.$on('$ionicView.afterEnter', function(event) {
+    $ionicSideMenuDelegate.canDragContent(false);
   });
 
   // if base url exists load api, else go to front state
@@ -287,10 +293,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               });
             }
 
-
             //alert(JSON.stringify(firstPageContent, null, 4));
-
-
             $scope.topData = firstPageContent.topData;
             $scope.bottomData = firstPageContent.bottomData;
             $scope.sliderData = firstPageContent.sliderData;
@@ -311,6 +314,8 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   });
 
 }])
+
+//controller for the sidemenu, functions in here depend on existence of guide Categories and the tab.guides
 .controller('TabsSidemenuController', ['$scope', '$ionicSideMenuDelegate', '$state','$stateParams', '$ionicNavBarDelegate','$ionicViewSwitcher', '$ionicHistory', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $ionicNavBarDelegate, $ionicViewSwitcher, $ionicHistory, $http) {
   $scope.listCate = function() {
     app.db.transaction(function (tx) {
@@ -355,32 +360,227 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
       historyRoot: true
     });
 
-
     $ionicSideMenuDelegate.toggleLeft();
-    $state.go($state.current, {category: passedCategory}, {reload: true});
+    $state.go('tab.guides', {category: passedCategory}, {reload: true});
   };
 
-  $scope.searchKey = "";
-  $scope.search = function () {
-    // $http.defaults.useXDomain = true;
+  $scope.search = function (searchKey) {
+    //alert(searchKey);
+    $ionicNavBarDelegate.showBackButton(false);
+
+    $ionicHistory.clearHistory();
+    $ionicHistory.clearCache();
+
+    $ionicHistory.nextViewOptions({
+      disableAnimate: true,
+      disableBack: true,
+      historyRoot: true
+    });
+
+    $ionicSideMenuDelegate.toggleLeft();
+    $state.go('tab.guides', {searchKeys: searchKey, category: 'noCategory'}, {reload: true});
+  };
+}])
+
+//Controller for the guides page
+.controller('GuidesCtrl', ['$scope', '$ionicSideMenuDelegate', '$state','$stateParams', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $http) {
+  $scope.showMenu = function () {
+    $ionicSideMenuDelegate.toggleLeft();
+  };
+
+  $scope.$on('$ionicView.afterEnter', function(event) {
+    $ionicSideMenuDelegate.canDragContent(true);
+  });
+
+  $scope.$on('$ionicView.beforeLeave', function (event) {
+    $ionicSideMenuDelegate.canDragContent(false);
+  });
+  $scope.goToGuide = function(id, postType) {
+    /*location.href="#/tab/guides/"+id+"/"+postType;*/
+    $state.go("tab.guides-detail", {pid: id, postType: postType});
+  };
+
+  $scope.posts = [];
+
+  $scope.$on("$ionicView.enter", function() {
+    $( "#tgl-categories" ).unbind().click(function() {
+      $( ".cate" ).toggle();
+    });
+    $( "#tgl-tags" ).unbind().click(function() {
+      $( ".tags" ).toggle();
+    });
+    $scope.loadpost();
+  });
+
+  $scope.loadpost = function() {
     $scope.loading = true;
+    console.log("$stateParams",$stateParams);
+
     app.db.transaction(function (tx) {
       tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
         var rowlength = rs.rows.length;
         if(rowlength > 0) {
-          var response = $http.get(rs.rows.item(0).otourl +'api/get_search_results/?search='+ $scope.searchKey +'&'+ p_apikey);
-          response.success(function(data, status, headers, config) {
-            $('#start-data').html('');
-            $scope.posts = data.posts;
+          if($stateParams.category != "all" && $stateParams.category != "systemLoadAllRead" && $stateParams.category != "systemLoadAllUnRead" && $stateParams.category != "noCategory" ) {
+            var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
+            response.success(function(data, status, headers, config) {
+              if (data.category.post_count == 0 || data.category.post_count == undefined) {
+                $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                $scope.posts = 0;
+              } else {
+                $('#start-data').html('');
+                $scope.posts = data.posts;
+              }
+              $scope.loading = false;
+            });
 
-            $scope.loading = false;
-          });
+            response.error(function(data, status, headers, config) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          } else if($stateParams.category == "noCategory" && $stateParams.tag.length > 0 && $stateParams.tag!= 'none'){
+            var response = $http.get(rs.rows.item(0).otourl +'tag/'+$stateParams.tag+'/?json=1&'+ p_apikey);
+            response.success(function(data, status, headers, config) {
+              if (data.tag.post_count == 0 || data.tag.post_count == undefined) {
+                $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                $scope.posts = 0;
+              } else {
+                $('#start-data').html('');
+                $scope.posts = data.posts;
+              }
+              $scope.loading = false;
+            });
 
-          response.error(function(data, status, headers, config) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
+            response.error(function(data, status, headers, config) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          } else if($stateParams.category == "noCategory" && $stateParams.searchKeys.length > 0){
+            var response = $http.get(rs.rows.item(0).otourl +'api/get_search_results/?search='+ $stateParams.searchKeys +'&'+ p_apikey);
+            response.success(function(data, status, headers, config) {
+              if (data.count == 0 || data.count == undefined) {
+                $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
+                $scope.posts = 0;
+              } else {
+                $('#start-data').html('');
+                $scope.posts = data.posts;
+              }
+              $scope.loading = false;
+            });
+
+            response.error(function(data, status, headers, config) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          } else if($stateParams.category == "systemLoadAllRead"){
+            var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
+
+            $scope.loading = true;
+            app.db.transaction(function (tx) {
+              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+                var rowlength = rs.rows.length;
+                if(rowlength > 0) {
+                  var read = [];
+                  var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+                  response.success(function(data) {
+                    app.db.transaction(function (tx) {
+                      tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
+                        var row;
+                        var rowlength = rs.rows.length;
+                        if(rowlength > 0) {
+                          $.each(data.posts, function(index, post) { // loop through posts
+                            for (var i = 0; i < rowlength; i++) { // loop through read db
+                              row = rs.rows.item(i);
+
+                              if(parseInt(row.postid) == parseInt(post.id)) {
+                                data.posts[index].read = "Läst: " + row.added_on;
+                                read.push(data.posts[index]);
+                                break;
+                              }
+                            }
+                          });
+                          //alert(JSON.stringify(read, null, 4));
+                          $scope.posts = read;
+                        }
+
+                        $scope.loading = false;
+                      }, app.onError);
+                    });
+                  }).
+                  error(function(data) {
+                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                    console.log(data);
+                  });
+                } else {
+                  console.log("no school selected");
+                  $state.go('front');
+                }
+              }, app.onError);
+            });
+          } else if($stateParams.category == "systemLoadAllUnRead"){
+            var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
+            $scope.loading = true;
+            app.db.transaction(function (tx) {
+              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+                var rowlength = rs.rows.length;
+                if(rowlength > 0) {
+                  var notRead = [];
+                  var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
+                  response.success(function(data) {
+                    app.db.transaction(function (tx) {
+                      tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+                        var row;
+                        var rowlength = rs.rows.length;
+                        if(rowlength > 0) {
+                          $.each(data.posts, function(index, post) { // loop through posts
+                            for (var i = 0; i < rowlength; i++) { // loop through read db
+                              row = rs.rows.item(i);
+
+                              if(parseInt(row.postid) == parseInt(post.id)) {
+                                return true;
+                              } else {
+                                if(i == (rowlength-1)) {
+                                  notRead.push(data.posts[index]);
+                                }
+                              }
+                            }
+                          });
+                          //alert(JSON.stringify($scope.posts, null, 4));
+                          $scope.posts = notRead;
+                        } else {
+                          $scope.posts = data.posts;
+                        }
+
+                        $scope.loading = false;
+                      }, app.onError);
+                    });
+                  }).
+                  error(function(data) {
+                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                    console.log(data);
+                  });
+                } else {
+                  console.log("no school selected");
+                  $state.go('front');
+                }
+              }, app.onError);
+            });
+          } else {
+            var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
+            response.success(function(data) {
+              $scope.posts = data.posts;
+              $scope.loading = false;
+            }).
+            error(function(data) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          }
         } else {
           console.log("no school selected");
           $state.go('front');
@@ -389,352 +589,15 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     });
   };
 }])
-.controller('GuidesCtrl', ['$scope', '$ionicSideMenuDelegate', '$state','$stateParams', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $http) {
-  $scope.showMenu = function () {
-    $ionicSideMenuDelegate.toggleLeft();
-  };
 
-  $scope.goToGuide = function(id, postType) {
-    /*location.href="#/tab/guides/"+id+"/"+postType;*/
-    $state.go("tab.guides-detail", {pid: id, postType: postType});
-  };
-
-  $scope.posts = [];
-  /*
-  $scope.latest = function() {
-  $scope.loading = true;
-  app.db.transaction(function (tx) {
-  tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-  var rowlength = rs.rows.length;
-  if(rowlength > 0) {
-  var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
-  response.success(function(data) {
-  $scope.posts = data.posts;
-  $scope.loading = false;
-}).
-error(function(data) {
-$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-console.log(data);
-});
-} else {
-console.log("no school selected");
-$state.go('front');
-}
-}, app.onError);
-});
-};*/
-
-$scope.$on("$ionicView.enter", function() {
-  $( "#tgl-categories" ).unbind().click(function() {
-    $( ".cate" ).toggle();
-  });
-  $( "#tgl-tags" ).unbind().click(function() {
-    $( ".tags" ).toggle();
-  });
-  $scope.loadpost();
-});
-
-$scope.loadpost = function() {
-  $scope.loading = true;
-  console.log("$stateParams",$stateParams);
-
-  app.db.transaction(function (tx) {
-    tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-      var rowlength = rs.rows.length;
-      if(rowlength > 0) {
-        if($stateParams.category != "all" && $stateParams.category != "systemLoadAllRead" && $stateParams.category != "systemLoadAllUnRead") {
-          var response = $http.get(rs.rows.item(0).otourl +'category/'+$stateParams.category+'/?json=1&'+ p_apikey);
-          response.success(function(data, status, headers, config) {
-            if (data.category.post_count == 0 || data.category.post_count == undefined) {
-              $('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
-              $scope.posts = 0;
-            } else {
-              $('#start-data').html('');
-              $scope.posts = data.posts;
-            }
-            $scope.loading = false;
-          });
-
-          response.error(function(data, status, headers, config) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        } else if($stateParams.category == "systemLoadAllRead"){
-          var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
-
-          $scope.loading = true;
-          app.db.transaction(function (tx) {
-            tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-              var rowlength = rs.rows.length;
-              if(rowlength > 0) {
-                var read = [];
-                var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-                response.success(function(data) {
-                  app.db.transaction(function (tx) {
-                    tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
-                      var row;
-                      var rowlength = rs.rows.length;
-                      if(rowlength > 0) {
-                        $.each(data.posts, function(index, post) { // loop through posts
-                          for (var i = 0; i < rowlength; i++) { // loop through read db
-                            row = rs.rows.item(i);
-
-                            if(parseInt(row.postid) == parseInt(post.id)) {
-                              data.posts[index].read = "Läst: " + row.added_on;
-                              read.push(data.posts[index]);
-                              break;
-                            }
-                          }
-                        });
-                        //alert(JSON.stringify(read, null, 4));
-                        $scope.posts = read;
-                      }
-
-                      $scope.loading = false;
-                    }, app.onError);
-                  });
-                }).
-                error(function(data) {
-                  $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                  $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                  console.log(data);
-                });
-              } else {
-                console.log("no school selected");
-                $state.go('front');
-              }
-            }, app.onError);
-          });
-        } else if($stateParams.category == "systemLoadAllUnRead"){
-          var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
-          $scope.loading = true;
-          app.db.transaction(function (tx) {
-            tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-              var rowlength = rs.rows.length;
-              if(rowlength > 0) {
-                var notRead = [];
-                var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-                response.success(function(data) {
-                  app.db.transaction(function (tx) {
-                    tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
-                      var row;
-                      var rowlength = rs.rows.length;
-                      if(rowlength > 0) {
-                        $.each(data.posts, function(index, post) { // loop through posts
-                          for (var i = 0; i < rowlength; i++) { // loop through read db
-                            row = rs.rows.item(i);
-
-                            if(parseInt(row.postid) == parseInt(post.id)) {
-                              return true;
-                            } else {
-                              if(i == (rowlength-1)) {
-                                notRead.push(data.posts[index]);
-                              }
-                            }
-                          }
-                        });
-                        //alert(JSON.stringify($scope.posts, null, 4));
-                        $scope.posts = notRead;
-                      } else {
-                        $scope.posts = data.posts;
-                      }
-
-                      $scope.loading = false;
-                    }, app.onError);
-                  });
-                }).
-                error(function(data) {
-                  $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                  $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                  console.log(data);
-                });
-              } else {
-                console.log("no school selected");
-                $state.go('front');
-              }
-            }, app.onError);
-          });
-        } else {
-          var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
-          response.success(function(data) {
-            $scope.posts = data.posts;
-            $scope.loading = false;
-          }).
-          error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        }
-      } else {
-        console.log("no school selected");
-        $state.go('front');
-      }
-    }, app.onError);
-  });
-};
-/*
-var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
-$scope.loadRead = function() {
-$scope.loading = true;
-app.db.transaction(function (tx) {
-tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-var rowlength = rs.rows.length;
-if(rowlength > 0) {
-var read = [];
-var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-response.success(function(data) {
-app.db.transaction(function (tx) {
-tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
-var row;
-var rowlength = rs.rows.length;
-if(rowlength > 0) {
-$.each(data.posts, function(index, post) { // loop through posts
-for (var i = 0; i < rowlength; i++) { // loop through read db
-row = rs.rows.item(i);
-
-if(parseInt(row.postid) == parseInt(post.id)) {
-data.posts[index].read = "Läst: " + row.added_on;
-read.push(data.posts[index]);
-break;
-}
-}
-});
-//alert(JSON.stringify(read, null, 4));
-$scope.posts = read;
-}
-
-l_index++;
-if(l_index < 2) { // make sure function runs twice and not get overwritten by other posts
-$scope.loadRead();
-} else {
-$scope.restoreLoadIndex();
-}
-
-$scope.loading = false;
-}, app.onError);
-});
-}).
-error(function(data) {
-$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-console.log(data);
-});
-} else {
-console.log("no school selected");
-$state.go('front');
-}
-}, app.onError);
-});
-};
-
-var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
-$scope.loadNotRead = function() {
-  $scope.loading = true;
-  app.db.transaction(function (tx) {
-    tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-      var rowlength = rs.rows.length;
-      if(rowlength > 0) {
-        var notRead = [];
-        var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-        response.success(function(data) {
-          app.db.transaction(function (tx) {
-            tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
-              var row;
-              var rowlength = rs.rows.length;
-              if(rowlength > 0) {
-                $.each(data.posts, function(index, post) { // loop through posts
-                  for (var i = 0; i < rowlength; i++) { // loop through read db
-                    row = rs.rows.item(i);
-
-                    if(parseInt(row.postid) == parseInt(post.id)) {
-                      return true;
-                    } else {
-                      if(i == (rowlength-1)) {
-                        notRead.push(data.posts[index]);
-                      }
-                    }
-                  }
-                });
-                //alert(JSON.stringify($scope.posts, null, 4));
-                $scope.posts = notRead;
-              } else {
-                $scope.posts = data.posts;
-              }
-
-              l_index2++;
-              if(l_index2 < 2) { // make sure function runs twice and not get overwritten by other posts
-                $scope.loadNotRead();
-              } else {
-                $scope.restoreLoadIndex2();
-              }
-
-              $scope.loading = false;
-            }, app.onError);
-          });
-        }).
-        error(function(data) {
-          $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-          $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-          console.log(data);
-        });
-      } else {
-        console.log("no school selected");
-        $state.go('front');
-      }
-    }, app.onError);
-  });
-};*/
-
-// restore the loading indexes to be able to run the functions twice again
-$scope.restoreLoadIndex = function() {
-  l_index = 0;
-};
-$scope.restoreLoadIndex2 = function() {
-  l_index2 = 0;
-};
-/* Old loadposts
-$scope.loadposts = function(category) {
-// $http.defaults.useXDomain = true;
-$scope.loading = true;
-app.db.transaction(function (tx) {
-tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-var rowlength = rs.rows.length;
-if(rowlength > 0) {
-var response = $http.get(rs.rows.item(0).otourl +'category/'+category+'/?json=1&'+ p_apikey);
-response.success(function(data, status, headers, config) {
-if (data.category.post_count == 0) {
-$('#start-data').html('<h2 style="text-align: center; margin-top: 55px;">ERROR 404 <br> Det finns inga guider i denna kategori</h2>');
-$scope.posts = 0;
-} else {
-$('#start-data').html('');
-$scope.posts = data.posts;
-}
-$scope.loading = false;
-});
-
-response.error(function(data, status, headers, config) {
-$('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-$('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-console.log(data);
-});
-} else {
-console.log("no school selected");
-$state.go('front');
-}
-}, app.onError);
-});
-};*/
-}])
-
-.controller('GuidesDetailCtrl', ['$scope','$ionicViewSwitcher', '$ionicHistory','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $ionicViewSwitcher, $ionicHistory, $http,  $state, $stateParams, $sce, guidesInCourse) {
+.controller('GuidesDetailCtrl', ['$scope', '$ionicNavBarDelegate', '$ionicSideMenuDelegate', '$ionicViewSwitcher', '$ionicHistory','$http',  '$state', '$stateParams', '$sce','guidesInCourse', function GuidesDetailCtrl($scope, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicViewSwitcher, $ionicHistory, $http,  $state, $stateParams, $sce, guidesInCourse) {
   $ionicHistory.nextViewOptions({
     disableBack: true
   });
+  $scope.$on('$ionicView.afterEnter', function(event) {
+    $ionicSideMenuDelegate.canDragContent(false);
+  });
   $scope.goBackToCourses = function() {
-    $ionicHistory.clearHistory();
     $ionicHistory.clearCache();
     $ionicViewSwitcher.nextDirection('back');
     $state.go('tab.courses');
@@ -744,6 +607,19 @@ $state.go('front');
   $scope.goBackGuides = function() {
     $ionicHistory.goBack();
   }
+  $scope.goToTagArchive = function(passedTag) {
+    $ionicNavBarDelegate.showBackButton(false);
+
+    $ionicHistory.clearHistory();
+    $ionicHistory.clearCache();
+    $ionicViewSwitcher.nextDirection('back');
+
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('tab.guides', {category: 'noCategory', tag: passedTag});
+  }
+  
   $scope.loadpost = function() {
     $scope.loading = true;
     app.db.transaction(function (tx) {
@@ -839,16 +715,14 @@ $state.go('front');
                   var nextListId = previousListId+2;
                   //console.log("PREVS "+previousListId);
                   //console.log("NEXT "+nextListId);
-                  if(!(listId <= 1) && obj.position < listId) {
+                  if(!(listId <= 1) && obj.position <= listId) {
                     $scope.showPreviousButton = $sce.trustAsHtml("<button nav-direction='back' class='button back-button buttons  button-clear header-item' style='color: black;' ng-click='goBackGuide("+obj.id+",\""+obj.type+"\")'><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i> Moment "+previousListId+"</button>");
                   } else {
                     $scope.showNextButton = $sce.trustAsHtml("<button nav-direction='forward' class='button back-button buttons  button-clear header-item' style='color: black;'   ng-click='goToCourseGuide("+obj.id+",\""+obj.type+"\")'>Moment "+nextListId+" <i style='color: #9e1b32;' class='icon ion-ios-arrow-forward'></i> </button>");
                   }
                 }
               });
-
               console.log(prevNext);
-
               $scope.loading = false;
             }).
             error(function(data) {
@@ -868,8 +742,6 @@ $state.go('front');
               $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel när du skulle ladda in de rekommenderade kurserna! Testa att sätta på WIFI eller Mobildata.</p>');
               console.log(data);
             });
-
-            /*END*/
 
             $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
               $('.action-like').html("");
@@ -953,13 +825,11 @@ $state.go('front');
     });
   };
 
-
   $scope.$on("$ionicView.beforeEnter", function() {
     $scope.loadpost();
     console.log("$stateParams",$stateParams);
     app.checkIfReadAndAdd($stateParams.pid);
   });
-
 }])
 
 .directive('compileTemplate', function($compile, $parse){
@@ -976,8 +846,12 @@ $state.go('front');
   }
 })
 
-.controller('CoursesCtrl', ['$scope','$ionicHistory', '$ionicNavBarDelegate', '$http', '$ionicSlideBoxDelegate', function($scope, $ionicHistory, $ionicNavBarDelegate, $http, $ionicSlideBoxDelegate) {
+.controller('CoursesCtrl', ['$scope','$ionicHistory', '$ionicSideMenuDelegate', '$ionicNavBarDelegate', '$http', '$ionicSlideBoxDelegate', function($scope, $ionicHistory, $ionicSideMenuDelegate,$ionicNavBarDelegate, $http, $ionicSlideBoxDelegate) {
   $scope.loading = true;
+
+  $scope.$on('$ionicView.afterEnter', function(event) {
+    $ionicSideMenuDelegate.canDragContent(false);
+  });
 
   $scope.courseDropdown = function(id, e) {
     //e.currentTarget.innerHTML = id;
@@ -1054,7 +928,11 @@ $state.go('front');
   $ionicHistory.clearCache();
 }])
 
-.controller('EterCtrl', function($scope, $http) {
+.controller('EterCtrl', function($scope, $http, $ionicSideMenuDelegate) {
+  $scope.$on('$ionicView.afterEnter', function(event) {
+    $ionicSideMenuDelegate.canDragContent(false);
+  });
+
   app.db.transaction(function (tx) {
     tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
       var rowlength = rs.rows.length;
@@ -1103,7 +981,6 @@ $state.go('front');
           return false;
         });
 
-
         $http.get(rs.rows.item(0).otourl +'om-ikt-coacher/?json=1&'+ p_apikey).
         success(function(data) {
           $scope.iktCoach = data.page;
@@ -1134,4 +1011,5 @@ $state.go('front');
     }, app.onError);
   });
 })
+
 .controller('EterDetailCtrl', function($scope) {})

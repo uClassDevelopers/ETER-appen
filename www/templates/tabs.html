@@ -32,7 +32,7 @@ navigation history that also transitions its views in and out.
         <ion-nav-view name="tab-start"></ion-nav-view>
       </ion-tab>
       <!-- Guides Tab -->
-      <ion-tab title="{{ 'GUIDES_TITLE' | translate }}" icon-off="ion-ios-paper-outline" icon-on="ion-ios-paper" href="#/tab/guide/all"> <!-- language specific -->
+      <ion-tab title="{{ 'GUIDES_TITLE' | translate }}" icon-off="ion-ios-paper-outline" icon-on="ion-ios-paper" href="#/tab/guide/all/none/none"> <!-- language specific -->
         <ion-nav-view name="tab-guides"></ion-nav-view>
       </ion-tab>
       <!-- Courses Tab -->
@@ -50,7 +50,7 @@ navigation history that also transitions its views in and out.
   <ion-side-menu side="left">
     <ion-content>
       <ion-list>
-        <form id="guide-search" ng-submit="search()">
+        <form id="guide-search" ng-submit="search(searchKey)">
           <div class="item item-input-inset">
             <label class="item-input-wrapper" id="search-input">
               <i class="icon ion-search placeholder-icon"></i>

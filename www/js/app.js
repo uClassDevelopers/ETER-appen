@@ -90,7 +90,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
   })
 
     .state('tab.guides', {
-    url: '/guide/:category',
+    url: '/guide/:category/:tag/:searchKeys',
     views: {
       'tab-guides': {
         templateUrl: 'templates/tab-guides.html',
@@ -164,6 +164,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     GUIDES_SLIDEOUT_TEACHERS: 'Teachers',
     GUIDES_SLIDEOUT_HISTORY: 'History',
     GUIDES_SLIDEOUT_SEARCH: 'SEARCH',
+    GUIDES_MENU_TOGGLE: 'Archive & Search',
     COURSES_HEADER: "All Courses",
     COURSE_SUBHEADER: "Course Elements",
     OTO_APP_NAME: "The OTO-app",
@@ -192,6 +193,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     GUIDES_SLIDEOUT_TEACHERS: 'Lärare',
     GUIDES_SLIDEOUT_HISTORY: 'Historik',
     GUIDES_SLIDEOUT_SEARCH: 'SÖK',
+    GUIDES_MENU_TOGGLE: 'Arkiv & Sök',
     COURSES_HEADER: "Alla kurser",
     COURSE_SUBHEADER: "Kursmoment",
     OTO_APP_NAME: 'OTO-appen',

@@ -1,87 +1,84 @@
 <!--
 /*
- * Copyright (C) 2015 uClass Developers Daniel Holm & Adam Jacobs Feldstein
- *
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+* Copyright (C) 2015 uClass Developers Daniel Holm & Adam Jacobs Feldstein
+*
+* Licensed to the Apache Software Foundation (ASF) under one
+* or more contributor license agreements.  See the NOTICE file
+* distributed with this work for additional information
+* regarding copyright ownership.  The ASF licenses this file
+* to you under the Apache License, Version 2.0 (the
+* "License"); you may not use this file except in compliance
+* with the License.  You may obtain a copy of the License at
+*
+* http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing,
+* software distributed under the License is distributed on an
+* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+* KIND, either express or implied.  See the License for the
+* specific language governing permissions and limitations
+* under the License.
+*/
 -->
 <ion-view  ng-controller="StartCtrl" view-title="<img class='animated bounce noguide' height='40' src='img/ETER-logga.png'/>"> <!-- language specific -->
-	<ion-nav-buttons side="right">
-  	<a href="#/front"><button id="settings-btn" class="button button-icon button-clear ion-gear-b toggle-button"></button></a>
-  </ion-nav-buttons>
-  <ion-content class="padding">
-  	<div id="start-data"></div>
-    <ion-slide-box delegate-handle="image-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
-			<ion-slide ng-repeat="obj in sliderData">
-				<div class="box blue"><img class="start-slide-img" src="{{obj.image_url}}"/></div>
-			</ion-slide>
-    </ion-slide-box>
-		<div id="start">
-			<div id="top-boxes">
-				<div id="box{{obj.id}}" class="box3 span4 {{obj.contentClass}}" ng-repeat="obj in topData" ng-click="goToGuideTopRow({{obj.postid}})">
-					<div ng-click="goToLinkTopRow(obj.on_link)">
-						<p class="box-widget-title bold">{{obj.title}}</p>
-						<p class="box-image-container">
-							<img style="max-height: 100px !important; max-width: 100px !important;" class="box-image" src="{{obj.image_url}}">
-						</p>
-						<p class="box-widget-title mini">{{obj.content}}</p>
-					</div>
+<ion-content class="padding">
+	<div id="start-data"></div>
+	<ion-slide-box delegate-handle="image-viewer" class="slides" does-continue="true" auto-play="true" on-slide-changed="slideHasChanged($index)">
+		<ion-slide ng-repeat="obj in sliderData">
+			<div class="box blue"><img class="start-slide-img" src="{{obj.image_url}}"/></div>
+		</ion-slide>
+	</ion-slide-box>
+	<div id="start">
+		<div id="top-boxes">
+			<div id="box{{obj.id}}" class="box3 span4 {{obj.contentClass}}" ng-repeat="obj in topData" ng-click="goToGuideTopRow({{obj.postid}})">
+				<div ng-click="goToLinkTopRow(obj.on_link)">
+					<p class="box-widget-title bold">{{obj.title}}</p>
+					<p class="box-image-container">
+						<img style="max-height: 100px !important; max-width: 100px !important;" class="box-image" src="{{obj.image_url}}">
+					</p>
+					<p class="box-widget-title mini">{{obj.content}}</p>
 				</div>
 			</div>
-			<div id="row-two-boxes">
-				<div id="box{{obj.id}}" class="box3 span4 {{obj.contentClass}}" ng-repeat="obj in bottomData" ng-click="goToGuideBottomRow({{obj.postid}})">
-					<div ng-click="goToLinkBottomRow(obj.on_link)">
-						<p class="box-widget-title bold">{{obj.title}}</p>
-						<p class="box-image-container">
-							<img style="max-height: 123px !important;" class="box-image" src="{{obj.image_url}}">
-						</p>
-						<p class="box-widget-title mini">{{obj.content}}</p>
-										</div>
-				</div>
-			</div>
-    </div>
-		<!-- CONSOLE START -->
-		<div class="bajs" style="display: none;">
-			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(666)">Liked postid 666</a>
-			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(111)">Liked postid 111</a>
-			<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(999)">Liked postid 999</a>
-			<a href="javascript:void(0);" onclick="app.checkForSchoolOrAdd(1337)">Add school 1337</a>
-						<p id="lblTxInfo"></p>
-			<p>School items:</p>
-			<br />
-			<ul>
-							<p id="lblInfo0"></p>
-			</ul>
-			<p>Read items:</p>
-			<br />
-			<ul>
-							<p id="lblInfo"></p>
-			</ul>
-			<p>Liked items:</p>
-			<br />
-			<ul>
-				<p id="lblInfo2"></p>
-			</ul>
-			<p id="lblDBInfo"></p>
-			<p id="lblDBError"></p>
-			<p id="console"></p>
-			<section id="status" class="ok">ready</section>
 		</div>
-		<!--CONSOLE END -->
-  </ion-content>
+		<div id="row-two-boxes">
+			<div id="box{{obj.id}}" class="box3 span4 {{obj.contentClass}}" ng-repeat="obj in bottomData" ng-click="goToGuideBottomRow({{obj.postid}})">
+				<div ng-click="goToLinkBottomRow(obj.on_link)">
+					<p class="box-widget-title bold">{{obj.title}}</p>
+					<p class="box-image-container">
+						<img style="max-height: 123px !important;" class="box-image" src="{{obj.image_url}}">
+					</p>
+					<p class="box-widget-title mini">{{obj.content}}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- CONSOLE START -->
+	<div class="bajs" style="display: none;">
+		<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(666)">Liked postid 666</a>
+		<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(111)">Liked postid 111</a>
+		<a href="javascript:void(0);" onclick="app.checkIfLikedAndAdd(999)">Liked postid 999</a>
+		<a href="javascript:void(0);" onclick="app.checkForSchoolOrAdd(1337)">Add school 1337</a>
+		<p id="lblTxInfo"></p>
+		<p>School items:</p>
+		<br />
+		<ul>
+			<p id="lblInfo0"></p>
+		</ul>
+		<p>Read items:</p>
+		<br />
+		<ul>
+			<p id="lblInfo"></p>
+		</ul>
+		<p>Liked items:</p>
+		<br />
+		<ul>
+			<p id="lblInfo2"></p>
+		</ul>
+		<p id="lblDBInfo"></p>
+		<p id="lblDBError"></p>
+		<p id="console"></p>
+		<section id="status" class="ok">ready</section>
+	</div>
+	<!--CONSOLE END -->
+</ion-content>
 </ion-view>

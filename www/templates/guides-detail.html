@@ -31,14 +31,15 @@
 			<div id="post_" class="list card">
 				<div class="item">
 					<h2>{{post.title}}</h2>
-					<p>{{post.date}}</p>
+					<p><i class="ion-ios-calendar-outline"></i> {{post.date}}</p>
 				</div>
 
 				<div class="item item-body">
 					<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 					<div class="theTrustedContent" ng-bind-html="trustedHtml" compile-template></div>
+          <div style="clear: both;"></div>
 					<ul style="list-style: none;" id="play-buttons"></ul>
-          <p>Taggad som: <span ng-repeat="tag in post.tags">{{tag.title + ", "}}</span></p>
+          <p><i class="ion-pound"></i> Taggad som: <span ng-repeat="tag in post.tags"><span class="specialText" ng-click="goToTagArchive('{{tag.slug}}')">{{tag.title + ", "}}</span></span></p>
 				</div>
 
 				<div class="item tabs tabs-secondary tabs-icon-left">
