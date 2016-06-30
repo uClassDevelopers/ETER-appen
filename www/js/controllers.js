@@ -619,7 +619,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     });
     $state.go('tab.guides', {category: 'noCategory', tag: passedTag});
   }
-  
+
   $scope.loadpost = function() {
     $scope.loading = true;
     app.db.transaction(function (tx) {
@@ -671,58 +671,38 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             success(function(data) {
               var prevNext = [];
               $.each(data.posts, function(index, obj) {
-                var customsFields = parseInt($scope.post.custom_fields.eter_guide_position);
-                //console.log("cf "+customsFields);
-                var prev = customsFields-1;
-                var next = customsFields+1;
-                /*
-                console.log("prevs "+prev);
-                console.log("next "+next);
-                console.log('innan '+obj.custom_fields.eter_guide_position+' vs '+ next);
-                console.log('innan '+obj.custom_fields.eter_guide_position +' vs '+ prev);
-                */
+                var listId = $scope.post.custom_fields.eter_guide_position;
+
+                var prev = listId-1;
+                var next = prev+2;
+
                 if(obj.custom_fields.eter_guide_position == prev || obj.custom_fields.eter_guide_position == next) {
-
-                  //console.log(obj.custom_fields.eter_guide_position +' vs '+ next);
-                  //console.log(obj.custom_fields.eter_guide_position +' vs '+ prev);
                   prevNext.push({ id: obj.id, title: obj.title, position: obj.custom_fields.eter_guide_position});
-
-                  //console.log("prevNext:");
-                  //console.log(prevNext);
                 }
                 $scope.goToCourseGuide = function(id,typeofs) {
-                  //console.log("RUN PRESS");
-                  //console.log(id);
                   $ionicViewSwitcher.nextDirection('forward');
                   $state.go('tab.courses-detail',{pid: id, postType: typeofs, inCourse: $stateParams.inCourse, courseName:$stateParams.courseName});
                 }
                 $scope.goBackGuide = function(id, typeofs) {
-                  //console.log("RUN PRESS");
-                  //console.log(id);
                   $ionicViewSwitcher.nextDirection('back');
                   $state.go('tab.courses-detail',{pid: id, postType: typeofs, inCourse: $stateParams.inCourse, courseName:$stateParams.courseName});
                 }
               });
 
               $.each(prevNext, function(index, obj) {
-                console.log("$stateParams",$stateParams);
-
                 if($stateParams.inCourse == 'inCourseTrue' ) {
-                  //console.log("inCourseTrue");
-
                   var listId = $scope.post.custom_fields.eter_guide_position;
-                  var previousListId = listId-1;
-                  var nextListId = previousListId+2;
-                  //console.log("PREVS "+previousListId);
-                  //console.log("NEXT "+nextListId);
-                  if(!(listId <= 1) && obj.position <= listId) {
-                    $scope.showPreviousButton = $sce.trustAsHtml("<button nav-direction='back' class='button back-button buttons  button-clear header-item' style='color: black;' ng-click='goBackGuide("+obj.id+",\""+obj.type+"\")'><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i> Moment "+previousListId+"</button>");
-                  } else {
-                    $scope.showNextButton = $sce.trustAsHtml("<button nav-direction='forward' class='button back-button buttons  button-clear header-item' style='color: black;'   ng-click='goToCourseGuide("+obj.id+",\""+obj.type+"\")'>Moment "+nextListId+" <i style='color: #9e1b32;' class='icon ion-ios-arrow-forward'></i> </button>");
+                  if(parseInt(obj.position) > parseInt(listId)){
+                    //console.log(obj.position+" > "+ listId);
+                    $scope.showNextButton = $sce.trustAsHtml("<button nav-direction='forward' class='button back-button buttons  button-clear header-item' style='color: black;'   ng-click='goToCourseGuide("+obj.id+",\""+obj.type+"\")'>Moment "+obj.position+" <i style='color: #9e1b32;' class='icon ion-ios-arrow-forward'></i> </button>");
+                  }
+                  if(!(listId <= 1) && parseInt(obj.position) < parseInt(listId)) {
+                    //console.log(obj.position+" < "+ listId);
+                    $scope.showPreviousButton = $sce.trustAsHtml("<button nav-direction='back' class='button back-button buttons  button-clear header-item' style='color: black;' ng-click='goBackGuide("+obj.id+",\""+obj.type+"\")'><i style='color: #9e1b32;' class='icon ion-ios-arrow-back'></i> Moment "+obj.position+"</button>");
                   }
                 }
               });
-              console.log(prevNext);
+              //console.log(prevNext);
               $scope.loading = false;
             }).
             error(function(data) {

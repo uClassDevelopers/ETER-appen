@@ -33,7 +33,7 @@
 		<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
 		<ion-list id="abc">
 			<ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}}, {{g.type}})">
-				<h3>{{g.title}}</h3>
+				<h3 style="font-size: 105%;">{{g.title}}</h3>
 				<p style="float: right;">{{ g.read }}</p>
 				<p><i class="ion-ios-calendar-outline"></i> Skriven: {{g.date}}</p> <!-- language specific -->
 				<p><i class="ion-pound"></i> Taggad som: <span ng-repeat="tag in g.tags">{{tag.title + ", "}}</span></p> <!-- language specific -->
