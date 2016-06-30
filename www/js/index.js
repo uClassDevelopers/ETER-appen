@@ -61,7 +61,7 @@ var app = {
 			tx.executeSql("CREATE TABLE IF NOT EXISTS likedposts(ID INTEGER PRIMARY KEY ASC, postid INTEGER)", []);
 			tx.executeSql("CREATE TABLE IF NOT EXISTS schoolinfo(ID INTEGER PRIMARY KEY ASC, otoid INTEGER, otourl TEXT)", [],
                 app.onSuccess, app.onError);
-			
+
         });
     },
 
@@ -71,7 +71,7 @@ var app = {
             tx.executeSql("DELETE FROM schoolinfo WHERE ID=?", [id], app.renderSchoolItems);
         });
     },
-	
+
 	checkForSchoolOrAdd: function(oid, oUrl) {
 		app.db.transaction(function (tx) {
             tx.executeSql("SELECT * FROM schoolinfo", [], function(tx, rs) {
@@ -93,7 +93,7 @@ var app = {
             }, app.onError);
         });
 	},
-	
+
     checkIfReadAndAdd: function (pid) {
 		//alert("checkIfReadAndAdd: "+pid);
         app.db.transaction(function (tx) {
@@ -193,7 +193,7 @@ var app = {
             }
         }, app.onError);
     },
-	
+
     renderReadItems: function (tx) {
         tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function (tx, rs) {
             var rowOutput = "",
@@ -233,7 +233,7 @@ var app = {
             }
         }, app.onError);
     },
-	
+
     deleteReadById: function (id) {
         console.log('Delete read item: ' + id);
         app.db.transaction(function (tx) {

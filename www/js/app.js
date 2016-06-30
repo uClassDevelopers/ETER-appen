@@ -37,7 +37,7 @@ eter.run(function($ionicPlatform) {
     }
     if (window.StatusBar) {
       // org.apache.cordova.statusbar required
-      StatusBar.styleLightContent();
+      StatusBar.styleDefault();
     }
     app.openDatabase();
     app.createTable();

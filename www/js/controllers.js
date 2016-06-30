@@ -238,7 +238,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 $scope.goToLinkTopRow = function() {};
                 if(data.hasOwnProperty('posts')) { // the latest guides
                   $.each(data.posts, function(index, post) {
-                    firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '', contentClass: 'dynamiska' });
+                    firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Publicerad: "+post.date, on_link: '', contentClass: 'dynamiska' });
                   });
                   $scope.goToGuideTopRow = function(id) {
                     if(typeof id == "number") {
@@ -248,7 +248,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
                   $.each(data.list_all_courses, function(index, course) {
                     if(index < 3) {
-                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '', contentClass: 'dynamiska'});
+                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska'});
                     }
                   });
                   $scope.goToGuideTopRow = function() {};
@@ -269,7 +269,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
                 $scope.goToLinkBottomRow = function() {};
                 if(data.hasOwnProperty('posts')) { // the latest guides
                   $.each(data.posts, function(index, post) {
-                    firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "", on_link: '', contentClass: 'dynamiska' });
+                    firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
                   });
                   $scope.goToGuideBottomRow = function(id) {
                     if(typeof id == "number") {
@@ -280,7 +280,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
                   $.each(data.list_all_courses.reverse() , function(index, course) {
                     if(index < 3) {
-                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: '', on_link: '', contentClass: 'dynamiska' });
+                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
                     }
                   });
                   $scope.goToGuideBottomRow = function() {};
@@ -402,6 +402,8 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 
   $scope.posts = [];
 
+  $scope.extraTitle = "";
+
   $scope.$on("$ionicView.enter", function() {
     $( "#tgl-categories" ).unbind().click(function() {
       $( ".cate" ).toggle();
@@ -409,6 +411,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $( "#tgl-tags" ).unbind().click(function() {
       $( ".tags" ).toggle();
     });
+    $scope.extraTitle = "| Senaste";
     $scope.loadpost();
   });
 
@@ -429,6 +432,9 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               } else {
                 $('#start-data').html('');
                 $scope.posts = data.posts;
+
+                $scope.extraTitle = " | "+ data.category.title;
+
               }
               $scope.loading = false;
             });
@@ -447,6 +453,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               } else {
                 $('#start-data').html('');
                 $scope.posts = data.posts;
+                $scope.extraTitle =  " | "+ data.tag.title;
               }
               $scope.loading = false;
             });
@@ -465,6 +472,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               } else {
                 $('#start-data').html('');
                 $scope.posts = data.posts;
+                $scope.extraTitle = " | "+ $stateParams.searchKeys;
               }
               $scope.loading = false;
             });
@@ -574,6 +582,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             response.success(function(data) {
               $scope.posts = data.posts;
               $scope.loading = false;
+              $scope.extraTitle = "| Senaste";
             }).
             error(function(data) {
               $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');

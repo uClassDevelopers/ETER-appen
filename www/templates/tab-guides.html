@@ -21,7 +21,7 @@
 */
 -->
 
-<ion-view cache-view="false" view-title="{{ 'GUIDES_TITLE' | translate }}" ng-controller="GuidesCtrl"> <!-- language specific -->
+<ion-view cache-view="false" view-title="{{ 'GUIDES_TITLE' | translate }} {{extraTitle}}" ng-controller="GuidesCtrl"> <!-- language specific -->
 	<ion-nav-buttons side="left">
 		<button class="button button-icon button-clear ion-navicon" ng-click="showMenu()"> {{ 'GUIDES_MENU_TOGGLE' | translate }}</button>
 	</ion-nav-buttons>
