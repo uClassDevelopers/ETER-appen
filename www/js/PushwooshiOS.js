@@ -56,7 +56,7 @@ function registerPushwooshIOS() {
   });
 
   //initialize the plugin
-  pushNotification.onDeviceReady({pw_appid:"04AA1-0ECE1"});
+  pushNotification.onDeviceReady({pw_appid:"4AB6E-0238F"});
 
   if(!window.localStorage['Pushwoosh']){
     //register for pushes
