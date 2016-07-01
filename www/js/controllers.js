@@ -875,13 +875,16 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
           var courses = [];
           $.each(data.list_all_courses, function(index, obj) { // loop through courses
             courses.push({ id: obj.id, slug: obj.slug, name: obj.name, desc: obj.description, elements: [] });
-            $.each(data.list_all_courses[index].elements, function(i, el) { // loop through elements
+            var elementsRaw = data.list_all_courses[index].elements;
+            if(elementsRaw != undefined) {
+              $.each(data.list_all_courses[index].elements, function(i, el) { // loop through elements
 
-              courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type});
-              courses[index].elements.sort(function (a, b) {
-                return a.elementOrder - b.elementOrder;
+                courses[index].elements.push({ postid: el.id, posttitle: el.title, elementOrder: el.custom_fields.eter_guide_position, type: el.type});
+                courses[index].elements.sort(function (a, b) {
+                  return a.elementOrder - b.elementOrder;
+                });
               });
-            });
+            }
           });
           //alert(JSON.stringify(courses, null, 4));
           $scope.courses = courses;
