@@ -672,7 +672,11 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               }
             }
             var machineRedablePosition = parseInt($scope.post.custom_fields.eter_guide_position);
-            $scope.humanRedablePosition = machineRedablePosition;
+            if(isNaN(machineRedablePosition)) {
+              $scope.humanRedablePosition = 1;
+            } else {
+              $scope.humanRedablePosition = machineRedablePosition;
+            }
 
             /*BEGIN FIND NEXT AND PREV*/
             // Get all courses
