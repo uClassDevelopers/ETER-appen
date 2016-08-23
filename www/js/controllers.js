@@ -137,7 +137,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 }])
 
 //Controller for the school start page with thier customized featured content
-.controller('StartCtrl', ['$scope', '$http', '$ionicSideMenuDelegate', '$ionicSlideBoxDelegate', '$state', '$translate', function($scope, $http, $ionicSideMenuDelegate, $ionicSlideBoxDelegate, $state, $translate) {
+.controller('StartCtrl', ['$scope', '$http', '$ionicModal', '$ionicSideMenuDelegate', '$ionicSlideBoxDelegate', '$ionicPopup','$state', '$translate', function($scope, $http, $ionicModal, $ionicSideMenuDelegate, $ionicSlideBoxDelegate, $ionicPopup, $state, $translate) {
   // change slide
   $scope.slideHasChanged = function() {
     $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
@@ -174,7 +174,29 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               // add to top row if not dynamic
               if(obj.id <= 3) {
                 if(obj.is_dyn != "1") {
-                  firstPageContent.topData.push(data.startpage[index]);
+                  if (obj.title == "Veckans Lunch") {
+                    $http.get("http://ajax.googleapis.com/ajax/services/feed/load", { params: { "v": "1.0", "q": "http://www.amica.se/modules/MenuRss/MenuRss/CurrentWeek?costNumber=6203&language=sv" } })
+                    .success(function(data) {
+
+                      var lunch = {
+                        "id": obj.id,
+                        "position": obj.position,
+                        "row": obj.row,
+                        "title": obj.title,
+                        "content": data.responseData.feed.entries[0].contentSnippet+" läs mer",
+                        "allEntries": data.responseData.feed.entries,
+                        "on_link":  "openLunchAlert"
+                      };
+
+                      firstPageContent.topData.push(lunch);
+
+                    })
+                    .error(function(data) {
+                      console.log("ERROR: " + data);
+                    });
+                  } else {
+                    firstPageContent.topData.push(data.startpage[index]);
+                  }
                 }
               }
               // add to bottom row if not dynamic
@@ -209,11 +231,30 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               });
             };
 
+
             // These functions will only work if static data is choosen, if dynamic is choosen then it will be an empty function
-            $scope.goToLinkTopRow = function(url) {
+            $scope.goToLinkTopRow = function(url, passedAllEntries) {
               //alert(url);
               if(url.indexOf('http') == 0) {
                 var ref = window.open(url, '_blank', 'location=yes');
+              } else if(url == "openLunchAlert") {
+                var combinedString = "";
+                for(var i = 0; i< passedAllEntries.length; i++) {
+                  var title = passedAllEntries[i].title;
+                  var contents = passedAllEntries[i].content;
+                  var innerComb = title+"\n"+contents;
+                  combinedString += innerComb;
+                }
+                //navigator.notification.alert(combinedString, null, 'Veckans Lunch', 'close')
+                $ionicPopup.show({
+                  template: combinedString,
+                  title: 'Veckans Lunch',
+                  scope: $scope,
+                  buttons: [
+                    { text: 'Stäng' }
+                  ]
+                });
+
               } else {
                 location.href=url;
               }
