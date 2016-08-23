@@ -31,7 +31,7 @@
 	<div id="start">
 		<div id="top-boxes">
 			<div id="box{{obj.id}}" class="box3 span4 {{obj.contentClass}}" ng-repeat="obj in topData" ng-click="goToGuideTopRow({{obj.postid}})">
-				<div ng-click="goToLinkTopRow(obj.on_link)">
+				<div ng-click="goToLinkTopRow(obj.on_link, obj.allEntries)">
 					<p class="box-widget-title bold">{{obj.title}}</p>
 					<p class="box-image-container">
 						<img style="max-height: 100px !important; max-width: 100px !important;" class="box-image" src="{{obj.image_url}}">
