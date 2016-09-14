@@ -466,6 +466,10 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $scope.extraTitle = "| Senaste";
     $scope.loadpost();
   });
+  // Todo, create a function that fetches all tags from here:
+  //http://eter.rudbeck.info/?json=get_tag_index&apikey=ErtYnDsKATCzmuf6
+  // On html template make classes for color and font-weight and size based on
+  // the count of posts!
 
   $scope.loadpost = function() {
     $scope.loading = true;
