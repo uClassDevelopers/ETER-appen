@@ -97,6 +97,14 @@ function fixCordovaYoutubePlayers() {
     }
   }
 }
+// Sort frontpage data http://stackoverflow.com/questions/1129216/sort-array-of-objects-by-string-property-value-in-javascript
+function compare(a,b) {
+  if (a.position < b.position)
+  return -1;
+  if (a.position > b.position)
+  return 1;
+  return 0;
+}
 
 // modules
 angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
@@ -174,26 +182,20 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               // add to top row if not dynamic
               if(obj.id <= 3) {
                 if(obj.is_dyn != "1") {
-                  if (obj.title == "Veckans Lunch") {
-                    $http.get("http://ajax.googleapis.com/ajax/services/feed/load", { params: { "v": "1.0", "q": "http://www.amica.se/modules/MenuRss/MenuRss/CurrentWeek?costNumber=6203&language=sv" } })
-                    .success(function(data) {
+                  if (obj.title == "Veckans lunch" || obj.title == "Veckans Lunch" || obj.title == "veckans lunch" || obj.title == "dagens lunch" || obj.title == "Dagens Lunch" || obj.title == "Dagens lunch")  {
+                    var lunch = {
+                      "id": obj.id,
+                      "position": obj.position,
+                      "row": obj.row,
+                      "title": obj.title,
+                      "image_url": obj.image_url,
+                      "content": obj.content,
+                      "allEntries": data.items,
+                      "on_link":  "openLunchAlert"
+                    };
+                    firstPageContent.topData.push(lunch);
+                    firstPageContent.topData.sort(compare);
 
-                      var lunch = {
-                        "id": obj.id,
-                        "position": obj.position,
-                        "row": obj.row,
-                        "title": obj.title,
-                        "content": data.responseData.feed.entries[0].contentSnippet+" läs mer",
-                        "allEntries": data.responseData.feed.entries,
-                        "on_link":  "openLunchAlert"
-                      };
-
-                      firstPageContent.topData.push(lunch);
-
-                    })
-                    .error(function(data) {
-                      console.log("ERROR: " + data);
-                    });
                   } else {
                     firstPageContent.topData.push(data.startpage[index]);
                   }
@@ -203,6 +205,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               if(obj.id > 3 && obj.id < 7) {
                 if(obj.is_dyn != "1") {
                   firstPageContent.bottomData.push(data.startpage[index]);
+                  firstPageContent.bottomData.sort(compare);
                 }
               }
             });
@@ -238,21 +241,29 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               if(url.indexOf('http') == 0) {
                 var ref = window.open(url, '_blank', 'location=yes');
               } else if(url == "openLunchAlert") {
-                var combinedString = "";
-                for(var i = 0; i< passedAllEntries.length; i++) {
-                  var title = passedAllEntries[i].title;
-                  var contents = passedAllEntries[i].content;
-                  var innerComb = title+"\n"+contents;
-                  combinedString += innerComb;
-                }
                 //navigator.notification.alert(combinedString, null, 'Veckans Lunch', 'close')
-                $ionicPopup.show({
-                  template: combinedString,
-                  title: 'Veckans Lunch',
-                  scope: $scope,
-                  buttons: [
-                    { text: 'Stäng' }
-                  ]
+                //http://www.amica.se/modules/MenuRss/MenuRss/CurrentDay?costNumber=6203&language=sv
+                //http://www.amica.se/modules/MenuRss/MenuRss/CurrentWeek?costNumber=6203&language=sv
+                $http.get("http://rss2json.com/api.json?rss_url=http%3A%2F%2Fwww.amica.se%2Fmodules%2FMenuRss%2FMenuRss%2FCurrentWeek%3FcostNumber%3D6203%26language%3Dsv")
+                .success(function(data) {
+                  var combinedString = "";
+                  for(var i = 0; i< data.items.length; i++) {
+                    var title = data.items[i].title;
+                    var contents = data.items[i].content;
+                    var innerComb = title+"\n"+contents;
+                    combinedString += innerComb;
+                  }
+                  $ionicPopup.show({
+                    template: combinedString,
+                    title: 'Veckans Lunch',
+                    scope: $scope,
+                    buttons: [
+                      { text: 'Stäng' }
+                    ]
+                  });
+                })
+                .error(function(data) {
+                  console.log("ERROR: " + data);
                 });
 
               } else {
