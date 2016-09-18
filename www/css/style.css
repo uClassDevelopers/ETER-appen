@@ -382,6 +382,18 @@ ion-slide div img {
 .specialText, .theTrustedContent a {
   color:  #9e1b32;
 }
+.tag-cloud {
+  margin-left: 2%;
+}
+.tag-cloud span:nth-of-type(3n + 1) {
+    font-size: 1.25em;
+}
+.tag-cloud span:nth-of-type(4n+3) {
+    font-size: 1.5em;
+}
+.tag-cloud span:nth-of-type(5n - 3) {
+    font-size: 1em;
+}
 /*.courseHighlight {
 border: 10px solid #A4D3EE;
 }*/
