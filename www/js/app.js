@@ -149,8 +149,9 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/start');
 
-
+  //PLEASE REMEBER TO CHANGE THIS WHEN UPDATE!!!
   var otoAppVersion = "0.1.9";
+
   $translateProvider.translations("ENG", {
     START_TITLE: 'Start',
     GUIDES_TITLE: 'Guides',
