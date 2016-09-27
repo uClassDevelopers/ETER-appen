@@ -298,6 +298,9 @@ ion-slide div img {
   border: none;
   background-color: none;
 }
+.courseContainer {
+  border: 2px solid #fff;
+}
 .courseContainer:nth-child(even) .course{
   background-color: #f2f2f2;
   color: #666;
@@ -382,8 +385,14 @@ ion-slide div img {
 .specialText, .theTrustedContent a {
   color:  #9e1b32;
 }
-.tag-cloud {
+.two-p-marign {
   margin-left: 2%;
+}
+.tag-cloud {
+  margin: 2%;
+}
+.tag-cloud span {
+  margin: 1%;
 }
 .tag-cloud span:nth-of-type(3n + 1) {
     font-size: 1.25em;
@@ -394,6 +403,6 @@ ion-slide div img {
 .tag-cloud span:nth-of-type(5n - 3) {
     font-size: 1em;
 }
-/*.courseHighlight {
-border: 10px solid #A4D3EE;
-}*/
+.courseHighlight {
+  border: 2px solid #9e1b32;
+}

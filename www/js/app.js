@@ -149,7 +149,8 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/tab/start');
 
-
+  //PLEASE REMEBER TO CHANGE THIS WHEN UPDATE!!!
+  var otoAppVersion = "0.1.9";
 
   $translateProvider.translations("ENG", {
     START_TITLE: 'Start',
@@ -168,7 +169,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     COURSES_HEADER: "All Courses",
     COURSE_SUBHEADER: "Course Elements",
     OTO_APP_NAME: "The OTO-app",
-    OTO_APP_PRESENTATION: "The OTO-app (One-To-One) was created by the uClass developers: Adam Feldstein Jacobs and Daniel Holm.",
+    OTO_APP_PRESENTATION: "The OTO-app (One-To-One) was created by the uClass developers: Adam Feldstein Jacobs and Daniel Holm. Version: "+otoAppVersion+". ",
     READ_MORE_UCLASS: "Find out more about uClass.",
     FORM_CONTACT: "Contact",
     FORM_NAME: "Your name",
@@ -187,7 +188,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     ABOUT_TITLE: 'Om & support',
     NAV_BACK: 'Bakåt',
     NAV_BACK_COURSES: 'Alla Kurser',
-    GUIDES_SLIDEOUT_LATEST: 'Senaste',
+    GUIDES_SLIDEOUT_LATEST: 'Ämnen & Senaste',
     GUIDES_SLIDEOUT_CATEGORIES: 'Kategorier',
     GUIDES_SLIDEOUT_NOTREAD: 'Alla Olästa',
     GUIDES_SLIDEOUT_TEACHERS: 'Lärare',
@@ -197,7 +198,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
     COURSES_HEADER: "Alla kurser",
     COURSE_SUBHEADER: "Kursmoment",
     OTO_APP_NAME: 'OTO-appen',
-    OTO_APP_PRESENTATION: "OTO-appen (One-To-One) är skapad utav uClass Developers Daniel Holm och Adam Feldstein Jacobs.",
+    OTO_APP_PRESENTATION: "OTO-appen (One-To-One) är skapad utav uClass Developers Daniel Holm och Adam Feldstein Jacobs. Version:" + otoAppVersion+". ",
     READ_MORE_UCLASS: "Läs mer om uClass.",
     FORM_CONTACT: "Kontakt",
     FORM_NAME: "Ditt namn",
