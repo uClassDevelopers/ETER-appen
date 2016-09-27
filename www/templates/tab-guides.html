@@ -31,6 +31,11 @@
 	<ion-content>
 		<div id="start-data"></div>
 		<ion-spinner ng-show="loading" class="loading" icon="lines"></ion-spinner>
+		<div class="tag-cloud">
+			<span ng-repeat="t in allTags" id="tag_{{t.id}}" class="tag size" customSize="{{t.post_count}}" ng-click="goToTagArchive('{{t.slug}}')">
+				{{t.title}}
+			</span>
+		</div>
 		<ion-list id="abc">
 			<ion-item ng-repeat="g in posts" id="post_{{g.id}}" class="post item ng-binding" ng-click="goToGuide({{g.id}}, {{g.type}})">
 				<h3 style="font-size: 105%;">{{g.title}}</h3>

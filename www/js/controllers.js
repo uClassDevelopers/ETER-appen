@@ -435,7 +435,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
 }])
 
 //Controller for the guides page
-.controller('GuidesCtrl', ['$scope', '$ionicSideMenuDelegate', '$state','$stateParams', '$http', function($scope, $ionicSideMenuDelegate, $state, $stateParams, $http) {
+.controller('GuidesCtrl', ['$scope', '$ionicNavBarDelegate', '$ionicSideMenuDelegate', '$ionicViewSwitcher', '$ionicHistory', '$state','$stateParams', '$http', function($scope, $ionicNavBarDelegate, $ionicSideMenuDelegate, $ionicViewSwitcher, $ionicHistory, $state, $stateParams, $http) {
   $scope.showMenu = function () {
     $ionicSideMenuDelegate.toggleLeft();
   };
@@ -453,6 +453,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   };
 
   $scope.posts = [];
+  $scope.allTags = [];
 
   $scope.extraTitle = "";
 
@@ -465,7 +466,55 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     });
     $scope.extraTitle = "| Senaste";
     $scope.loadpost();
+    if($stateParams.category == 'all'){
+        $scope.loadTagCloud();
+    }
+    else{
+      $scope.allTags = [];
+    }
+
   });
+
+  $scope.loadTagCloud = function() {
+    app.db.transaction(function (tx) {
+      $scope.loading = true;
+      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+        var rowlength = rs.rows.length;
+          if(rowlength > 0) {
+
+            var response = $http.get(rs.rows.item(0).otourl +'?json=get_tag_index&'+ p_apikey);
+            response.success(function(data) {
+              //alert(JSON.stringify(data, null, 4));
+              $scope.allTags = data.tags;
+              //console.log(rs.rows.item(0).otourl +'?json=get_tag_index'+ p_apikey);
+              //console.log($scope.allTags);
+              $scope.loading = false;
+            }).
+            error(function(data) {
+              $scop.allTags = [];
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+              //alert("b");
+            });
+
+          }
+      });
+    });
+  }
+
+  $scope.goToTagArchive = function(passedTag) {
+    $ionicNavBarDelegate.showBackButton(false);
+
+    $ionicHistory.clearHistory();
+    $ionicHistory.clearCache();
+    $ionicViewSwitcher.nextDirection('enter');
+
+    $ionicHistory.nextViewOptions({
+      disableBack: true
+    });
+    $state.go('tab.guides', {category: 'noCategory', tag: passedTag});
+  }
 
   $scope.loadpost = function() {
     $scope.loading = true;
