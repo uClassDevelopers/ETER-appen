@@ -28,8 +28,8 @@
       "locator": "https://github.com/Glitchbone/CordovaYoutubeVideoPlayer.git",
       "id": "com.bunkerpalace.cordova.YoutubeVideoPlayer"
     },
-    "pushwoosh-cordova-plugin",
-    "cordova-plugin-x-socialsharing"
+    "cordova-plugin-x-socialsharing",
+    "pushwoosh-cordova-plugin"
   ],
   "cordovaPlatforms": [
     "ios"
