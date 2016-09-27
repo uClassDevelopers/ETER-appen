@@ -471,12 +471,16 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     }
     else{
       $scope.allTags = [];
+      $scope.specialTitleTags = "";
+      $scope.specialTitleSenaste = "";
     }
 
   });
 
   $scope.loadTagCloud = function() {
     app.db.transaction(function (tx) {
+      $scope.specialTitleTags = "Ämnen";
+      $scope.specialTitleSenaste = "Senaste";
       $scope.loading = true;
       tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
         var rowlength = rs.rows.length;
