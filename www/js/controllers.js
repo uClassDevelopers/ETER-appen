@@ -150,220 +150,220 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
   $scope.slideHasChanged = function() {
     $ionicSlideBoxDelegate.$getByHandle('image-viewer').update();
   };
-
+  /*
   $scope.$on("$ionicView.beforeEnter", function() {
-    app.start();
-  });
+  app.start();
+});
+*/
+$scope.$on('$ionicView.afterEnter', function(event) {
+  $ionicSideMenuDelegate.canDragContent(false);
+});
 
-  $scope.$on('$ionicView.afterEnter', function(event) {
-    $ionicSideMenuDelegate.canDragContent(false);
-  });
+// if base url exists load api, else go to front state
+$scope.$on("$ionicView.enter", function() {
+  app.db.transaction(function (tx) {
+    tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
+      var rowlength = rs.rows.length;
+      if(rowlength > 0) {
+        $http.get(rs.rows.item(0).otourl + 'eter-app-api/'+ apikey +'&startpage=1').
+        success(function(data) {
+          $('#start-data').html("");
+          var firstPageContent = {
+            "sliderData":[],
+            "topData":[],
+            "bottomData":[]
+          };
 
-  // if base url exists load api, else go to front state
-  $scope.$on("$ionicView.enter", function() {
-    app.db.transaction(function (tx) {
-      tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-        var rowlength = rs.rows.length;
-        if(rowlength > 0) {
-          $http.get(rs.rows.item(0).otourl + 'eter-app-api/'+ apikey +'&startpage=1').
-          success(function(data) {
-            $('#start-data').html("");
-            var firstPageContent = {
-              "sliderData":[],
-              "topData":[],
-              "bottomData":[]
-            };
+          $.each(data.startpage, function(index, obj) {
+            // Add to slider
+            if(obj.id >= 7) {
+              firstPageContent.sliderData.push(data.startpage[index]);
+            }
+            // add to top row if not dynamic
+            if(obj.id <= 3) {
+              if(obj.is_dyn != "1") {
+                if (obj.title == "Veckans lunch" || obj.title == "Veckans Lunch" || obj.title == "veckans lunch" || obj.title == "dagens lunch" || obj.title == "Dagens Lunch" || obj.title == "Dagens lunch")  {
+                  var lunch = {
+                    "id": obj.id,
+                    "position": obj.position,
+                    "row": obj.row,
+                    "title": obj.title,
+                    "image_url": obj.image_url,
+                    "content": obj.content,
+                    "allEntries": data.items,
+                    "on_link":  "openLunchAlert"
+                  };
+                  firstPageContent.topData.push(lunch);
+                  firstPageContent.topData.sort(compare);
 
-            $.each(data.startpage, function(index, obj) {
-              // Add to slider
-              if(obj.id >= 7) {
-                firstPageContent.sliderData.push(data.startpage[index]);
-              }
-              // add to top row if not dynamic
-              if(obj.id <= 3) {
-                if(obj.is_dyn != "1") {
-                  if (obj.title == "Veckans lunch" || obj.title == "Veckans Lunch" || obj.title == "veckans lunch" || obj.title == "dagens lunch" || obj.title == "Dagens Lunch" || obj.title == "Dagens lunch")  {
-                    var lunch = {
-                      "id": obj.id,
-                      "position": obj.position,
-                      "row": obj.row,
-                      "title": obj.title,
-                      "image_url": obj.image_url,
-                      "content": obj.content,
-                      "allEntries": data.items,
-                      "on_link":  "openLunchAlert"
-                    };
-                    firstPageContent.topData.push(lunch);
-                    firstPageContent.topData.sort(compare);
-
-                  } else {
-                    firstPageContent.topData.push(data.startpage[index]);
-                  }
+                } else {
+                  firstPageContent.topData.push(data.startpage[index]);
                 }
               }
-              // add to bottom row if not dynamic
-              if(obj.id > 3 && obj.id < 7) {
-                if(obj.is_dyn != "1") {
-                  firstPageContent.bottomData.push(data.startpage[index]);
-                  firstPageContent.bottomData.sort(compare);
-                }
+            }
+            // add to bottom row if not dynamic
+            if(obj.id > 3 && obj.id < 7) {
+              if(obj.is_dyn != "1") {
+                firstPageContent.bottomData.push(data.startpage[index]);
+                firstPageContent.bottomData.sort(compare);
               }
+            }
+          });
+
+          $scope.loadposts = function(category) {
+            // $http.defaults.useXDomain = true;
+            $scope.loading = true;
+
+            var response = $http.get(rs.rows.item(0).otourl +'category/'+category+'/?json=1&'+ p_apikey);
+
+            response.success(function(data, status, headers, config) {
+              if (data.category.post_count == 0) {
+                console.log("ERROR 404, no guides found start-tab");
+                $scope.posts = 0;
+              } else {
+                $('#start-data').html('');
+                $scope.posts = data.posts;
+              }
+              $scope.loading = false;
             });
 
-            $scope.loadposts = function(category) {
-              // $http.defaults.useXDomain = true;
-              $scope.loading = true;
+            response.error(function(data, status, headers, config) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          };
 
-              var response = $http.get(rs.rows.item(0).otourl +'category/'+category+'/?json=1&'+ p_apikey);
 
-              response.success(function(data, status, headers, config) {
-                if (data.category.post_count == 0) {
-                  console.log("ERROR 404, no guides found start-tab");
-                  $scope.posts = 0;
-                } else {
-                  $('#start-data').html('');
-                  $scope.posts = data.posts;
+          // These functions will only work if static data is choosen, if dynamic is choosen then it will be an empty function
+          $scope.goToLinkTopRow = function(url, passedAllEntries) {
+            //alert(url);
+            if(url.indexOf('http') == 0) {
+              var ref = window.open(url, '_blank', 'location=yes');
+            } else if(url == "openLunchAlert") {
+              //navigator.notification.alert(combinedString, null, 'Veckans Lunch', 'close')
+              //http://www.amica.se/modules/MenuRss/MenuRss/CurrentDay?costNumber=6203&language=sv
+              //http://www.amica.se/modules/MenuRss/MenuRss/CurrentWeek?costNumber=6203&language=sv
+              $http.get("http://rss2json.com/api.json?rss_url=http%3A%2F%2Fwww.amica.se%2Fmodules%2FMenuRss%2FMenuRss%2FCurrentWeek%3FcostNumber%3D6203%26language%3Dsv")
+              .success(function(data) {
+                var combinedString = "";
+                for(var i = 0; i< data.items.length; i++) {
+                  var title = data.items[i].title;
+                  var contents = data.items[i].content;
+                  var innerComb = title+"\n"+contents;
+                  combinedString += innerComb;
                 }
-                $scope.loading = false;
-              });
-
-              response.error(function(data, status, headers, config) {
-                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                console.log(data);
-              });
-            };
-
-
-            // These functions will only work if static data is choosen, if dynamic is choosen then it will be an empty function
-            $scope.goToLinkTopRow = function(url, passedAllEntries) {
-              //alert(url);
-              if(url.indexOf('http') == 0) {
-                var ref = window.open(url, '_blank', 'location=yes');
-              } else if(url == "openLunchAlert") {
-                //navigator.notification.alert(combinedString, null, 'Veckans Lunch', 'close')
-                //http://www.amica.se/modules/MenuRss/MenuRss/CurrentDay?costNumber=6203&language=sv
-                //http://www.amica.se/modules/MenuRss/MenuRss/CurrentWeek?costNumber=6203&language=sv
-                $http.get("http://rss2json.com/api.json?rss_url=http%3A%2F%2Fwww.amica.se%2Fmodules%2FMenuRss%2FMenuRss%2FCurrentWeek%3FcostNumber%3D6203%26language%3Dsv")
-                .success(function(data) {
-                  var combinedString = "";
-                  for(var i = 0; i< data.items.length; i++) {
-                    var title = data.items[i].title;
-                    var contents = data.items[i].content;
-                    var innerComb = title+"\n"+contents;
-                    combinedString += innerComb;
-                  }
-                  $ionicPopup.show({
-                    template: combinedString,
-                    title: 'Veckans Lunch',
-                    scope: $scope,
-                    buttons: [
-                      { text: 'Stäng' }
-                    ]
-                  });
-                })
-                .error(function(data) {
-                  console.log("ERROR: " + data);
+                $ionicPopup.show({
+                  template: combinedString,
+                  title: 'Veckans Lunch',
+                  scope: $scope,
+                  buttons: [
+                    { text: 'Stäng' }
+                  ]
                 });
-
-              } else {
-                location.href=url;
-              }
-            };
-            $scope.goToLinkBottomRow = function(url) {
-              //alert(url);
-              if(url.indexOf('http') == 0) {
-                var ref = window.open(url, '_blank', 'location=yes');
-              } else {
-                location.href=url;
-              }
-            };
-
-            // Declaring empty functions. They will be activated if the latest guides have been choosen
-            $scope.goToGuideTopRow = function() {};
-            $scope.goToGuideBottomRow = function() {};
-
-            // Add dynamic data if is_dyn = 1 for top row
-            if(data.startpage[0].is_dyn == "1") {
-              $http.get(data.startpage[0].dyn_link).
-              success(function(data) {
-                $scope.goToLinkTopRow = function() {};
-                if(data.hasOwnProperty('posts')) { // the latest guides
-                  $.each(data.posts, function(index, post) {
-                    firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Publicerad: "+post.date, on_link: '', contentClass: 'dynamiska' });
-                  });
-                  $scope.goToGuideTopRow = function(id) {
-                    if(typeof id == "number") {
-                      location.href="#/tab/start/"+id;
-                    }
-                  };
-                } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
-                  $.each(data.list_all_courses, function(index, course) {
-                    if(index < 3) {
-                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska'});
-                    }
-                  });
-                  $scope.goToGuideTopRow = function() {};
-                }
-              }).
-              error(function(data) {
-                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
-                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                console.log(data);
+              })
+              .error(function(data) {
+                console.log("ERROR: " + data);
               });
 
+            } else {
+              location.href=url;
             }
-
-            // Add dynamic data if is_dyn = 1 for bottom row
-            if(data.startpage[3].is_dyn == "1") {
-              $http.get(data.startpage[3].dyn_link).
-              success(function(data) {
-                $scope.goToLinkBottomRow = function() {};
-                if(data.hasOwnProperty('posts')) { // the latest guides
-                  $.each(data.posts, function(index, post) {
-                    firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
-                  });
-                  $scope.goToGuideBottomRow = function(id) {
-                    if(typeof id == "number") {
-                      location.href="#/tab/start/"+id;
-                    }
-                  };
-                } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
-
-                  $.each(data.list_all_courses.reverse() , function(index, course) {
-                    if(index < 3) {
-                      firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
-                    }
-                  });
-                  $scope.goToGuideBottomRow = function() {};
-                }
-              }).
-              error(function(data) {
-                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
-                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                console.log(data);
-              });
+          };
+          $scope.goToLinkBottomRow = function(url) {
+            //alert(url);
+            if(url.indexOf('http') == 0) {
+              var ref = window.open(url, '_blank', 'location=yes');
+            } else {
+              location.href=url;
             }
+          };
 
-            //alert(JSON.stringify(firstPageContent, null, 4));
-            $scope.topData = firstPageContent.topData;
-            $scope.bottomData = firstPageContent.bottomData;
-            $scope.sliderData = firstPageContent.sliderData;
+          // Declaring empty functions. They will be activated if the latest guides have been choosen
+          $scope.goToGuideTopRow = function() {};
+          $scope.goToGuideBottomRow = function() {};
 
-          }).
-          error(function(data) {
-            $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-            $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-            console.log(data);
-          });
-        } else {
-          console.log("no school selected");
-          $state.go('front');
+          // Add dynamic data if is_dyn = 1 for top row
+          if(data.startpage[0].is_dyn == "1") {
+            $http.get(data.startpage[0].dyn_link).
+            success(function(data) {
+              $scope.goToLinkTopRow = function() {};
+              if(data.hasOwnProperty('posts')) { // the latest guides
+                $.each(data.posts, function(index, post) {
+                  firstPageContent.topData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: "Publicerad: "+post.date, on_link: '', contentClass: 'dynamiska' });
+                });
+                $scope.goToGuideTopRow = function(id) {
+                  if(typeof id == "number") {
+                    location.href="#/tab/start/"+id;
+                  }
+                };
+              } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
+                $.each(data.list_all_courses, function(index, course) {
+                  if(index < 3) {
+                    firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska'});
+                  }
+                });
+                $scope.goToGuideTopRow = function() {};
+              }
+            }).
+            error(function(data) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
 
-        }
-      }, app.onError);
-    });
+          }
+
+          // Add dynamic data if is_dyn = 1 for bottom row
+          if(data.startpage[3].is_dyn == "1") {
+            $http.get(data.startpage[3].dyn_link).
+            success(function(data) {
+              $scope.goToLinkBottomRow = function() {};
+              if(data.hasOwnProperty('posts')) { // the latest guides
+                $.each(data.posts, function(index, post) {
+                  firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
+                });
+                $scope.goToGuideBottomRow = function(id) {
+                  if(typeof id == "number") {
+                    location.href="#/tab/start/"+id;
+                  }
+                };
+              } else if(data.hasOwnProperty('list_all_courses')) { // the latest courses
+
+                $.each(data.list_all_courses.reverse() , function(index, course) {
+                  if(index < 3) {
+                    firstPageContent.bottomData.push({ id: (index+1), courseid: course.id, title: course.name, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
+                  }
+                });
+                $scope.goToGuideBottomRow = function() {};
+              }
+            }).
+            error(function(data) {
+              $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel med en dynamiska datan! Testa att sätta på WIFI eller Mobildata.</p>');
+              $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+              console.log(data);
+            });
+          }
+
+          //alert(JSON.stringify(firstPageContent, null, 4));
+          $scope.topData = firstPageContent.topData;
+          $scope.bottomData = firstPageContent.bottomData;
+          $scope.sliderData = firstPageContent.sliderData;
+
+        }).
+        error(function(data) {
+          $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+          $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+          console.log(data);
+        });
+      } else {
+        console.log("no school selected");
+        $state.go('front');
+
+      }
+    }, app.onError);
   });
+});
 
 }])
 
@@ -588,100 +588,111 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
               console.log(data);
             });
           } else if($stateParams.category == "systemLoadAllRead"){
-            var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option), must use recursion
+            var l_index = 0; // loading index (fixes overwriting bug when clicking on this menu option)
+            $scope.loadRead = function() {
+              $scope.loading = true;
+              var read = [];
+              var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
+              response.success(function(data) {
+                app.db.transaction(function (tx) {
+                  tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
+                    var row;
+                    var rowlength = rs.rows.length;
+                    if(rowlength > 0) {
+                      $.each(data.posts, function(index, post) { // loop through posts
+                        for (var i = 0; i < rowlength; i++) { // loop through read db
+                          row = rs.rows.item(i);
 
-            $scope.loading = true;
-            app.db.transaction(function (tx) {
-              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-                var rowlength = rs.rows.length;
-                if(rowlength > 0) {
-                  var read = [];
-                  var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-                  response.success(function(data) {
-                    app.db.transaction(function (tx) {
-                      tx.executeSql("SELECT * FROM readposts ORDER BY ID DESC", [], function(tx, rs) {
-                        var row;
-                        var rowlength = rs.rows.length;
-                        if(rowlength > 0) {
-                          $.each(data.posts, function(index, post) { // loop through posts
-                            for (var i = 0; i < rowlength; i++) { // loop through read db
-                              row = rs.rows.item(i);
-
-                              if(parseInt(row.postid) == parseInt(post.id)) {
-                                data.posts[index].read = "Läst: " + row.added_on;
-                                read.push(data.posts[index]);
-                                break;
-                              }
-                            }
-                          });
-                          //alert(JSON.stringify(read, null, 4));
-                          $scope.posts = read;
+                          if(parseInt(row.postid) == parseInt(post.id)) {
+                            data.posts[index].read = "Läst: " + row.added_on;
+                            read.push(data.posts[index]);
+                            break;
+                          }
                         }
+                      });
+                      //alert(JSON.stringify(read, null, 4));
+                      $scope.posts = read;
+                    }
 
-                        $scope.loading = false;
-                      }, app.onError);
-                    });
-                  }).
-                  error(function(data) {
-                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                    console.log(data);
-                  });
-                } else {
-                  console.log("no school selected");
-                  $state.go('front');
-                }
-              }, app.onError);
-            });
+                    l_index++;
+                    if(l_index < 2) { // make sure function runs twice and not get overwritten by other posts
+                      $scope.loadRead();
+                    } else {
+                      $scope.restoreLoadIndex();
+                    }
+
+                    $scope.loading = false;
+                  }, app.onError);
+                });
+              }).
+              error(function(data) {
+                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                console.log(data);
+              });
+            };
+            $scope.extraTitle = "Historik";
+            $scope.loadRead();
+            $scope.restoreLoadIndex = function() {
+              l_index = 0;
+            };
+
+
           } else if($stateParams.category == "systemLoadAllUnRead"){
-            var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option), must use recursion
-            $scope.loading = true;
-            app.db.transaction(function (tx) {
-              tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
-                var rowlength = rs.rows.length;
-                if(rowlength > 0) {
-                  var notRead = [];
-                  var response = $http.get(rs.rows.item(0).otourl +'api/get_recent_posts/?'+ p_apikey +'&count=99999999999999999999999');
-                  response.success(function(data) {
-                    app.db.transaction(function (tx) {
-                      tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
-                        var row;
-                        var rowlength = rs.rows.length;
-                        if(rowlength > 0) {
-                          $.each(data.posts, function(index, post) { // loop through posts
-                            for (var i = 0; i < rowlength; i++) { // loop through read db
-                              row = rs.rows.item(i);
 
-                              if(parseInt(row.postid) == parseInt(post.id)) {
-                                return true;
-                              } else {
-                                if(i == (rowlength-1)) {
-                                  notRead.push(data.posts[index]);
-                                }
-                              }
+            var l_index2 = 0; // loading index 2 (fixes overwriting bug when clicking on this menu option)
+            $scope.loadNotRead = function() {
+              $scope.loading = true;
+              var notRead = [];
+              var response = $http.get('http://eter.rudbeck.info/api/get_recent_posts/?apikey=ErtYnDsKATCzmuf6&count=99999999999999999999999');
+              response.success(function(data) {
+                app.db.transaction(function (tx) {
+                  tx.executeSql("SELECT * FROM readposts", [], function(tx, rs) {
+                    var row;
+                    var rowlength = rs.rows.length;
+                    if(rowlength > 0) {
+                      $.each(data.posts, function(index, post) { // loop through posts
+                        for (var i = 0; i < rowlength; i++) { // loop through read db
+                          row = rs.rows.item(i);
+
+                          if(parseInt(row.postid) == parseInt(post.id)) {
+                            return true;
+                          } else {
+                            if(i == (rowlength-1)) {
+                              notRead.push(data.posts[index]);
                             }
-                          });
-                          //alert(JSON.stringify($scope.posts, null, 4));
-                          $scope.posts = notRead;
-                        } else {
-                          $scope.posts = data.posts;
+                          }
                         }
+                      });
+                      //alert(JSON.stringify($scope.posts, null, 4));
+                      $scope.posts = notRead;
+                    } else {
+                      $scope.posts = data.posts;
+                    }
 
-                        $scope.loading = false;
-                      }, app.onError);
-                    });
-                  }).
-                  error(function(data) {
-                    $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-                    $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-                    console.log(data);
-                  });
-                } else {
-                  console.log("no school selected");
-                  $state.go('front');
-                }
-              }, app.onError);
-            });
+                    l_index2++;
+                    if(l_index2 < 2) { // make sure function runs twice and not get overwritten by other posts
+                      $scope.loadNotRead();
+                    } else {
+                      $scope.restoreLoadIndex2();
+                    }
+
+                    $scope.loading = false;
+                  }, app.onError);
+                });
+              }).
+              error(function(data) {
+                $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+                $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+                console.log(data);
+              });
+            };
+
+            $scope.restoreLoadIndex2 = function() {
+              l_index2 = 0;
+            };
+            $scope.extraTitle = "Alla olästa";
+            $scope.loadNotRead();
           } else {
             var response = $http.get(rs.rows.item(0).otourl +'category/guides/?json=1&count=10&'+ p_apikey);
             response.success(function(data) {
@@ -844,7 +855,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             $http.get(rs.rows.item(0).otourl + "eter-app-api/"+ apikey +"&post_vote=1&post_id="+ $stateParams.pid +"").success(function(data, status) {
               $('.action-like').html("");
               $('#num_likes_' + $stateParams.pid).html(" ("+ data.num_votes+")");
-              $("#like-icn_"+pid).css("color", "#387EF5");
+              $("#like-icn_"+$stateParams.pid).css("color", "#387EF5");
             })
             response.error(function(data, status, headers, config) {
               alert('Något gick fel');
