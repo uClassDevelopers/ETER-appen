@@ -464,7 +464,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
     $( "#tgl-tags" ).unbind().click(function() {
       $( ".tags" ).toggle();
     });
-    $scope.extraTitle = "| Senaste";
+    $scope.extraTitle = "| Ämnen & Senaste";
     $scope.loadpost();
     if($stateParams.category == 'all'){
         $scope.loadTagCloud();
@@ -683,7 +683,7 @@ angular.module('eter.controllers', ['ngSanitize', 'eter.services'])
             response.success(function(data) {
               $scope.posts = data.posts;
               $scope.loading = false;
-              $scope.extraTitle = "| Senaste";
+              $scope.extraTitle = "| Ämnen & Senaste";
             }).
             error(function(data) {
               $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
