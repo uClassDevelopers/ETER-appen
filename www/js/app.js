@@ -41,6 +41,17 @@ eter.run(function($ionicPlatform) {
     }*/
     app.openDatabase();
     app.createTable();
+    var applaunchCount = window.localStorage.getItem('launchCount');
+
+    //Check if it already exists or not
+    if(applaunchCount){
+       //This is a second time launch, and count = applaunchCount
+       $state.go('tab.start');
+    } else {
+      //Local storage is not set, hence first time launch. set the local storage item
+      window.localStorage.setItem('launchCount',1);
+      $state.go('front');
+    }
   });
 })
 
@@ -150,7 +161,7 @@ eter.config(['$stateProvider', '$urlRouterProvider', '$translateProvider', funct
   $urlRouterProvider.otherwise('/tab/start');
 
   //PLEASE REMEBER TO CHANGE THIS WHEN UPDATE!!!
-  var otoAppVersion = "0.1.9";
+  var otoAppVersion = "0.1.11";
 
   $translateProvider.translations("ENG", {
     START_TITLE: 'Start',

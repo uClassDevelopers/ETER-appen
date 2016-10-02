@@ -1,0 +1,171 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/usr/local/bin/node',
+1 verbose cli   '/usr/local/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g',
+1 verbose cli   'ios-deploy' ]
+2 info using npm@2.15.5
+3 info using node@v4.4.6
+4 verbose install initial load of /usr/local/lib/package.json
+5 verbose readDependencies loading dependencies from /usr/local/lib/package.json
+6 silly cache add args [ 'ios-deploy', null ]
+7 verbose cache add spec ios-deploy
+8 silly cache add parsed spec Result {
+8 silly cache add   raw: 'ios-deploy',
+8 silly cache add   scope: null,
+8 silly cache add   name: 'ios-deploy',
+8 silly cache add   rawSpec: '',
+8 silly cache add   spec: 'latest',
+8 silly cache add   type: 'tag' }
+9 silly addNamed ios-deploy@latest
+10 verbose addNamed "latest" is being treated as a dist-tag for ios-deploy
+11 info addNameTag [ 'ios-deploy', 'latest' ]
+12 silly mapToRegistry name ios-deploy
+13 silly mapToRegistry using default registry
+14 silly mapToRegistry registry https://registry.npmjs.org/
+15 silly mapToRegistry data Result {
+15 silly mapToRegistry   raw: 'ios-deploy',
+15 silly mapToRegistry   scope: null,
+15 silly mapToRegistry   name: 'ios-deploy',
+15 silly mapToRegistry   rawSpec: '',
+15 silly mapToRegistry   spec: 'latest',
+15 silly mapToRegistry   type: 'tag' }
+16 silly mapToRegistry uri https://registry.npmjs.org/ios-deploy
+17 verbose addNameTag registry:https://registry.npmjs.org/ios-deploy not in flight; fetching
+18 verbose get https://registry.npmjs.org/ios-deploy not expired, no request
+19 silly addNameTag next cb for ios-deploy with tag latest
+20 silly addNamed ios-deploy@1.9.0
+21 verbose addNamed "1.9.0" is a plain semver version for ios-deploy
+22 silly cache afterAdd ios-deploy@1.9.0
+23 verbose afterAdd /Users/dank/.npm/ios-deploy/1.9.0/package/package.json not in flight; writing
+24 verbose correctMkdir /Users/dank/.npm correctMkdir not in flight; initializing
+25 verbose afterAdd /Users/dank/.npm/ios-deploy/1.9.0/package/package.json written
+26 silly install resolved [ { name: 'ios-deploy',
+26 silly install resolved     version: '1.9.0',
+26 silly install resolved     os: [ 'darwin' ],
+26 silly install resolved     description: 'launch iOS apps iOS devices from the command line (Xcode 7)',
+26 silly install resolved     main: 'ios-deploy',
+26 silly install resolved     scripts:
+26 silly install resolved      { preinstall: './src/scripts/check_reqs.js && xcodebuild',
+26 silly install resolved        test: 'npm run pycompile && npm run jshint && xcodebuild -target ios-deploy-lib && xcodebuild test -scheme ios-deploy-tests',
+26 silly install resolved        jshint: 'node node_modules/jshint/bin/jshint src/scripts/*.js',
+26 silly install resolved        pycompile: 'python -m py_compile src/scripts/*.py' },
+26 silly install resolved     bin: { 'ios-deploy': './build/Release/ios-deploy' },
+26 silly install resolved     repository:
+26 silly install resolved      { type: 'git',
+26 silly install resolved        url: 'git+https://github.com/phonegap/ios-deploy.git' },
+26 silly install resolved     devDependencies: { jshint: '2.5.8' },
+26 silly install resolved     keywords: [ 'ios-deploy', 'deploy to iOS device' ],
+26 silly install resolved     bugs: { url: 'https://github.com/phonegap/ios-deploy/issues' },
+26 silly install resolved     author: { name: 'Greg Hughes' },
+26 silly install resolved     license: 'GPLv3',
+26 silly install resolved     gitHead: '4346b331b703db43aeb3f9281c509042a551f2cc',
+26 silly install resolved     homepage: 'https://github.com/phonegap/ios-deploy#readme',
+26 silly install resolved     _id: 'ios-deploy@1.9.0',
+26 silly install resolved     _shasum: '9f065b9dd78143df51c8a740dac974615b950984',
+26 silly install resolved     _from: 'ios-deploy@latest',
+26 silly install resolved     _npmVersion: '3.10.3',
+26 silly install resolved     _nodeVersion: '6.4.0',
+26 silly install resolved     _npmUser: { name: 'shazron', email: 'shazron@gmail.com' },
+26 silly install resolved     dist:
+26 silly install resolved      { shasum: '9f065b9dd78143df51c8a740dac974615b950984',
+26 silly install resolved        tarball: 'https://registry.npmjs.org/ios-deploy/-/ios-deploy-1.9.0.tgz' },
+26 silly install resolved     maintainers: [ [Object], [Object], [Object] ],
+26 silly install resolved     _npmOperationalInternal:
+26 silly install resolved      { host: 'packages-16-east.internal.npmjs.com',
+26 silly install resolved        tmp: 'tmp/ios-deploy-1.9.0.tgz_1474020371227_0.9639754295349121' },
+26 silly install resolved     directories: {},
+26 silly install resolved     _resolved: 'https://registry.npmjs.org/ios-deploy/-/ios-deploy-1.9.0.tgz',
+26 silly install resolved     readme: 'ERROR: No README data found!' } ]
+27 info install ios-deploy@1.9.0 into /usr/local/lib
+28 info installOne ios-deploy@1.9.0
+29 verbose installOne of ios-deploy to /usr/local/lib not in flight; installing
+30 verbose correctMkdir /Users/dank/.npm/_locks correctMkdir not in flight; initializing
+31 verbose lock using /Users/dank/.npm/_locks/ios-deploy-198957223cd98201.lock for /usr/local/lib/node_modules/ios-deploy
+32 silly install write writing ios-deploy 1.9.0 to /usr/local/lib/node_modules/ios-deploy
+33 verbose unbuild lib/node_modules/ios-deploy
+34 silly gentlyRm /usr/local/lib/node_modules/ios-deploy is being purged from base /usr/local
+35 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ios-deploy
+36 verbose tar unpack /Users/dank/.npm/ios-deploy/1.9.0/package.tgz
+37 verbose tar unpacking to /usr/local/lib/node_modules/ios-deploy
+38 silly gentlyRm /usr/local/lib/node_modules/ios-deploy is being purged
+39 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ios-deploy
+40 silly gunzTarPerm modes [ '755', '644' ]
+41 silly gunzTarPerm extractEntry package.json
+42 silly gunzTarPerm extractEntry .npmignore
+43 silly gunzTarPerm extractEntry README.md
+44 silly gunzTarPerm extractEntry LICENSE
+45 silly gunzTarPerm extractEntry demo/.npmignore
+46 silly gunzTarPerm extractEntry demo/Entitlements.plist
+47 silly gunzTarPerm extractEntry demo/Info.plist
+48 silly gunzTarPerm extractEntry demo/Makefile
+49 silly gunzTarPerm extractEntry demo/ResourceRules.plist
+50 silly gunzTarPerm extractEntry demo/demo.c
+51 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/project.pbxproj
+52 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/project.xcworkspace/contents.xcworkspacedata
+53 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/project.xcworkspace/xcuserdata/shazron.xcuserdatad/UserInterfaceState.xcuserstate
+54 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/xcshareddata/xcschemes/ios-deploy-tests.xcscheme
+55 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/xcuserdata/shazron.xcuserdatad/xcschemes/ios-deploy-lib.xcscheme
+56 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/xcuserdata/shazron.xcuserdatad/xcschemes/ios-deploy.xcscheme
+57 silly gunzTarPerm extractEntry ios-deploy.xcodeproj/xcuserdata/shazron.xcuserdatad/xcschemes/xcschememanagement.plist
+58 silly gunzTarPerm extractEntry CONTRIBUTING.md
+59 silly gunzTarPerm extractEntry src/ios-deploy/MobileDevice.h
+60 silly gunzTarPerm extractEntry src/ios-deploy/errors.h
+61 silly gunzTarPerm extractEntry src/ios-deploy/ios-deploy.m
+62 silly gunzTarPerm extractEntry src/ios-deploy/version.h
+63 silly gunzTarPerm extractEntry src/ios-deploy-lib/libios_deploy.h
+64 silly gunzTarPerm extractEntry src/ios-deploy-lib/libios_deploy.m
+65 silly gunzTarPerm extractEntry src/ios-deploy-tests/Info.plist
+66 silly gunzTarPerm extractEntry src/ios-deploy-tests/ios_deploy_tests.m
+67 silly gunzTarPerm extractEntry src/scripts/check_reqs.js
+68 silly gunzTarPerm extractEntry src/scripts/lldb.py
+69 verbose write writing to /usr/local/lib/node_modules/ios-deploy/package.json
+70 info preinstall ios-deploy@1.9.0
+71 verbose unsafe-perm in lifecycle false
+72 info ios-deploy@1.9.0 Failed to exec preinstall script
+73 verbose unlock done using /Users/dank/.npm/_locks/ios-deploy-198957223cd98201.lock for /usr/local/lib/node_modules/ios-deploy
+74 verbose stack Error: ios-deploy@1.9.0 preinstall: `./src/scripts/check_reqs.js && xcodebuild`
+74 verbose stack Exit status 134
+74 verbose stack     at EventEmitter.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/lifecycle.js:217:16)
+74 verbose stack     at emitTwo (events.js:87:13)
+74 verbose stack     at EventEmitter.emit (events.js:172:7)
+74 verbose stack     at ChildProcess.<anonymous> (/usr/local/lib/node_modules/npm/lib/utils/spawn.js:24:14)
+74 verbose stack     at emitTwo (events.js:87:13)
+74 verbose stack     at ChildProcess.emit (events.js:172:7)
+74 verbose stack     at maybeClose (internal/child_process.js:827:16)
+74 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:211:5)
+75 verbose pkgid ios-deploy@1.9.0
+76 verbose cwd /Users/dank/Documents/Git/ETER-appen
+77 error Darwin 15.6.0
+78 error argv "/usr/local/bin/node" "/usr/local/bin/npm" "install" "-g" "ios-deploy"
+79 error node v4.4.6
+80 error npm  v2.15.5
+81 error code ELIFECYCLE
+82 error ios-deploy@1.9.0 preinstall: `./src/scripts/check_reqs.js && xcodebuild`
+82 error Exit status 134
+83 error Failed at the ios-deploy@1.9.0 preinstall script './src/scripts/check_reqs.js && xcodebuild'.
+83 error This is most likely a problem with the ios-deploy package,
+83 error not with npm itself.
+83 error Tell the author that this fails on your system:
+83 error     ./src/scripts/check_reqs.js && xcodebuild
+83 error You can get information on how to open an issue for this project with:
+83 error     npm bugs ios-deploy
+83 error Or if that isn't available, you can get their info via:
+83 error
+83 error     npm owner ls ios-deploy
+83 error There is likely additional logging output above.
+84 verbose exit [ 1, true ]
+85 verbose unbuild lib/node_modules/ios-deploy
+86 info preuninstall ios-deploy@1.9.0
+87 info uninstall ios-deploy@1.9.0
+88 verbose unbuild rmStuff ios-deploy@1.9.0 from /usr/local/lib/node_modules
+89 silly gentlyRm /usr/local/bin/ios-deploy is being gently removed
+90 silly gentlyRm verifying /usr/local is an npm working directory
+91 silly gentlyRm containing path /usr/local is under npm's control, in /usr/local
+92 silly gentlyRm deletion target /usr/local/bin/ios-deploy is under /usr/local
+93 verbose gentlyRm vacuuming from /usr/local/bin/ios-deploy up to /usr/local
+94 info postuninstall ios-deploy@1.9.0
+95 silly gentlyRm /usr/local/lib/node_modules/ios-deploy is being purged from base /usr/local
+96 verbose gentlyRm don't care about contents; nuking /usr/local/lib/node_modules/ios-deploy
+97 silly vacuum-fs purging /usr/local/lib/node_modules/ios-deploy
+98 silly vacuum-fs quitting because other entries in /usr/local/lib/node_modules

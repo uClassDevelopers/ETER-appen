@@ -31,7 +31,5 @@
     "pushwoosh-cordova-plugin",
     "cordova-plugin-statusbar"
   ],
-  "cordovaPlatforms": [
-    "ios"
-  ]
+  "cordovaPlatforms": []
 }

@@ -236,16 +236,20 @@ $scope.$on("$ionicView.enter", function() {
 
 
           // These functions will only work if static data is choosen, if dynamic is choosen then it will be an empty function
-          $scope.goToLinkTopRow = function(url, passedAllEntries) {
+          $scope.goToLinkTopRow = function(url, passedAllEntries, pId) {
             //alert(url);
+            //alert(pId);
             if(url.indexOf('http') == 0) {
               var ref = window.open(url, '_blank', 'location=yes');
             } else if(url == "openLunchAlert") {
               //navigator.notification.alert(combinedString, null, 'Veckans Lunch', 'close')
               //http://www.amica.se/modules/MenuRss/MenuRss/CurrentDay?costNumber=6203&language=sv
               //http://www.amica.se/modules/MenuRss/MenuRss/CurrentWeek?costNumber=6203&language=sv
+              $scope[pId] = true;
+
               $http.get("http://rss2json.com/api.json?rss_url=http%3A%2F%2Fwww.amica.se%2Fmodules%2FMenuRss%2FMenuRss%2FCurrentWeek%3FcostNumber%3D6203%26language%3Dsv")
               .success(function(data) {
+                $scope[pId] = false;
                 var combinedString = "";
                 for(var i = 0; i< data.items.length; i++) {
                   var title = data.items[i].title;
@@ -263,6 +267,16 @@ $scope.$on("$ionicView.enter", function() {
                 });
               })
               .error(function(data) {
+                $scope[pId] = false;
+                function showAlert() {
+                  navigator.notification.alert(
+                    'Lunchen kunde inte laddas!',  // message
+                    alertDismissed,         // callback
+                    'Fel Inträffade',            // title
+                    'OK'                  // buttonName
+                  );
+                }
+                showAlert();
                 console.log("ERROR: " + data);
               });
 
@@ -311,7 +325,6 @@ $scope.$on("$ionicView.enter", function() {
               $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
               console.log(data);
             });
-
           }
 
           // Add dynamic data if is_dyn = 1 for bottom row
