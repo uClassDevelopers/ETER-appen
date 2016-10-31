@@ -225,6 +225,12 @@ ion-slide div img {
 .row-fluid .span4 {
   width: 31.9149%;
 }
+.read-post {
+  color: #929292;
+}
+.unread-post {
+  color: #9e1b32;
+}
 
 /* tab guider */
 .noPosts {

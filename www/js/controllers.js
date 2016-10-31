@@ -161,6 +161,7 @@ $scope.$on('$ionicView.afterEnter', function(event) {
 
 // if base url exists load api, else go to front state
 $scope.$on("$ionicView.enter", function() {
+
   app.db.transaction(function (tx) {
     tx.executeSql("SELECT * FROM schoolinfo ORDER BY ID DESC", [], function(tx, rs) {
       var rowlength = rs.rows.length;
@@ -321,8 +322,19 @@ $scope.$on("$ionicView.enter", function() {
               $scope.goToLinkBottomRow = function() {};
               if(data.hasOwnProperty('posts')) { // the latest guides
                 $.each(data.posts, function(index, post) {
-                  firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska' });
+                  app.db.transaction(function (txs) {
+                    txs.executeSql('SELECT * FROM readposts WHERE postid="'+post.id+'"', [], function(txs, rs2) {
+                      var row;
+                      var rowlength2 = rs2.rows.length;
+                      if(rowlength2 > 0) {
+                        firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska', readStatus: 'läst', readClass: 'read-post'});
+                      } else {
+                        firstPageContent.bottomData.push({ id: (index+1), postid: post.id, title: post.title, image_url: '', content: 'Publicerad: '+post.date, on_link: '', contentClass: 'dynamiska', readStatus: 'oläst', readClass: 'unread-post' });
+                      }
+                    }, app.onError);
+                  });
                 });
+
                 $scope.goToGuideBottomRow = function(id) {
                   if(typeof id == "number") {
                     location.href="#/tab/start/"+id;
@@ -343,28 +355,29 @@ $scope.$on("$ionicView.enter", function() {
               $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
               console.log(data);
             });
+
           }
+          /*for (var k in firstPageContent.bottomData) {
+          console.log("data: "+ k + ': ' + firstPageContent[k]);
+        }*/
+        //alert(JSON.stringify(firstPageContent, null, 4));
+        $scope.topData = firstPageContent.topData;
+        $scope.bottomData = firstPageContent.bottomData;
+        $scope.sliderData = firstPageContent.sliderData;
+      }).
+      error(function(data) {
+        $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
+        $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
+        console.log(data);
+      });
+    } else {
+      console.log("no school selected");
+      $state.go('front');
 
-          //alert(JSON.stringify(firstPageContent, null, 4));
-          $scope.topData = firstPageContent.topData;
-          $scope.bottomData = firstPageContent.bottomData;
-          $scope.sliderData = firstPageContent.sliderData;
-
-        }).
-        error(function(data) {
-          $('#start-data').html('<p class="bg-danger" style="text-align: center;">Något gick fel! Testa att sätta på WIFI eller Mobildata.</p>');
-          $('#uclass').html('<p class="text-danger" style="text-align: center;">.</p>');
-          console.log(data);
-        });
-      } else {
-        console.log("no school selected");
-        $state.go('front');
-
-      }
-    }, app.onError);
-  });
+    }
+  }, app.onError);
 });
-
+});
 }])
 
 //controller for the sidemenu, functions in here depend on existence of guide Categories and the tab.guides
